@@ -62,8 +62,9 @@ def compute_severity_cap(
         cap += 1
 
     if rarity_mode == "spiky":
-        cap -= 1
-        if morph >= 0.8:
+        if morph >= 0.9:
+            cap -= 1
+        if morph >= 1.4:
             cap -= 1
     elif rarity_mode == "calm":
         cap += 1
