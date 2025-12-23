@@ -147,11 +147,23 @@ elif rarity_mode == "calm":
 
 ## Questions for GPT
 
-### None at this time
+### Content Availability Issue Discovered
 
-The implementation meets all specified acceptance criteria. The tuning is working as designed with clear morphology-based gradation.
+While testing, I discovered a content scarcity issue in the **aftermath phase** that blocks the full scenario suite testing. This is **NOT related to cutoff tuning** but affects the testing workflow.
 
-### Observations
+**Details**: See `docs/ISSUE_REPORT_content_availability.md`
+
+**Summary**: 
+- City aftermath: only 4 events
+- Wilderness aftermath: only 3 events  
+- 200-event batches exhaust content via cooldowns
+- Blocks "Presets × (Approach/Engage/Aftermath) × Normal" suite
+
+**Recommendation**: Expand aftermath content (10-15 events per environment) or use reduced batch sizes (50) for aftermath testing.
+
+This does not affect the cutoff tuning implementation, which is complete and verified.
+
+### Other Observations
 1. **Wilderness at upper bound**: Wilderness Spiky is at exactly 5.0% (upper limit). This is acceptable but could be tuned slightly lower if desired.
 2. **Calm mode floor effect**: 0.0% cutoff rate in Calm mode indicates very conservative behavior - this may be desirable for that mode.
 3. **Morphology threshold effectiveness**: The 0.9/1.4 thresholds provide good separation between environment types.
