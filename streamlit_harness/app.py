@@ -338,11 +338,33 @@ def load_scenario_json(file_content: str) -> Dict[str, Any]:
     except json.JSONDecodeError as e:
         raise ValueError(f"Invalid JSON: {e}")
     
-    # Validate required fields
-    required = ["name", "presets", "phases", "rarity_modes", "batch_size", "base_seed"]
-    missing = [f for f in required if f not in scenario]
-    if missing:
-        raise ValueError(f"Missing required fields: {', '.join(missing)}")
+    execution_mode = scenario.get("execution_mode", "matrix")
+    
+    if execution_mode == "campaign":
+        # Campaign mode validation
+        required = ["name", "scene_sequence", "batch_size", "base_seed"]
+        missing = [f for f in required if f not in scenario]
+        if missing:
+            raise ValueError(f"Campaign mode missing required fields: {', '.join(missing)}")
+        
+        # Validate scene_sequence structure
+        if not isinstance(scenario["scene_sequence"], list):
+            raise ValueError("scene_sequence must be an array")
+        if not scenario["scene_sequence"]:
+            raise ValueError("scene_sequence cannot be empty")
+        
+        # Validate each scene in sequence
+        for idx, scene_def in enumerate(scenario["scene_sequence"]):
+            scene_required = ["preset", "phase", "rarity_mode"]
+            scene_missing = [f for f in scene_required if f not in scene_def]
+            if scene_missing:
+                raise ValueError(f"Scene {idx+1} missing required fields: {', '.join(scene_missing)}")
+    else:
+        # Matrix mode validation (original)
+        required = ["name", "presets", "phases", "rarity_modes", "batch_size", "base_seed"]
+        missing = [f for f in required if f not in scenario]
+        if missing:
+            raise ValueError(f"Missing required fields: {', '.join(missing)}")
     
     return scenario
 
@@ -384,11 +406,31 @@ def run_scenario_from_json(
     entries,
     engine_state_class,
 ) -> Dict[str, Any]:
-    """Execute a scenario definition and return results."""
+    """Execute a scenario definition and return results.
+    
+    Supports two execution modes:
+    - matrix (default): Cartesian product of presets × phases × rarity_modes with fresh state per run
+    - campaign: Sequential scene_sequence with shared state across all scenes
+    """
+    execution_mode = scenario.get("execution_mode", "matrix")
+    
+    if execution_mode == "campaign":
+        return run_campaign_scenario(scenario, entries, engine_state_class)
+    else:
+        return run_matrix_scenario(scenario, entries, engine_state_class)
+
+
+def run_matrix_scenario(
+    scenario: Dict[str, Any],
+    entries,
+    engine_state_class,
+) -> Dict[str, Any]:
+    """Execute scenario as Cartesian product with fresh state per run (original behavior)."""
     # Resolve base_seed (supports "random" or integer)
     resolved_base_seed = resolve_seed_value(scenario["base_seed"])
     
     report: Dict[str, Any] = {
+        "execution_mode": "matrix",
         "suite": scenario.get("name", "Custom scenario"),
         "batch_n": int(scenario["batch_size"]),
         "base_seed": resolved_base_seed,
@@ -448,6 +490,122 @@ def run_scenario_from_json(
                     "seed": seed,
                     "result": result,
                 })
+    
+    return report
+
+
+def run_campaign_scenario(
+    scenario: Dict[str, Any],
+    entries,
+    engine_state_class,
+) -> Dict[str, Any]:
+    """Execute scenario as ordered sequence with shared state across all scenes."""
+    # Validate required fields for campaign mode
+    if "scene_sequence" not in scenario:
+        raise ValueError("Campaign mode requires 'scene_sequence' field")
+    
+    scene_sequence = scenario["scene_sequence"]
+    if not scene_sequence:
+        raise ValueError("Campaign mode requires non-empty 'scene_sequence'")
+    
+    # Resolve base_seed
+    resolved_base_seed = resolve_seed_value(scenario["base_seed"])
+    
+    # Initialize shared state for entire campaign
+    shared_state = engine_state_class.default()
+    
+    report: Dict[str, Any] = {
+        "execution_mode": "campaign",
+        "suite": scenario.get("name", "Campaign scenario"),
+        "base_seed": resolved_base_seed,
+        "scene_count": len(scene_sequence),
+        "batch_size_per_scene": int(scenario["batch_size"]),
+        "include_tags": scenario.get("include_tags", ""),
+        "exclude_tags": scenario.get("exclude_tags", ""),
+        "tick_between": scenario.get("tick_between", True),
+        "ticks_between": scenario.get("ticks_between", 1),
+        "verbose": scenario.get("verbose", False),
+        "scenes": [],  # Per-scene results in order
+        "initial_state": engine_state_class.default().__dict__,  # For reference
+    }
+    
+    # Execute scenes sequentially
+    for step_idx, scene_def in enumerate(scene_sequence):
+        preset_name = scene_def["preset"]
+        phase = scene_def["phase"]
+        rarity_mode = scene_def["rarity_mode"]
+        
+        # Per-scene overrides (inherit from scenario if not specified)
+        step_batch_size = scene_def.get("batch_size", scenario["batch_size"])
+        step_include_tags = scene_def.get("include_tags", scenario.get("include_tags", ""))
+        step_exclude_tags = scene_def.get("exclude_tags", scenario.get("exclude_tags", ""))
+        
+        pv = scene_preset_values(preset_name)
+        scene = SceneContext(
+            scene_id=f"campaign:{scenario['name']}:step{step_idx+1}:{preset_name}:{phase}",
+            scene_phase=phase,  # type: ignore
+            environment=list(pv["env"]),
+            tone=["debug"],
+            constraints=Constraints(
+                confinement=float(pv["confinement"]),
+                connectivity=float(pv["connectivity"]),
+                visibility=float(pv["visibility"]),
+            ),
+            party_band="unknown",
+            spotlight=["debug"],
+        )
+        selection = SelectionContext(
+            enabled_packs=["core_complications"],
+            include_tags=split_csv(step_include_tags),
+            exclude_tags=split_csv(step_exclude_tags),
+            factions_present=[],
+            rarity_mode=rarity_mode,  # type: ignore
+        )
+        
+        # Deterministic seed per step
+        seed = resolved_base_seed + step_idx + 1
+        
+        # Run batch starting from current shared state
+        result = run_batch(
+            scene=scene,
+            selection=selection,
+            entries=entries,
+            seed=seed,
+            n=int(step_batch_size),
+            starting_engine_state=shared_state,  # Use current state
+            tick_between=bool(scenario.get("tick_between", True)),
+            ticks_between=int(scenario.get("ticks_between", 1)),
+            verbose=bool(scenario.get("verbose", False)),
+        )
+        
+        # Update shared state from result's final state
+        shared_state = result["final_state"]
+        # Convert dict back to EngineState object for next iteration
+        from spar_engine.state import EngineState
+        if isinstance(shared_state, dict):
+            shared_state = EngineState(**shared_state)
+        
+        # Record step result
+        report["scenes"].append({
+            "step_index": step_idx + 1,
+            "preset": preset_name,
+            "phase": phase,
+            "rarity_mode": rarity_mode,
+            "seed": seed,
+            "batch_size": int(step_batch_size),
+            "summary": result["summary"],
+            "state_snapshot": {
+                "tension_clock": shared_state.tension_clock,
+                "heat_clock": shared_state.heat_clock,
+                "tag_cooldowns_count": len(shared_state.tag_cooldowns),
+                "recent_ids_count": len(shared_state.recent_ids),
+            },
+            "events": result.get("events"),  # Include if verbose
+            "events_sample": result.get("events_sample"),  # Include if not verbose
+        })
+    
+    # Add final state to report
+    report["final_state"] = shared_state.__dict__
     
     return report
 
@@ -634,14 +792,32 @@ def main() -> None:
             
             # Display loaded scenario details
             if loaded_scenario:
+                execution_mode = loaded_scenario.get("execution_mode", "matrix")
+                
                 with st.expander("Scenario Details", expanded=True):
                     st.write(f"**Name**: {loaded_scenario['name']}")
                     st.write(f"**Description**: {loaded_scenario.get('description', 'N/A')}")
-                    st.write(f"**Presets**: {', '.join(loaded_scenario['presets'])}")
-                    st.write(f"**Phases**: {', '.join(loaded_scenario['phases'])}")
-                    st.write(f"**Rarity Modes**: {', '.join(loaded_scenario['rarity_modes'])}")
-                    st.write(f"**Batch Size**: {loaded_scenario['batch_size']}")
-                    st.write(f"**Base Seed**: {loaded_scenario['base_seed']}")
+                    st.write(f"**Execution Mode**: {execution_mode}")
+                    
+                    if execution_mode == "campaign":
+                        # Campaign mode display
+                        scene_seq = loaded_scenario.get("scene_sequence", [])
+                        st.write(f"**Scene Count**: {len(scene_seq)}")
+                        st.write(f"**Batch Size per Scene**: {loaded_scenario['batch_size']}")
+                        st.write(f"**Base Seed**: {loaded_scenario['base_seed']}")
+                        
+                        # Display scene sequence
+                        st.write("**Scene Sequence**:")
+                        for idx, scene_def in enumerate(scene_seq):
+                            st.write(f"{idx+1}. {scene_def['preset']} / {scene_def['phase']} / {scene_def['rarity_mode']}")
+                    else:
+                        # Matrix mode display (original)
+                        st.write(f"**Presets**: {', '.join(loaded_scenario['presets'])}")
+                        st.write(f"**Phases**: {', '.join(loaded_scenario['phases'])}")
+                        st.write(f"**Rarity Modes**: {', '.join(loaded_scenario['rarity_modes'])}")
+                        st.write(f"**Batch Size**: {loaded_scenario['batch_size']}")
+                        st.write(f"**Base Seed**: {loaded_scenario['base_seed']}")
+                    
                     st.write(f"**Tick Between**: {loaded_scenario.get('tick_between', True)}")
                     st.write(f"**Ticks Between**: {loaded_scenario.get('ticks_between', 1)}")
         

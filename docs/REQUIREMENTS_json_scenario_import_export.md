@@ -48,11 +48,28 @@ Enable JSON-based scenario definition, import, execution, and result export in t
 
 ## JSON Schema
 
+### Execution Modes
+
+Scenarios support two execution modes:
+
+**Matrix Mode** (default):
+- Cartesian product of presets × phases × rarity_modes
+- Fresh EngineState per combination
+- Good for validating phase behavior in isolation
+
+**Campaign Mode** (new):
+- Sequential execution with ordered scene_sequence
+- Single shared EngineState across all scenes
+- Enables multi-scene rhythm validation
+- Observes state evolution and pressure/release patterns
+
 ### Scenario Definition Format
 
+**Matrix Mode Example**:
 ```json
 {
   "schema_version": "1.0",
+  "execution_mode": "matrix",
   "name": "Scenario Name",
   "description": "Brief description of validation purpose",
   "output_basename": "clean_filename_base",
@@ -69,7 +86,35 @@ Enable JSON-based scenario definition, import, execution, and result export in t
 }
 ```
 
-### Required Fields (Validation Level 1)
+**Campaign Mode Example**:
+```json
+{
+  "schema_version": "1.0",
+  "execution_mode": "campaign",
+  "name": "Campaign Rhythm Validation",
+  "description": "Tests multi-scene narrative rhythm with shared state",
+  "output_basename": "campaign_rhythm",
+  "scene_sequence": [
+    {"preset": "dungeon", "phase": "approach", "rarity_mode": "normal"},
+    {"preset": "dungeon", "phase": "engage", "rarity_mode": "normal"},
+    {"preset": "dungeon", "phase": "aftermath", "rarity_mode": "normal"},
+    {"preset": "dungeon", "phase": "approach", "rarity_mode": "normal"},
+    {"preset": "dungeon", "phase": "engage", "rarity_mode": "normal"},
+    {"preset": "dungeon", "phase": "aftermath", "rarity_mode": "normal"}
+  ],
+  "batch_size": 50,
+  "base_seed": 5000,
+  "include_tags": "",
+  "exclude_tags": "",
+  "tick_between": true,
+  "ticks_between": 1,
+  "verbose": false
+}
+```
+
+### Required Fields
+
+**Matrix Mode**:
 - `name` (string)
 - `presets` (array of strings)
 - `phases` (array of strings)
@@ -77,12 +122,21 @@ Enable JSON-based scenario definition, import, execution, and result export in t
 - `batch_size` (integer)
 - `base_seed` (integer or string "random")
 
-### Optional Fields
+**Campaign Mode**:
+- `name` (string)
+- `scene_sequence` (array of scene objects)
+  - Each scene requires: `preset`, `phase`, `rarity_mode`
+  - Optional per-scene: `batch_size`, `include_tags`, `exclude_tags`
+- `batch_size` (integer, default per scene)
+- `base_seed` (integer or string "random")
+
+### Optional Fields (Both Modes)
 - `schema_version` (string, default: "1.0") - Future-proofs format evolution
+- `execution_mode` (string, default: "matrix") - Options: "matrix" or "campaign"
 - `output_basename` (string, optional) - Clean basename for output files. Characters like `/`, `\`, and spaces are automatically sanitized to `_` to prevent unwanted directory creation
 - `description` (string, default: "")
-- `include_tags` (string CSV, default: "")
-- `exclude_tags` (string CSV, default: "")
+- `include_tags` (string CSV, default: "") - Global default for all scenes
+- `exclude_tags` (string CSV, default: "") - Global default for all scenes
 - `tick_between` (boolean, default: true)
 - `ticks_between` (integer, default: 1)
 - `verbose` (boolean, default: false)
@@ -183,18 +237,36 @@ All operations share the same UX pattern:
 - Config file excluded from git via `.gitignore`
 - Ensures user preferences persist across all sessions (browser restarts, terminal restarts, etc.)
 
-## Built-in Scenarios (Initial)
+## Built-in Scenarios
 
-### Scenario A: Phase Weighting Validation - Normal
+### Matrix Mode Scenarios
+
+**Scenario A: Phase Weighting Validation - Normal**
 - All presets × All phases × Normal mode
 - Batch size: 200
 - Purpose: Validate phase differentiation
 
-### Scenario B: Phase Weighting Validation - Spiky
+**Scenario B: Phase Weighting Validation - Spiky**
 - All presets × All phases × Spiky mode  
 - Batch size: 200
 - Same seed as Scenario A
 - Purpose: Compare rarity mode impact on phases
+
+### Campaign Mode Scenarios
+
+**Scenario C: Campaign Rhythm - Normal Mode**
+- 6-scene sequence: Approach → Engage → Aftermath (×2 cycles)
+- Preset: Dungeon (consistent environment)
+- Rarity mode: Normal
+- Batch size: 50 events per scene
+- Base seed: 5000
+- Purpose: Validate natural escalation/release rhythm across multiple scenes
+
+**Scenario D: Campaign Rhythm - Spiky Mode**
+- Same 6-scene sequence as Scenario C
+- Rarity mode: Spiky
+- Same seed (5000) for direct comparison
+- Purpose: Validate pressure spikes occur and release naturally, avoid permanent tension plateaus
 
 ## Parking Lot Items
 
@@ -204,6 +276,42 @@ All operations share the same UX pattern:
 3. **Full JSON validation**: Validate field types and value ranges
 4. **Scenario editor**: In-app JSON editing and creation
 5. **Scenario comparison**: Side-by-side result comparison UI
+
+## Campaign Mode Details
+
+### State Carry-Forward Behavior
+
+Campaign mode maintains a single EngineState instance across the entire scene_sequence:
+1. Initialize fresh EngineState at start
+2. For each scene in sequence:
+   - Run batch with current state
+   - Apply state_delta from each event
+   - Pass evolved state to next scene
+3. Export final state and per-scene snapshots
+
+### Output Format
+
+Campaign reports include:
+- `execution_mode`: "campaign"
+- `scene_count`: Total scenes in sequence
+- `batch_size_per_scene`: Events per scene
+- `initial_state`: Reference snapshot of fresh state
+- `scenes[]`: Ordered array with per-scene results:
+  - `step_index`: Sequential position
+  - `preset`, `phase`, `rarity_mode`
+  - `summary`: Standard metrics (severity, cutoffs, tags)
+  - `state_snapshot`: Key state values (tension_clock, heat_clock, cooldown counts)
+  - `events` or `events_sample`: Event data
+- `final_state`: Complete state after all scenes
+
+### Analysis Capabilities
+
+Campaign mode enables observation of:
+- **Rhythm patterns**: Severity trends across scenes (escalation/release)
+- **State evolution**: Clock accumulation and decay
+- **Tag patterns**: Dominance shifts (e.g., hazard → opportunity → information)
+- **Pressure indicators**: Cutoff rates per scene
+- **Memory effects**: How earlier scenes affect later ones
 
 ## Acceptance Criteria
 
@@ -218,6 +326,9 @@ All operations share the same UX pattern:
 - ✅ Paths stored in `.streamlit_harness_config.json` (excluded from git)
 - ✅ Working directory displayed for all save operations
 - ✅ Descriptive default filenames generated for all exports
+- ✅ Campaign mode executes with shared state
+- ✅ Campaign scenarios load and display correctly
+- ✅ Campaign reports include per-scene state snapshots
 
 ## Technical Constraints
 

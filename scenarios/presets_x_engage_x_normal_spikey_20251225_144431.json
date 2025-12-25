@@ -1,0 +1,27 @@
+{
+  "schema_version": "1.0",
+  "name": "Presets \u00d7 Engage \u00d7 (Calm/Normal/Spiky)",
+  "description": "Exported from hardcoded suite: Presets \u00d7 Engage \u00d7 (Calm/Normal/Spiky)",
+  "output_basename": "presets_x_engage_x_calm/normal/spiky",
+  "presets": [
+    "dungeon",
+    "city",
+    "wilderness",
+    "ruins"
+  ],
+  "phases": [
+    "engage"
+  ],
+  "rarity_modes": [
+    "calm",
+    "normal",
+    "spiky"
+  ],
+  "batch_size": 234,
+  "base_seed": 590711975,
+  "include_tags": "hazard,reinforcements,time_pressure,social_friction,mystic,attrition,terrain,positioning,opportunity,information",
+  "exclude_tags": "visibility",
+  "tick_between": true,
+  "ticks_between": 9,
+  "verbose": true
+}

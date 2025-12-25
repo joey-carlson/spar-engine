@@ -1,0 +1,44 @@
+{
+  "schema_version": "1.0",
+  "execution_mode": "campaign",
+  "name": "Campaign Rhythm - Normal Mode",
+  "description": "Validates narrative rhythm across 6-scene sequence (2 full approach/engage/aftermath cycles). Tests whether the engine naturally creates escalation, release, recovery, and renewed tension across multiple scenes without explicit campaign-level rules. Uses Normal rarity mode with fixed seed for reproducibility.",
+  "output_basename": "campaign_rhythm_normal",
+  
+  "scene_sequence": [
+    {"preset": "dungeon", "phase": "approach", "rarity_mode": "normal"},
+    {"preset": "dungeon", "phase": "engage", "rarity_mode": "normal"},
+    {"preset": "dungeon", "phase": "aftermath", "rarity_mode": "normal"},
+    {"preset": "dungeon", "phase": "approach", "rarity_mode": "normal"},
+    {"preset": "dungeon", "phase": "engage", "rarity_mode": "normal"},
+    {"preset": "dungeon", "phase": "aftermath", "rarity_mode": "normal"}
+  ],
+  
+  "batch_size": 50,
+  "base_seed": 5000,
+  
+  "include_tags": "",
+  "exclude_tags": "",
+  
+  "tick_between": true,
+  "ticks_between": 1,
+  
+  "verbose": false,
+  
+  "_analysis_focus": {
+    "observe": [
+      "Average severity per scene (look for rise/fall patterns)",
+      "Cutoff rate per scene (pressure indicators)",
+      "Clock trends (tension_clock, heat_clock accumulation/decay)",
+      "Tag dominance shifts across scenes",
+      "Cutoff resolution types per scene"
+    ],
+    "expectations": {
+      "early_scenes": "Exploratory and controlled (lower severity averages)",
+      "mid_scenes": "Pressured but recoverable (higher severity, moderate cutoffs)",
+      "aftermath_scenes": "Reduced volatility without erasing consequences",
+      "later_scenes": "Should feel affected by earlier scenes, not reset",
+      "overall": "Clear rhythm of escalation and release, not flatline or runaway"
+    }
+  }
+}

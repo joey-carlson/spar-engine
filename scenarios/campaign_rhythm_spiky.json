@@ -1,0 +1,44 @@
+{
+  "schema_version": "1.0",
+  "execution_mode": "campaign",
+  "name": "Campaign Rhythm - Spiky Mode",
+  "description": "Validates narrative rhythm across 6-scene sequence (2 full approach/engage/aftermath cycles) in Spiky rarity mode. Tests whether pressure spikes and releases occur naturally, whether at least one meaningful cutoff event happens, and whether the system avoids both permanent high tension and permanent calm. Uses same seed as Normal mode for comparison.",
+  "output_basename": "campaign_rhythm_spiky",
+  
+  "scene_sequence": [
+    {"preset": "dungeon", "phase": "approach", "rarity_mode": "spiky"},
+    {"preset": "dungeon", "phase": "engage", "rarity_mode": "spiky"},
+    {"preset": "dungeon", "phase": "aftermath", "rarity_mode": "spiky"},
+    {"preset": "dungeon", "phase": "approach", "rarity_mode": "spiky"},
+    {"preset": "dungeon", "phase": "engage", "rarity_mode": "spiky"},
+    {"preset": "dungeon", "phase": "aftermath", "rarity_mode": "spiky"}
+  ],
+  
+  "batch_size": 50,
+  "base_seed": 5000,
+  
+  "include_tags": "",
+  "exclude_tags": "",
+  
+  "tick_between": true,
+  "ticks_between": 1,
+  
+  "verbose": false,
+  
+  "_analysis_focus": {
+    "observe": [
+      "Pressure spike occurrences and recovery patterns",
+      "At least one meaningful cutoff event in sequence",
+      "Whether system avoids permanent high tension plateau",
+      "Whether system avoids permanent calm (no spikes)",
+      "Comparison with Normal mode at same seed"
+    ],
+    "expectations": {
+      "spikes": "At least one scene should show elevated cutoff rate or high severity",
+      "release": "Aftermath scenes should reduce pressure without eliminating consequences",
+      "no_plateau": "Should not maintain same tension/severity across all 6 scenes",
+      "no_runaway": "Should not escalate infinitely without release",
+      "differentiation": "Should feel distinctly more volatile than Normal mode"
+    }
+  }
+}

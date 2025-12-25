@@ -3,6 +3,7 @@
   "$description": "Template for creating SPAR Engine validation scenarios. Copy this file and modify the fields below.",
   
   "schema_version": "1.0",
+  "execution_mode": "matrix",
   "name": "Your Scenario Name Here",
   "description": "Detailed description of what this scenario validates or tests. Include purpose, expected outcomes, and any special considerations.",
   "output_basename": "your_scenario_basename",
@@ -24,13 +25,15 @@
   
   "_comments": {
     "schema_version": "Format version for future compatibility. Current: 1.0",
+    "execution_mode": "Execution strategy. Options: 'matrix' (default, Cartesian product with fresh state per run) or 'campaign' (sequential scene_sequence with shared state across scenes)",
     "name": "Display name for the scenario (used in UI and reports)",
     "description": "Detailed purpose and context",
     "output_basename": "Clean filename base for results (e.g., 'phase_validation_normal'). If omitted, auto-generated from name.",
-    "presets": "Array of environment presets to test. Options: dungeon, city, wilderness, ruins",
-    "phases": "Array of scene phases to test. Options: approach, engage, aftermath",
-    "rarity_modes": "Array of rarity modes to test. Options: calm, normal, spiky",
-    "batch_size": "Number of events to generate per preset/phase/mode combination",
+    "presets": "Array of environment presets to test (matrix mode). Options: dungeon, city, wilderness, ruins",
+    "phases": "Array of scene phases to test (matrix mode). Options: approach, engage, aftermath",
+    "rarity_modes": "Array of rarity modes to test (matrix mode). Options: calm, normal, spiky",
+    "scene_sequence": "Ordered array of scene objects (campaign mode only). Each scene requires: preset, phase, rarity_mode. Optional per-scene overrides: batch_size, include_tags, exclude_tags",
+    "batch_size": "Number of events to generate per run (matrix) or per scene (campaign)",
     "base_seed": "Base RNG seed. Can be an integer (0-999999999) or 'random' for time-based seed. Each run gets base_seed + run_index for reproducibility",
     "include_tags": "CSV of tags to require (empty = no filter). Useful for focused testing",
     "exclude_tags": "CSV of tags to exclude (empty = no filter). Useful for isolation testing",
@@ -41,6 +44,7 @@
   
   "_examples": {
     "minimal_scenario": {
+      "execution_mode": "matrix",
       "name": "Quick Dungeon Test",
       "presets": ["dungeon"],
       "phases": ["engage"],
@@ -50,6 +54,7 @@
       "note": "Uses fixed seed for reproducible testing"
     },
     "random_seed_scenario": {
+      "execution_mode": "matrix",
       "name": "Random Seed Test",
       "presets": ["dungeon"],
       "phases": ["engage"],
@@ -59,6 +64,7 @@
       "note": "Uses time-based random seed for non-reproducible variation"
     },
     "comprehensive_validation": {
+      "execution_mode": "matrix",
       "name": "Full Phase Coverage Test",
       "description": "Tests all combinations for complete coverage analysis",
       "output_basename": "full_coverage",
@@ -69,6 +75,7 @@
       "base_seed": 1000
     },
     "spiky_mode_stress_test": {
+      "execution_mode": "matrix",
       "name": "Spiky Mode Cutoff Analysis",
       "description": "Validates cutoff frequency targets in Spiky mode",
       "output_basename": "spiky_cutoff_analysis",
@@ -77,6 +84,25 @@
       "rarity_modes": ["spiky"],
       "batch_size": 200,
       "base_seed": 2000
+    },
+    "campaign_rhythm_example": {
+      "execution_mode": "campaign",
+      "name": "Campaign Rhythm Validation",
+      "description": "Tests multi-scene narrative rhythm with shared state across 6 scenes (2 full cycles of approach/engage/aftermath)",
+      "output_basename": "campaign_rhythm",
+      "scene_sequence": [
+        {"preset": "dungeon", "phase": "approach", "rarity_mode": "normal"},
+        {"preset": "dungeon", "phase": "engage", "rarity_mode": "normal"},
+        {"preset": "dungeon", "phase": "aftermath", "rarity_mode": "normal"},
+        {"preset": "dungeon", "phase": "approach", "rarity_mode": "normal"},
+        {"preset": "dungeon", "phase": "engage", "rarity_mode": "normal"},
+        {"preset": "dungeon", "phase": "aftermath", "rarity_mode": "normal"}
+      ],
+      "batch_size": 50,
+      "base_seed": 5000,
+      "tick_between": true,
+      "ticks_between": 1,
+      "note": "Campaign mode preserves EngineState across scenes to observe pressure/release rhythms"
     }
   }
 }
