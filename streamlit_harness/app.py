@@ -86,14 +86,25 @@ def init_persistent_paths() -> None:
         st.session_state.scenario_output_path = config.get("scenario_output_path", "results/scenario_output.json")
         st.session_state.template_save_path = config.get("template_save_path", "scenarios/my_scenario.json")
         st.session_state.report_save_path = config.get("report_save_path", "results/suite_report.json")
+        # Also load the manual edit flag from config
+        st.session_state.output_path_manually_edited = config.get("output_path_manually_edited", False)
         st.session_state.paths_initialized = True
 
 
-def update_persistent_path(key: str, value: str) -> None:
-    """Update a persistent path in both session state and config file."""
+def update_persistent_path(key: str, value: str, manual_edit: bool = False) -> None:
+    """Update a persistent path in both session state and config file.
+    
+    Args:
+        key: The config key to update
+        value: The new path value
+        manual_edit: If True, also sets the manual edit flag
+    """
     st.session_state[key] = value
     config = load_config()
     config[key] = value
+    if manual_edit:
+        config["output_path_manually_edited"] = True
+        st.session_state.output_path_manually_edited = True
     save_config(config)
 
 
@@ -637,6 +648,7 @@ def main() -> None:
         with col2:
             st.caption("**Export Results**")
             
+            
             # Generate default filename based on loaded scenario
             if loaded_scenario:
                 # Get the scenario name for comparison
@@ -646,43 +658,41 @@ def main() -> None:
                 if "last_loaded_scenario" not in st.session_state:
                     st.session_state.last_loaded_scenario = None
                 
-                # Only regenerate filename if scenario has changed AND user hasn't manually edited
-                # Check if user has manually edited the path by comparing to stored value
-                user_edited_path = (
-                    "scenario_output_path" in st.session_state and 
-                    "output_path_input" in st.session_state and
-                    st.session_state.scenario_output_path != st.session_state.output_path_input
-                )
+                # Check if scenario has changed
+                scenario_changed = st.session_state.last_loaded_scenario != scenario_name
                 
-                if st.session_state.last_loaded_scenario != scenario_name and not user_edited_path:
-                    # New scenario selected - generate fresh filename with timestamp
-                    from datetime import datetime
-                    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                if scenario_changed:
+                    # Update the last loaded scenario tracker
+                    st.session_state.last_loaded_scenario = scenario_name
                     
-                    # Use output_basename if provided, otherwise sanitize scenario name
-                    # ALWAYS sanitize to remove path separators
-                    if "output_basename" in loaded_scenario and loaded_scenario["output_basename"]:
-                        basename = sanitize_basename(loaded_scenario["output_basename"])
-                    else:
-                        basename = sanitize_basename(scenario_name)
-                    
-                    # Truncate basename if total filename would be too long (>255 chars)
-                    # Keep timestamp intact, truncate basename if needed
-                    max_filename_length = 255
-                    path_prefix = "results/"
-                    extension = ".json"
-                    available_length = max_filename_length - len(path_prefix) - len(timestamp) - 1 - len(extension)  # -1 for underscore
-                    
-                    if len(basename) > available_length:
-                        basename = basename[:available_length]
-                    
-                    new_path = f"{path_prefix}{basename}_{timestamp}{extension}"
-                    
-                    # Only update if user hasn't manually modified the path
-                    if not user_edited_path:
+                    # Only regenerate filename if user hasn't manually edited the path
+                    if not st.session_state.output_path_manually_edited:
+                        # New scenario selected - generate fresh filename with timestamp
+                        from datetime import datetime
+                        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                        
+                        # Use output_basename if provided, otherwise sanitize scenario name
+                        # ALWAYS sanitize to remove path separators
+                        if "output_basename" in loaded_scenario and loaded_scenario["output_basename"]:
+                            basename = sanitize_basename(loaded_scenario["output_basename"])
+                        else:
+                            basename = sanitize_basename(scenario_name)
+                        
+                        # Truncate basename if total filename would be too long (>255 chars)
+                        # Keep timestamp intact, truncate basename if needed
+                        max_filename_length = 255
+                        path_prefix = "results/"
+                        extension = ".json"
+                        available_length = max_filename_length - len(path_prefix) - len(timestamp) - 1 - len(extension)  # -1 for underscore
+                        
+                        if len(basename) > available_length:
+                            basename = basename[:available_length]
+                        
+                        new_path = f"{path_prefix}{basename}_{timestamp}{extension}"
+                        
+                        # Update session state BEFORE widget is created (avoids warning)
                         st.session_state.output_path_input = new_path
                         st.session_state.scenario_output_path = new_path
-                        st.session_state.last_loaded_scenario = scenario_name
                         
                         # Persist to config file
                         config = load_config()
@@ -690,6 +700,10 @@ def main() -> None:
                         save_config(config)
             
             st.caption(f"📁 Working directory: {Path.cwd()}")
+            
+            # Store current value before widget to detect changes
+            previous_path = st.session_state.get("scenario_output_path", "results/scenario_output.json")
+            
             output_path = st.text_input(
                 "Save results to path",
                 value=st.session_state.scenario_output_path,
@@ -697,9 +711,10 @@ def main() -> None:
                 key="output_path_input"
             )
             
-            # Update persistent config when user modifies path
-            if output_path and output_path != st.session_state.scenario_output_path:
-                update_persistent_path("scenario_output_path", output_path)
+            # Detect if user manually changed the path
+            if output_path != previous_path:
+                # Update path and set manual edit flag (persisted to config)
+                update_persistent_path("scenario_output_path", output_path, manual_edit=True)
             
             run_and_save = st.button(
                 "Run and Save Scenario",
