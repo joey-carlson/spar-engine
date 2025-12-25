@@ -585,22 +585,38 @@ def main() -> None:
         with col2:
             st.caption("**Export Results**")
             
-            # Update default only when a new scenario is loaded
-            if loaded_scenario and "last_loaded_scenario" not in st.session_state:
-                st.session_state.last_loaded_scenario = None
-            
-            if loaded_scenario and st.session_state.last_loaded_scenario != loaded_scenario.get("name"):
-                # New scenario loaded - generate fresh filename
-                # Use output_basename if provided, otherwise sanitize scenario name
-                from datetime import datetime
-                timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-                if "output_basename" in loaded_scenario and loaded_scenario["output_basename"]:
-                    basename = loaded_scenario["output_basename"]
-                else:
-                    basename = loaded_scenario['name'].lower().replace(' ', '_').replace('/', '_').replace('\\', '_')
-                new_path = f"results/{basename}_{timestamp}.json"
-                update_persistent_path("scenario_output_path", new_path)
-                st.session_state.last_loaded_scenario = loaded_scenario.get("name")
+            # Generate default filename based on loaded scenario
+            if loaded_scenario:
+                # Get the scenario name for comparison
+                scenario_name = loaded_scenario.get("name", "scenario")
+                
+                # Check if this is a different scenario from last time
+                if "last_loaded_scenario" not in st.session_state or st.session_state.last_loaded_scenario != scenario_name:
+                    # New scenario selected - generate fresh filename with timestamp
+                    from datetime import datetime
+                    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                    
+                    # Use output_basename if provided, otherwise sanitize scenario name
+                    if "output_basename" in loaded_scenario and loaded_scenario["output_basename"]:
+                        basename = loaded_scenario["output_basename"]
+                    else:
+                        basename = scenario_name.lower().replace(' ', '_').replace('/', '_').replace('\\', '_')
+                    
+                    # Truncate basename if total filename would be too long (>255 chars)
+                    # Keep timestamp intact, truncate basename if needed
+                    max_filename_length = 255
+                    path_prefix = "results/"
+                    extension = ".json"
+                    available_length = max_filename_length - len(path_prefix) - len(timestamp) - 1 - len(extension)  # -1 for underscore
+                    
+                    if len(basename) > available_length:
+                        basename = basename[:available_length]
+                    
+                    new_path = f"{path_prefix}{basename}_{timestamp}{extension}"
+                    
+                    # Update persistent config and session tracking
+                    update_persistent_path("scenario_output_path", new_path)
+                    st.session_state.last_loaded_scenario = scenario_name
             
             st.caption(f"📁 Working directory: {Path.cwd()}")
             output_path = st.text_input(
