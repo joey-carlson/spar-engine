@@ -2630,5 +2630,527 @@
         "Avoid the attention"
       ]
     }
+  },
+  {
+    "event_id": "aftermath_rumor_spreads_01",
+    "title": "Rumors Take Shape",
+    "tags": [
+      "social_friction",
+      "information",
+      "visibility"
+    ],
+    "allowed_environments": [
+      "city",
+      "industrial",
+      "ruins"
+    ],
+    "allowed_scene_phases": [
+      "aftermath"
+    ],
+    "severity_band": [
+      1,
+      4
+    ],
+    "weight": 0.9,
+    "cooldown": {
+      "event": 2,
+      "tags": {
+        "social_friction": 2,
+        "information": 1
+      }
+    },
+    "effect_vector_template": {
+      "information": [
+        1,
+        3
+      ],
+      "heat": [
+        0,
+        2
+      ],
+      "opportunity": [
+        0,
+        1
+      ]
+    },
+    "fiction": {
+      "prompt": "Witnesses interpret what happened, their version spreads faster than truth.",
+      "sensory": [
+        "hushed voices",
+        "exaggerated gestures"
+      ],
+      "immediate_choice": [
+        "Let the story stand",
+        "Correct the record"
+      ]
+    }
+  },
+  {
+    "event_id": "aftermath_authority_response_01",
+    "title": "Official Response Forms",
+    "tags": [
+      "social_friction",
+      "information",
+      "time_pressure"
+    ],
+    "allowed_environments": [
+      "city",
+      "industrial"
+    ],
+    "allowed_scene_phases": [
+      "aftermath"
+    ],
+    "severity_band": [
+      2,
+      5
+    ],
+    "weight": 0.8,
+    "cooldown": {
+      "event": 3,
+      "tags": {
+        "social_friction": 2
+      }
+    },
+    "effect_vector_template": {
+      "heat": [
+        1,
+        3
+      ],
+      "information": [
+        0,
+        2
+      ],
+      "time_pressure": [
+        0,
+        2
+      ]
+    },
+    "fiction": {
+      "prompt": "Bureaucratic gears turn, someone official wants answers soon.",
+      "sensory": [
+        "clipboard tap",
+        "formal questions"
+      ],
+      "immediate_choice": [
+        "Cooperate and shape the narrative",
+        "Avoid engagement"
+      ]
+    }
+  },
+  {
+    "event_id": "aftermath_fear_lingers_01",
+    "title": "Fear Changes Behavior",
+    "tags": [
+      "social_friction",
+      "information"
+    ],
+    "allowed_environments": [
+      "city",
+      "wilderness",
+      "ruins"
+    ],
+    "allowed_scene_phases": [
+      "aftermath"
+    ],
+    "severity_band": [
+      1,
+      4
+    ],
+    "weight": 0.9,
+    "cooldown": {
+      "event": 2,
+      "tags": {
+        "social_friction": 2
+      }
+    },
+    "effect_vector_template": {
+      "information": [
+        1,
+        2
+      ],
+      "opportunity": [
+        0,
+        2
+      ],
+      "heat": [
+        0,
+        1
+      ]
+    },
+    "fiction": {
+      "prompt": "Locals avoid this space now, their fear creates new patterns.",
+      "sensory": [
+        "empty streets",
+        "hurried footsteps"
+      ],
+      "immediate_choice": [
+        "Use the emptiness",
+        "Respect the boundary"
+      ]
+    }
+  },
+  {
+    "event_id": "aftermath_revelation_delayed_01",
+    "title": "Delayed Revelation",
+    "tags": [
+      "information",
+      "opportunity",
+      "mystic"
+    ],
+    "allowed_environments": [
+      "dungeon",
+      "ruins",
+      "planar"
+    ],
+    "allowed_scene_phases": [
+      "aftermath"
+    ],
+    "severity_band": [
+      1,
+      5
+    ],
+    "weight": 0.8,
+    "cooldown": {
+      "event": 2,
+      "tags": {
+        "information": 2,
+        "mystic": 1
+      }
+    },
+    "effect_vector_template": {
+      "information": [
+        2,
+        4
+      ],
+      "opportunity": [
+        1,
+        3
+      ]
+    },
+    "fiction": {
+      "prompt": "Only now does a detail click into place, the meaning was always there.",
+      "sensory": [
+        "sudden clarity",
+        "overlapping patterns"
+      ],
+      "immediate_choice": [
+        "Act on it immediately",
+        "Store it for later use"
+      ]
+    }
+  },
+  {
+    "event_id": "aftermath_terrain_marked_01",
+    "title": "Landscape Remembers",
+    "tags": [
+      "terrain",
+      "information",
+      "visibility"
+    ],
+    "allowed_environments": [
+      "wilderness",
+      "ruins",
+      "dungeon"
+    ],
+    "allowed_scene_phases": [
+      "aftermath"
+    ],
+    "severity_band": [
+      1,
+      4
+    ],
+    "weight": 0.9,
+    "cooldown": {
+      "event": 2,
+      "tags": {
+        "terrain": 2
+      }
+    },
+    "effect_vector_template": {
+      "information": [
+        1,
+        2
+      ],
+      "opportunity": [
+        0,
+        1
+      ],
+      "position_shift": [
+        0,
+        1
+      ]
+    },
+    "fiction": {
+      "prompt": "The fight left marks on the space, the terrain tells what happened.",
+      "sensory": [
+        "scorched stone",
+        "splintered wood",
+        "disturbed earth"
+      ],
+      "immediate_choice": [
+        "Obscure the signs",
+        "Leave them as warning"
+      ]
+    }
+  },
+  {
+    "event_id": "aftermath_leverage_exposed_01",
+    "title": "Leverage Becomes Clear",
+    "tags": [
+      "opportunity",
+      "information",
+      "social_friction"
+    ],
+    "allowed_environments": [
+      "city",
+      "ruins",
+      "industrial"
+    ],
+    "allowed_scene_phases": [
+      "aftermath"
+    ],
+    "severity_band": [
+      2,
+      5
+    ],
+    "weight": 0.8,
+    "cooldown": {
+      "event": 3,
+      "tags": {
+        "opportunity": 2
+      }
+    },
+    "effect_vector_template": {
+      "opportunity": [
+        2,
+        4
+      ],
+      "information": [
+        1,
+        3
+      ],
+      "heat": [
+        0,
+        1
+      ]
+    },
+    "fiction": {
+      "prompt": "Someone's weakness or resource is now obvious, new options appear.",
+      "sensory": [
+        "dropped items",
+        "overheard conversation"
+      ],
+      "immediate_choice": [
+        "Press the advantage",
+        "Offer terms"
+      ]
+    }
+  },
+  {
+    "event_id": "aftermath_quiet_too_quiet_01",
+    "title": "Unnatural Silence",
+    "tags": [
+      "information",
+      "visibility",
+      "positioning"
+    ],
+    "allowed_environments": [
+      "wilderness",
+      "dungeon",
+      "ruins"
+    ],
+    "allowed_scene_phases": [
+      "aftermath"
+    ],
+    "severity_band": [
+      1,
+      4
+    ],
+    "weight": 0.9,
+    "cooldown": {
+      "event": 2,
+      "tags": {
+        "information": 1,
+        "visibility": 1
+      }
+    },
+    "effect_vector_template": {
+      "information": [
+        1,
+        3
+      ],
+      "threat": [
+        0,
+        2
+      ],
+      "position_shift": [
+        0,
+        1
+      ]
+    },
+    "fiction": {
+      "prompt": "The absence of sound suggests something watching, waiting, or fled.",
+      "sensory": [
+        "oppressive quiet",
+        "held breath"
+      ],
+      "immediate_choice": [
+        "Investigate cautiously",
+        "Take the opening to move"
+      ]
+    }
+  },
+  {
+    "event_id": "aftermath_alliance_shift_01",
+    "title": "Alliances Re-Form",
+    "tags": [
+      "social_friction",
+      "opportunity",
+      "information"
+    ],
+    "allowed_environments": [
+      "city",
+      "industrial"
+    ],
+    "allowed_scene_phases": [
+      "aftermath"
+    ],
+    "severity_band": [
+      2,
+      5
+    ],
+    "weight": 0.7,
+    "cooldown": {
+      "event": 3,
+      "tags": {
+        "social_friction": 2
+      }
+    },
+    "effect_vector_template": {
+      "opportunity": [
+        1,
+        3
+      ],
+      "information": [
+        1,
+        2
+      ],
+      "heat": [
+        0,
+        2
+      ]
+    },
+    "fiction": {
+      "prompt": "Who stands where has changed, new deals form in the aftermath.",
+      "sensory": [
+        "quiet meetings",
+        "shifting glances"
+      ],
+      "immediate_choice": [
+        "Make a new arrangement",
+        "Stay clear of the politics"
+      ]
+    }
+  },
+  {
+    "event_id": "aftermath_resource_revealed_01",
+    "title": "Hidden Resource Exposed",
+    "tags": [
+      "opportunity",
+      "information",
+      "terrain"
+    ],
+    "allowed_environments": [
+      "ruins",
+      "dungeon",
+      "wilderness"
+    ],
+    "allowed_scene_phases": [
+      "aftermath"
+    ],
+    "severity_band": [
+      1,
+      4
+    ],
+    "weight": 0.9,
+    "cooldown": {
+      "event": 2,
+      "tags": {
+        "opportunity": 2
+      }
+    },
+    "effect_vector_template": {
+      "opportunity": [
+        2,
+        4
+      ],
+      "information": [
+        1,
+        2
+      ]
+    },
+    "fiction": {
+      "prompt": "The fight exposed something valuable that was previously hidden.",
+      "sensory": [
+        "glinting metal",
+        "revealed cache"
+      ],
+      "immediate_choice": [
+        "Claim it now",
+        "Note it for later"
+      ]
+    }
+  },
+  {
+    "event_id": "aftermath_authority_questions_01",
+    "title": "Questions Incoming",
+    "tags": [
+      "social_friction",
+      "information",
+      "visibility"
+    ],
+    "allowed_environments": [
+      "city",
+      "industrial"
+    ],
+    "allowed_scene_phases": [
+      "aftermath"
+    ],
+    "severity_band": [
+      2,
+      4
+    ],
+    "weight": 0.8,
+    "cooldown": {
+      "event": 2,
+      "tags": {
+        "social_friction": 2
+      }
+    },
+    "effect_vector_template": {
+      "heat": [
+        1,
+        2
+      ],
+      "information": [
+        0,
+        2
+      ],
+      "time_pressure": [
+        0,
+        1
+      ]
+    },
+    "fiction": {
+      "prompt": "Officials arrive with clipboards and expectations, answers are needed.",
+      "sensory": [
+        "badge flash",
+        "pen scratch"
+      ],
+      "immediate_choice": [
+        "Provide a clean story",
+        "Deflect and depart"
+      ]
+    }
   }
 ]
