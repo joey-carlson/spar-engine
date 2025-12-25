@@ -39,9 +39,9 @@ def load_config() -> Dict[str, Any]:
             pass
     # Return defaults if config doesn't exist or is invalid
     return {
-        "scenario_output_path": "results/scenario_output.json",
+        "scenario_output_path": "scenarios/results/scenario_output.json",
         "template_save_path": "scenarios/my_scenario.json",
-        "report_save_path": "results/suite_report.json",
+        "report_save_path": "scenarios/results/suite_report.json",
     }
 
 
@@ -863,7 +863,7 @@ def main() -> None:
                         if len(basename) > available_length:
                             basename = basename[:available_length]
                         
-                        new_path = f"{path_prefix}{basename}_{timestamp}{extension}"
+                        new_path = f"scenarios/results/{basename}_{timestamp}{extension}"
                         
                         # Update session state BEFORE widget is created (avoids warning)
                         st.session_state.output_path_input = new_path

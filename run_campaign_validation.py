@@ -42,7 +42,7 @@ def main():
     print("Running Campaign Rhythm - Normal Mode...")
     normal_scenario = json.loads(Path("scenarios/campaign_rhythm_normal.json").read_text())
     normal_report = run_scenario_from_json(normal_scenario, entries, engine_state_class)
-    normal_path = "results/campaign_rhythm_normal_validation.json"
+    normal_path = "scenarios/results/campaign_rhythm_normal_validation.json"
     save_report_to_path(normal_report, normal_path)
     print(f"✓ Normal mode completed - saved to {normal_path}")
     print()
@@ -51,7 +51,7 @@ def main():
     print("Running Campaign Rhythm - Spiky Mode...")
     spiky_scenario = json.loads(Path("scenarios/campaign_rhythm_spiky.json").read_text())
     spiky_report = run_scenario_from_json(spiky_scenario, entries, engine_state_class)
-    spiky_path = "results/campaign_rhythm_spiky_validation.json"
+    spiky_path = "scenarios/results/campaign_rhythm_spiky_validation.json"
     save_report_to_path(spiky_report, spiky_path)
     print(f"✓ Spiky mode completed - saved to {spiky_path}")
     print()
