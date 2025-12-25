@@ -83,9 +83,16 @@ def init_persistent_paths() -> None:
     """Initialize persistent path state from config file."""
     if "paths_initialized" not in st.session_state:
         config = load_config()
-        st.session_state.scenario_output_path = config.get("scenario_output_path", "results/scenario_output.json")
-        st.session_state.template_save_path = config.get("template_save_path", "scenarios/my_scenario.json")
-        st.session_state.report_save_path = config.get("report_save_path", "results/suite_report.json")
+        # Sanitize all paths when loading from config to ensure no directory separators
+        scenario_path = config.get("scenario_output_path", "scenarios/results/scenario_output.json")
+        template_path = config.get("template_save_path", "scenarios/my_scenario.json")
+        report_path = config.get("report_save_path", "scenarios/results/suite_report.json")
+        
+        # Sanitize basenames in loaded paths
+        st.session_state.scenario_output_path = sanitize_path(scenario_path)
+        st.session_state.template_save_path = sanitize_path(template_path)
+        st.session_state.report_save_path = sanitize_path(report_path)
+        
         # Also load the manual edit flag from config
         st.session_state.output_path_manually_edited = config.get("output_path_manually_edited", False)
         st.session_state.paths_initialized = True
@@ -126,6 +133,40 @@ def sanitize_basename(basename: str) -> str:
     # Remove leading/trailing underscores
     sanitized = sanitized.strip('_')
     return sanitized
+
+
+def sanitize_path(path: str) -> str:
+    """Sanitize a full file path to ensure no unintended directory separators in basename.
+    
+    Extracts directory and filename, sanitizes the basename, and reconstructs the path.
+    """
+    from pathlib import Path
+    
+    # Split into directory and filename
+    path_obj = Path(path)
+    directory = path_obj.parent
+    filename = path_obj.name
+    
+    # Extract basename and extension
+    if '.' in filename:
+        parts = filename.rsplit('.', 1)
+        basename = parts[0]
+        extension = '.' + parts[1]
+    else:
+        basename = filename
+        extension = ''
+    
+    # Sanitize just the basename
+    clean_basename = sanitize_basename(basename)
+    
+    # Reconstruct the path
+    clean_filename = clean_basename + extension
+    clean_path = str(directory / clean_filename)
+    
+    # Ensure forward slashes for cross-platform compatibility
+    clean_path = clean_path.replace('\\', '/')
+    
+    return clean_path
 
 
 def generate_random_seed() -> int:
