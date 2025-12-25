@@ -3102,16 +3102,179 @@
     }
   },
   {
-    "event_id": "aftermath_authority_questions_01",
-    "title": "Questions Incoming",
+    "event_id": "aftermath_fear_lingers_01",
+    "title": "Fear Changes Behavior",
     "tags": [
       "social_friction",
-      "information",
-      "visibility"
+      "information"
     ],
     "allowed_environments": [
       "city",
+      "wilderness",
+      "ruins"
+    ],
+    "allowed_scene_phases": [
+      "aftermath"
+    ],
+    "severity_band": [
+      1,
+      4
+    ],
+    "weight": 0.9,
+    "cooldown": {
+      "event": 2,
+      "tags": {
+        "social_friction": 2
+      }
+    },
+    "effect_vector_template": {
+      "information": [
+        1,
+        2
+      ],
+      "opportunity": [
+        0,
+        2
+      ],
+      "heat": [
+        0,
+        1
+      ]
+    },
+    "fiction": {
+      "prompt": "Locals avoid this space now, their fear creates new patterns.",
+      "sensory": [
+        "empty streets",
+        "hurried footsteps"
+      ],
+      "immediate_choice": [
+        "Use the emptiness",
+        "Respect the boundary"
+      ]
+    }
+  },
+  {
+    "event_id": "aftermath_scars_remain_01",
+    "title": "Scars Remain",
+    "tags": [
+      "consequence",
+      "information",
+      "cost"
+    ],
+    "allowed_environments": [
+      "dungeon",
+      "city",
+      "wilderness",
+      "ruins",
       "industrial"
+    ],
+    "allowed_scene_phases": [
+      "aftermath"
+    ],
+    "severity_band": [
+      2,
+      4
+    ],
+    "weight": 0.9,
+    "cooldown": {
+      "event": 2,
+      "tags": {
+        "consequence": 2
+      }
+    },
+    "effect_vector_template": {
+      "cost": [
+        1,
+        3
+      ],
+      "information": [
+        0,
+        2
+      ],
+      "opportunity": [
+        0,
+        1
+      ]
+    },
+    "fiction": {
+      "prompt": "The encounter left marks that won't fade quickly, everyone carries something now.",
+      "sensory": [
+        "lingering ache",
+        "stiffness",
+        "haunted look"
+      ],
+      "immediate_choice": [
+        "Acknowledge the toll",
+        "Ignore it and press on"
+      ]
+    }
+  },
+  {
+    "event_id": "aftermath_misattribution_01",
+    "title": "Credit Misplaced",
+    "tags": [
+      "information",
+      "social_friction",
+      "opportunity"
+    ],
+    "allowed_environments": [
+      "city",
+      "industrial",
+      "ruins"
+    ],
+    "allowed_scene_phases": [
+      "aftermath"
+    ],
+    "severity_band": [
+      1,
+      3
+    ],
+    "weight": 1.0,
+    "cooldown": {
+      "event": 2,
+      "tags": {
+        "information": 1,
+        "social_friction": 1
+      }
+    },
+    "effect_vector_template": {
+      "information": [
+        1,
+        3
+      ],
+      "opportunity": [
+        0,
+        2
+      ],
+      "heat": [
+        0,
+        2
+      ]
+    },
+    "fiction": {
+      "prompt": "Someone else gets credit or blame for what happened, the story is wrong.",
+      "sensory": [
+        "confident retelling",
+        "knowing nods"
+      ],
+      "immediate_choice": [
+        "Correct the record",
+        "Let the error stand"
+      ]
+    }
+  },
+  {
+    "event_id": "aftermath_future_debt_01",
+    "title": "Debt Incurred",
+    "tags": [
+      "opportunity",
+      "social_friction",
+      "consequence"
+    ],
+    "allowed_environments": [
+      "city",
+      "industrial",
+      "ruins"
     ],
     "allowed_scene_phases": [
       "aftermath"
@@ -3122,34 +3285,307 @@
     ],
     "weight": 0.8,
     "cooldown": {
-      "event": 2,
+      "event": 3,
       "tags": {
-        "social_friction": 2
+        "opportunity": 2,
+        "social_friction": 1
       }
     },
     "effect_vector_template": {
-      "heat": [
+      "opportunity": [
         1,
-        2
+        3
       ],
       "information": [
         0,
         2
       ],
-      "time_pressure": [
+      "cost": [
         0,
         1
       ]
     },
     "fiction": {
-      "prompt": "Officials arrive with clipboards and expectations, answers are needed.",
+      "prompt": "Someone helped, or was harmed, and now something is owed.",
       "sensory": [
-        "badge flash",
-        "pen scratch"
+        "meaningful glance",
+        "quiet acknowledgment"
       ],
       "immediate_choice": [
-        "Provide a clean story",
-        "Deflect and depart"
+        "Accept the obligation",
+        "Refuse and walk away"
+      ]
+    }
+  },
+  {
+    "event_id": "aftermath_route_changed_01",
+    "title": "Routes Redrawn",
+    "tags": [
+      "terrain",
+      "information",
+      "consequence"
+    ],
+    "allowed_environments": [
+      "dungeon",
+      "ruins",
+      "wilderness"
+    ],
+    "allowed_scene_phases": [
+      "aftermath"
+    ],
+    "severity_band": [
+      1,
+      3
+    ],
+    "weight": 0.9,
+    "cooldown": {
+      "event": 2,
+      "tags": {
+        "terrain": 2
+      }
+    },
+    "effect_vector_template": {
+      "information": [
+        1,
+        2
+      ],
+      "position_shift": [
+        0,
+        1
+      ],
+      "opportunity": [
+        0,
+        1
+      ]
+    },
+    "fiction": {
+      "prompt": "The conflict made old paths unreliable, new routes emerge.",
+      "sensory": [
+        "blocked passage",
+        "fresh opening",
+        "shifted rubble"
+      ],
+      "immediate_choice": [
+        "Map the changes",
+        "Rely on memory and adapt"
+      ]
+    }
+  },
+  {
+    "event_id": "aftermath_word_travels_01",
+    "title": "Word Travels",
+    "tags": [
+      "information",
+      "social_friction",
+      "visibility"
+    ],
+    "allowed_environments": [
+      "city",
+      "industrial",
+      "wilderness"
+    ],
+    "allowed_scene_phases": [
+      "aftermath"
+    ],
+    "severity_band": [
+      1,
+      4
+    ],
+    "weight": 0.9,
+    "cooldown": {
+      "event": 2,
+      "tags": {
+        "information": 2,
+        "visibility": 1
+      }
+    },
+    "effect_vector_template": {
+      "information": [
+        1,
+        3
+      ],
+      "heat": [
+        0,
+        2
+      ],
+      "opportunity": [
+        0,
+        1
+      ]
+    },
+    "fiction": {
+      "prompt": "News of what happened reaches unexpected places and ears.",
+      "sensory": [
+        "distant conversation",
+        "runner departing",
+        "message passed"
+      ],
+      "immediate_choice": [
+        "Control the narrative",
+        "Let it spread naturally"
+      ]
+    }
+  },
+  {
+    "event_id": "aftermath_unexpected_witness_01",
+    "title": "Unintended Observer",
+    "tags": [
+      "information",
+      "visibility",
+      "social_friction"
+    ],
+    "allowed_environments": [
+      "city",
+      "ruins",
+      "dungeon"
+    ],
+    "allowed_scene_phases": [
+      "aftermath"
+    ],
+    "severity_band": [
+      2,
+      5
+    ],
+    "weight": 0.8,
+    "cooldown": {
+      "event": 3,
+      "tags": {
+        "information": 2,
+        "visibility": 1
+      }
+    },
+    "effect_vector_template": {
+      "information": [
+        1,
+        3
+      ],
+      "heat": [
+        0,
+        2
+      ],
+      "opportunity": [
+        0,
+        2
+      ]
+    },
+    "fiction": {
+      "prompt": "Someone saw more than intended, they hold a piece of what happened.",
+      "sensory": [
+        "averted eyes",
+        "nervous energy",
+        "knowing silence"
+      ],
+      "immediate_choice": [
+        "Address them directly",
+        "Note it for later"
+      ]
+    }
+  },
+  {
+    "event_id": "aftermath_resource_spent_01",
+    "title": "Finite Resource Exhausted",
+    "tags": [
+      "consequence",
+      "opportunity",
+      "cost"
+    ],
+    "allowed_environments": [
+      "dungeon",
+      "wilderness",
+      "ruins",
+      "industrial"
+    ],
+    "allowed_scene_phases": [
+      "aftermath"
+    ],
+    "severity_band": [
+      2,
+      4
+    ],
+    "weight": 0.9,
+    "cooldown": {
+      "event": 2,
+      "tags": {
+        "consequence": 2
+      }
+    },
+    "effect_vector_template": {
+      "cost": [
+        1,
+        2
+      ],
+      "opportunity": [
+        0,
+        2
+      ],
+      "information": [
+        0,
+        1
+      ]
+    },
+    "fiction": {
+      "prompt": "Something finite was consumed, future options narrow quietly.",
+      "sensory": [
+        "empty container",
+        "final drop",
+        "depleted stock"
+      ],
+      "immediate_choice": [
+        "Adapt plans around the loss",
+        "Find an alternative source"
+      ]
+    }
+  },
+  {
+    "event_id": "aftermath_power_shift_01",
+    "title": "Power Balance Shifts",
+    "tags": [
+      "social_friction",
+      "information",
+      "opportunity"
+    ],
+    "allowed_environments": [
+      "city",
+      "industrial"
+    ],
+    "allowed_scene_phases": [
+      "aftermath"
+    ],
+    "severity_band": [
+      2,
+      5
+    ],
+    "weight": 0.8,
+    "cooldown": {
+      "event": 3,
+      "tags": {
+        "social_friction": 2
+      }
+    },
+    "effect_vector_template": {
+      "information": [
+        1,
+        2
+      ],
+      "opportunity": [
+        1,
+        3
+      ],
+      "heat": [
+        0,
+        2
+      ]
+    },
+    "fiction": {
+      "prompt": "Authority structures flex and adjust, someone gains or loses standing.",
+      "sensory": [
+        "deference shifts",
+        "new orders issued",
+        "quiet realignment"
+      ],
+      "immediate_choice": [
+        "Exploit the instability",
+        "Stay clear of the politics"
       ]
     }
   }
