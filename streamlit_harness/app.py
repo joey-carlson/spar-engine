@@ -103,9 +103,9 @@ def sanitize_basename(basename: str) -> str:
 
 
 def generate_random_seed() -> int:
-    """Generate a random seed value for reproducible randomness."""
-    # Use time-based seed for true randomness
-    return int(time.time() * 1000) % (10**9)
+    """Generate a random seed value using Mersenne Twister algorithm."""
+    # Python's random module uses Mersenne Twister
+    return random.randint(0, 10**9 - 1)
 
 
 def resolve_seed_value(seed_input: Any) -> int:
