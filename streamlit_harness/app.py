@@ -659,13 +659,14 @@ def main() -> None:
     from streamlit_harness.campaign_context import init_campaign_context_state, get_campaign_context
     init_campaign_context_state()
     
-    # Mode selector at top
+    # Mode selector at top (with key for programmatic control)
     mode = st.radio(
         "Mode",
         ["🎲 Campaign Manager", "⚡ Event Generator"],
         horizontal=True,
         label_visibility="collapsed",
-        help="Campaign Manager: Multi-campaign management with living state. Event Generator: Single-event testing and scenario validation."
+        help="Campaign Manager: Multi-campaign management with living state. Event Generator: Single-event testing and scenario validation.",
+        key="app_mode"
     )
     
     # Render campaign UI if in campaign mode
@@ -1078,6 +1079,7 @@ def main() -> None:
                                 del st.session_state.send_success_count
                                 del st.session_state.send_success_campaign
                                 # Switch to Campaign Manager mode and dashboard
+                                st.session_state.app_mode = "🎲 Campaign Manager"
                                 st.session_state.campaign_page = "dashboard"
                                 st.rerun()
                             
