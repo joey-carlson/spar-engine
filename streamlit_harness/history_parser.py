@@ -1,6 +1,7 @@
 """Campaign history parser for imports.
 
 Version History:
+- v0.5 (2025-12-25): Additive fallbacks for unstructured notes
 - v0.4 (2025-12-25): Markdown-it-py + dateparser + rapidfuzz integration COMPLETE
 - v0.3 (2025-12-25): Ledger field separation, canon synthesis, faction cleanup
 - v0.2 (2025-12-25): Section-aware parsing with entity classification
@@ -16,6 +17,12 @@ v0.4 adds production-grade dependencies:
 - markdown-it-py: Structured markdown token parsing (replaces regex)
 - dateparser: Flexible date normalization
 - rapidfuzz: Fuzzy string matching for deduplication
+
+v0.5 adds conservative fallbacks for unstructured notes:
+- Unstructured date-based session detection
+- Relaxed session header patterns (Game/Day/Episode/Part)
+- Paragraph-based canon extraction
+- Only activates when structured parsing yields insufficient results
 """
 
 import re
@@ -675,6 +682,170 @@ def extract_open_threads(threads_section: str) -> List[str]:
     return threads
 
 
+def detect_unstructured_sessions(text: str) -> List[Dict[str, Any]]:
+    """Fallback: detect sessions from unstructured text using date patterns.
+    
+    Scans for date patterns anywhere in text. When found, treats following
+    content as session until next date or major break.
+    
+    Only used when structured parsing yields no sessions.
+    """
+    sessions = []
+    
+    # Pattern: ISO dates or common formats
+    # Look for dates at start of lines or after markers
+    date_pattern = r'(?:^|\n)(?:\*\*)?(\d{4}-\d{2}-\d{2}|\d{1,2}/\d{1,2}/\d{4}|\w+ \d{1,2},? \d{4})'
+    
+    lines = text.split('\n')
+    date_positions = []
+    
+    for i, line in enumerate(lines):
+        match = re.search(date_pattern, line)
+        if match:
+            date_str = match.group(1)
+            normalized = normalize_date(date_str)
+            if normalized:
+                date_positions.append((i, normalized, line))
+    
+    # Create sessions from date blocks
+    for idx, (line_num, date, date_line) in enumerate(date_positions):
+        # Extract title: first sentence after date, or use date line content
+        title_match = re.search(r'(?:Session \d+|Game \d+|Day \d+)?\s*[—–:]?\s*([^:\n]{10,80})', date_line)
+        title = title_match.group(1).strip() if title_match else "Imported Session"
+        
+        # Determine content range
+        start_line = line_num + 1
+        end_line = date_positions[idx + 1][0] if idx + 1 < len(date_positions) else len(lines)
+        
+        # Extract content
+        content_lines = lines[start_line:end_line]
+        content = '\n'.join(content_lines).strip()
+        
+        # Extract bullets if present
+        bullets = []
+        for line in content_lines:
+            line = line.strip()
+            if re.match(r'^[\-\*•]\s+', line):
+                bullets.append(re.sub(r'^[\-\*•]\s+', '', line))
+        
+        # Only add if has substantive content (>50 chars)
+        if len(content) > 50:
+            sessions.append({
+                "session_number": None,
+                "date": date,
+                "title": title[:80],  # Cap length
+                "bullets": bullets if bullets else [],
+                "content": content[:500],  # Cap for storage
+            })
+    
+    return sessions
+
+
+def detect_relaxed_session_headers(text: str) -> List[Dict[str, Any]]:
+    """Fallback: detect sessions from relaxed header patterns.
+    
+    Supports: "Game 5", "Day 1", "Episode 3", "Part II"
+    Only counts as session if followed by 2+ substantive lines.
+    
+    Only used when date-based detection yields no sessions.
+    """
+    sessions = []
+    
+    # Pattern: Game/Day/Episode/Part + number
+    header_pattern = r'(?:^|\n)((?:Game|Day|Episode|Part|Session)\s+(?:\d+|I+|[IVX]+))(?:\s*[—–:]\s*([^\n]{0,80}))?'
+    
+    lines = text.split('\n')
+    
+    for match in re.finditer(header_pattern, text, re.IGNORECASE):
+        header = match.group(1)
+        title_suffix = match.group(2) if match.group(2) else ""
+        
+        # Find position in text
+        pos = match.start()
+        line_num = text[:pos].count('\n')
+        
+        # Check if followed by substantive content
+        following_lines = lines[line_num + 1:line_num + 10]
+        substantive = [l.strip() for l in following_lines if len(l.strip()) > 20]
+        
+        # Require at least 2 substantive lines to avoid false positives
+        if len(substantive) >= 2:
+            title = f"{header} {title_suffix}".strip()
+            
+            # Extract content until next header or end
+            content_lines = []
+            for i in range(line_num + 1, min(line_num + 50, len(lines))):
+                line = lines[i].strip()
+                if re.match(header_pattern, line, re.IGNORECASE):
+                    break
+                if line:
+                    content_lines.append(line)
+            
+            content = '\n'.join(content_lines[:20])  # Cap at 20 lines
+            
+            sessions.append({
+                "session_number": None,
+                "date": "Unknown",
+                "title": title[:80],
+                "bullets": [],
+                "content": content,
+            })
+    
+    return sessions
+
+
+def extract_paragraph_canon(text: str, min_bullets: int = 4) -> List[str]:
+    """Fallback: extract canon bullets from opening paragraphs.
+    
+    Converts first 5-10 sentences into bullet points.
+    Only used when structured extraction yields < min_bullets.
+    """
+    bullets = []
+    
+    # Get first 3-5 paragraphs (up to 2000 chars)
+    paragraphs = text.split('\n\n')
+    opening_text = '\n\n'.join(paragraphs[:5])[:2000]
+    
+    # Split into sentences
+    sentences = re.split(r'[.!?]+\s+', opening_text)
+    
+    for sentence in sentences[:10]:
+        sentence = sentence.strip()
+        
+        # Skip short sentences, headers, meta text
+        if len(sentence) < 30:
+            continue
+        if sentence.startswith('#'):
+            continue
+        if any(skip in sentence.lower() for skip in ['import', 'use:', 'notes for']):
+            continue
+        
+        # Clean and cap length
+        cleaned = sentence[:160]
+        if len(cleaned) >= 40:  # Minimum substance
+            bullets.append(cleaned)
+        
+        if len(bullets) >= min_bullets:
+            break
+    
+    # Dedupe with rapidfuzz if available
+    if RAPIDFUZZ_AVAILABLE and len(bullets) > 1:
+        final = []
+        for bullet in bullets:
+            # Check similarity to already added
+            if not final:
+                final.append(bullet)
+                continue
+            
+            matches = process.extract(bullet, final, scorer=fuzz.ratio, limit=1)
+            if not matches or matches[0][1] < 80:  # Different enough
+                final.append(bullet)
+        
+        return final[:min_bullets]
+    
+    return bullets[:min_bullets]
+
+
 def extract_from_parser_index(text: str) -> Optional[Dict[str, List[str]]]:
     """Extract entities from Parser-Friendly Index section if present.
     
@@ -848,6 +1019,36 @@ def parse_campaign_history(text: str, campaign_id: Optional[str] = None) -> Dict
     if threads_section_key:
         open_threads = extract_open_threads(sections[threads_section_key])
     
+    # v0.5 FALLBACK TRIGGER: Check if structured parsing yielded insufficient results
+    needs_session_fallback = len(sessions) == 0 and (not canon_section_key and not ledger_section_key)
+    needs_canon_fallback = len(canon_summary) < 4
+    
+    fallback_notes = []
+    
+    # Fallback Layer 1: Unstructured date-based session detection
+    if needs_session_fallback:
+        unstructured_sessions = detect_unstructured_sessions(text)
+        if unstructured_sessions:
+            sessions = unstructured_sessions
+            ledger_source = "Unstructured (date-based)"
+            fallback_notes.append("🔄 Fallback: unstructured session detection")
+    
+    # Fallback Layer 2: Relaxed session headers (if still no sessions)
+    if len(sessions) == 0:
+        relaxed_sessions = detect_relaxed_session_headers(text)
+        if relaxed_sessions:
+            sessions = relaxed_sessions
+            ledger_source = "Relaxed headers"
+            fallback_notes.append("🔄 Fallback: relaxed session headers")
+    
+    # Fallback Layer 3: Paragraph-based canon extraction
+    if needs_canon_fallback:
+        paragraph_canon = extract_paragraph_canon(text, min_bullets=4)
+        if paragraph_canon:
+            canon_summary = paragraph_canon
+            canon_source = "Opening paragraphs"
+            fallback_notes.append("🔄 Fallback: paragraph canon extraction")
+    
     # Try to extract from Parser-Friendly Index first (high confidence)
     index_entities = extract_from_parser_index(text)
     
@@ -883,6 +1084,9 @@ def parse_campaign_history(text: str, campaign_id: Optional[str] = None) -> Dict
     
     # Build notes
     notes = [notes_prefix]  # Add source indicator first
+    
+    # Add fallback indicators if any were used
+    notes.extend(fallback_notes)
     
     # Add section source indicators
     if canon_source:
