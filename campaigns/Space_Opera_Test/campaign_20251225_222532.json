@@ -2,20 +2,22 @@
   "campaign_id": "campaign_20251225_222532",
   "name": "Space Opera Test",
   "created": "2025-12-25T22:25:32.007874",
-  "last_played": "2025-12-25T22:25:32.007874",
+  "last_played": "2025-12-26T02:18:31.882049",
   "canon_summary": [
     "THE VEILLINE RUN (SPACE OPERA) \u2014 GM NOTEBOOK\n(Old GM",
     "We pick up after a long break.)\n\nFormat note to self: this is not an outline",
     "It\u2019s a pile of handles to grab while we play",
-    "====================================================================\nWHAT\u2019S GOING ON WITH THE GAME (REAL LIFE / TABLE)\n========================================="
+    "High Ground Taken",
+    "Crossfire",
+    "Whispers in the Margin"
   ],
   "campaign_state": {
     "version": "0.2",
     "campaign_pressure": 0,
-    "heat": 0,
+    "heat": 3,
     "scars": [],
     "factions": {},
-    "total_scenes_run": 0,
+    "total_scenes_run": 3,
     "total_cutoffs_seen": 0,
     "highest_severity_seen": 0
   },
@@ -31,7 +33,696 @@
         "heat_change": 0
       },
       "active_sources": []
+    },
+    {
+      "session_number": 2,
+      "session_date": "2025-12-26T00:21:14.818432",
+      "what_happened": [
+        "High Ground Taken"
+      ],
+      "deltas": {
+        "pressure_change": 0,
+        "heat_change": 0,
+        "rumor_spread": false,
+        "faction_attention_change": false
+      },
+      "active_sources": [],
+      "active_source_ids": []
+    },
+    {
+      "session_number": 3,
+      "session_date": "2025-12-26T00:21:43.203791",
+      "what_happened": [
+        "Crossfire"
+      ],
+      "deltas": {
+        "pressure_change": -2,
+        "heat_change": 3,
+        "rumor_spread": false,
+        "faction_attention_change": true
+      },
+      "active_sources": [],
+      "active_source_ids": []
+    },
+    {
+      "session_number": 4,
+      "session_date": "2025-12-26T02:18:31.882011",
+      "what_happened": [
+        "Whispers in the Margin",
+        "Slippery Ground",
+        "Whispers in the Margin",
+        "Whispers in the Margin",
+        "Flanking Pressure"
+      ],
+      "deltas": {
+        "pressure_change": 0,
+        "heat_change": 0,
+        "rumor_spread": false,
+        "faction_attention_change": false
+      },
+      "active_sources": [],
+      "active_source_ids": []
     }
   ],
-  "sources": []
+  "sources": [],
+  "prep_queue": [
+    {
+      "item_id": "prep_20251226_001439680017_0",
+      "created_at": "2025-12-26T00:14:39.680041",
+      "title": "Crossfire",
+      "summary": "",
+      "tags": [
+        "hazard",
+        "threat",
+        "positioning"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "ruins",
+        "phase": "engage",
+        "rarity_mode": "spiky",
+        "seed": 43
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    },
+    {
+      "item_id": "prep_20251226_001439680052_2",
+      "created_at": "2025-12-26T00:14:39.680059",
+      "title": "High Ground Taken",
+      "summary": "",
+      "tags": [
+        "positioning",
+        "threat",
+        "terrain"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "ruins",
+        "phase": "engage",
+        "rarity_mode": "spiky",
+        "seed": 43
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    },
+    {
+      "item_id": "prep_20251226_001439680064_5",
+      "created_at": "2025-12-26T00:14:39.680070",
+      "title": "Hounds Released",
+      "summary": "",
+      "tags": [
+        "reinforcements",
+        "threat",
+        "visibility"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "ruins",
+        "phase": "engage",
+        "rarity_mode": "spiky",
+        "seed": 43
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    },
+    {
+      "item_id": "prep_20251226_020750023892_0",
+      "created_at": "2025-12-26T02:07:50.023913",
+      "title": "Whispers in the Margin",
+      "summary": "",
+      "tags": [
+        "mystic",
+        "information",
+        "visibility"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "dungeon",
+        "phase": "engage",
+        "rarity_mode": "normal",
+        "seed": 42
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    },
+    {
+      "item_id": "prep_20251226_020750023922_1",
+      "created_at": "2025-12-26T02:07:50.023927",
+      "title": "Slippery Ground",
+      "summary": "",
+      "tags": [
+        "hazard",
+        "terrain",
+        "positioning"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "dungeon",
+        "phase": "engage",
+        "rarity_mode": "normal",
+        "seed": 42
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    },
+    {
+      "item_id": "prep_20251226_020750023932_2",
+      "created_at": "2025-12-26T02:07:50.023936",
+      "title": "Whispers in the Margin",
+      "summary": "",
+      "tags": [
+        "mystic",
+        "information",
+        "visibility"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "dungeon",
+        "phase": "engage",
+        "rarity_mode": "normal",
+        "seed": 42
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    },
+    {
+      "item_id": "prep_20251226_020750023939_3",
+      "created_at": "2025-12-26T02:07:50.023942",
+      "title": "Slippery Ground",
+      "summary": "",
+      "tags": [
+        "hazard",
+        "terrain",
+        "positioning"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "dungeon",
+        "phase": "engage",
+        "rarity_mode": "normal",
+        "seed": 42
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    },
+    {
+      "item_id": "prep_20251226_020750023944_4",
+      "created_at": "2025-12-26T02:07:50.023947",
+      "title": "Whispers in the Margin",
+      "summary": "",
+      "tags": [
+        "mystic",
+        "information",
+        "visibility"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "dungeon",
+        "phase": "engage",
+        "rarity_mode": "normal",
+        "seed": 42
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    },
+    {
+      "item_id": "prep_20251226_020750023950_5",
+      "created_at": "2025-12-26T02:07:50.023953",
+      "title": "Flanking Pressure",
+      "summary": "",
+      "tags": [
+        "reinforcements",
+        "positioning",
+        "threat"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "dungeon",
+        "phase": "engage",
+        "rarity_mode": "normal",
+        "seed": 42
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    },
+    {
+      "item_id": "prep_20251226_020750023955_6",
+      "created_at": "2025-12-26T02:07:50.023958",
+      "title": "Sudden Opening",
+      "summary": "",
+      "tags": [
+        "opportunity",
+        "positioning",
+        "information"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "dungeon",
+        "phase": "engage",
+        "rarity_mode": "normal",
+        "seed": 42
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    },
+    {
+      "item_id": "prep_20251226_020750023960_7",
+      "created_at": "2025-12-26T02:07:50.023963",
+      "title": "Whispers in the Margin",
+      "summary": "",
+      "tags": [
+        "mystic",
+        "information",
+        "visibility"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "dungeon",
+        "phase": "engage",
+        "rarity_mode": "normal",
+        "seed": 42
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    },
+    {
+      "item_id": "prep_20251226_020750023965_8",
+      "created_at": "2025-12-26T02:07:50.023968",
+      "title": "Sudden Opening",
+      "summary": "",
+      "tags": [
+        "opportunity",
+        "positioning",
+        "information"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "dungeon",
+        "phase": "engage",
+        "rarity_mode": "normal",
+        "seed": 42
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    },
+    {
+      "item_id": "prep_20251226_020750023970_9",
+      "created_at": "2025-12-26T02:07:50.023973",
+      "title": "Slippery Ground",
+      "summary": "",
+      "tags": [
+        "hazard",
+        "terrain",
+        "positioning"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "dungeon",
+        "phase": "engage",
+        "rarity_mode": "normal",
+        "seed": 42
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    },
+    {
+      "item_id": "prep_20251226_020750023976_10",
+      "created_at": "2025-12-26T02:07:50.023979",
+      "title": "Mystic Static",
+      "summary": "",
+      "tags": [
+        "mystic",
+        "mystic_flux",
+        "visibility"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "dungeon",
+        "phase": "engage",
+        "rarity_mode": "normal",
+        "seed": 42
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    },
+    {
+      "item_id": "prep_20251226_020750023981_11",
+      "created_at": "2025-12-26T02:07:50.023984",
+      "title": "Sudden Opening",
+      "summary": "",
+      "tags": [
+        "opportunity",
+        "positioning",
+        "information"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "dungeon",
+        "phase": "engage",
+        "rarity_mode": "normal",
+        "seed": 42
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    },
+    {
+      "item_id": "prep_20251226_020750023986_12",
+      "created_at": "2025-12-26T02:07:50.023989",
+      "title": "Slippery Ground",
+      "summary": "",
+      "tags": [
+        "hazard",
+        "terrain",
+        "positioning"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "dungeon",
+        "phase": "engage",
+        "rarity_mode": "normal",
+        "seed": 42
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    },
+    {
+      "item_id": "prep_20251226_020750023991_13",
+      "created_at": "2025-12-26T02:07:50.023994",
+      "title": "Sudden Opening",
+      "summary": "",
+      "tags": [
+        "opportunity",
+        "positioning",
+        "information"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "dungeon",
+        "phase": "engage",
+        "rarity_mode": "normal",
+        "seed": 42
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    },
+    {
+      "item_id": "prep_20251226_020750023996_14",
+      "created_at": "2025-12-26T02:07:50.023999",
+      "title": "Lights Go Out",
+      "summary": "",
+      "tags": [
+        "hazard",
+        "visibility",
+        "positioning"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "dungeon",
+        "phase": "engage",
+        "rarity_mode": "normal",
+        "seed": 42
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    },
+    {
+      "item_id": "prep_20251226_020750024001_15",
+      "created_at": "2025-12-26T02:07:50.024005",
+      "title": "Sudden Opening",
+      "summary": "",
+      "tags": [
+        "opportunity",
+        "positioning",
+        "information"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "dungeon",
+        "phase": "engage",
+        "rarity_mode": "normal",
+        "seed": 42
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    },
+    {
+      "item_id": "prep_20251226_020750024007_16",
+      "created_at": "2025-12-26T02:07:50.024010",
+      "title": "Whispers in the Margin",
+      "summary": "",
+      "tags": [
+        "mystic",
+        "information",
+        "visibility"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "dungeon",
+        "phase": "engage",
+        "rarity_mode": "normal",
+        "seed": 42
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    },
+    {
+      "item_id": "prep_20251226_020750024012_17",
+      "created_at": "2025-12-26T02:07:50.024015",
+      "title": "Slippery Ground",
+      "summary": "",
+      "tags": [
+        "hazard",
+        "terrain",
+        "positioning"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "dungeon",
+        "phase": "engage",
+        "rarity_mode": "normal",
+        "seed": 42
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    },
+    {
+      "item_id": "prep_20251226_020750024017_18",
+      "created_at": "2025-12-26T02:07:50.024020",
+      "title": "Whispers in the Margin",
+      "summary": "",
+      "tags": [
+        "mystic",
+        "information",
+        "visibility"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "dungeon",
+        "phase": "engage",
+        "rarity_mode": "normal",
+        "seed": 42
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    },
+    {
+      "item_id": "prep_20251226_020750024022_19",
+      "created_at": "2025-12-26T02:07:50.024025",
+      "title": "Sudden Opening",
+      "summary": "",
+      "tags": [
+        "opportunity",
+        "positioning",
+        "information"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "dungeon",
+        "phase": "engage",
+        "rarity_mode": "normal",
+        "seed": 42
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    },
+    {
+      "item_id": "prep_20251226_020750024026_20",
+      "created_at": "2025-12-26T02:07:50.024029",
+      "title": "Flanking Pressure",
+      "summary": "",
+      "tags": [
+        "reinforcements",
+        "positioning",
+        "threat"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "dungeon",
+        "phase": "engage",
+        "rarity_mode": "normal",
+        "seed": 42
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    },
+    {
+      "item_id": "prep_20251226_020750024031_21",
+      "created_at": "2025-12-26T02:07:50.024034",
+      "title": "Lights Go Out",
+      "summary": "",
+      "tags": [
+        "hazard",
+        "visibility",
+        "positioning"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "dungeon",
+        "phase": "engage",
+        "rarity_mode": "normal",
+        "seed": 42
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    },
+    {
+      "item_id": "prep_20251226_020750024036_22",
+      "created_at": "2025-12-26T02:07:50.024039",
+      "title": "Slippery Ground",
+      "summary": "",
+      "tags": [
+        "hazard",
+        "terrain",
+        "positioning"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "dungeon",
+        "phase": "engage",
+        "rarity_mode": "normal",
+        "seed": 42
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    },
+    {
+      "item_id": "prep_20251226_020750024041_23",
+      "created_at": "2025-12-26T02:07:50.024044",
+      "title": "Whispers in the Margin",
+      "summary": "",
+      "tags": [
+        "mystic",
+        "information",
+        "visibility"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "dungeon",
+        "phase": "engage",
+        "rarity_mode": "normal",
+        "seed": 42
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    },
+    {
+      "item_id": "prep_20251226_020750024046_24",
+      "created_at": "2025-12-26T02:07:50.024049",
+      "title": "Slippery Ground",
+      "summary": "",
+      "tags": [
+        "hazard",
+        "terrain",
+        "positioning"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "dungeon",
+        "phase": "engage",
+        "rarity_mode": "normal",
+        "seed": 42
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    },
+    {
+      "item_id": "prep_20251226_022024925119_0",
+      "created_at": "2025-12-26T02:20:24.925144",
+      "title": "Smoke Blooms",
+      "summary": "",
+      "tags": [
+        "hazard",
+        "visibility",
+        "time_pressure"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "dungeon",
+        "phase": "engage",
+        "rarity_mode": "normal",
+        "seed": 42
+      },
+      "status": "queued",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    }
+  ]
 }

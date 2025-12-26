@@ -2,21 +2,17 @@
   "campaign_id": "campaign_20251225_222642",
   "name": "GURPS Test",
   "created": "2025-12-25T22:26:42.672833",
-  "last_played": "2025-12-25T22:26:42.672833",
+  "last_played": "2025-12-26T00:42:30.263370",
   "canon_summary": [
     "ASHLINE PATROL (GURPS) \u2014 GM NOTEBOOK\nPost-apocalyptic road-war campaign\nSessions completed: 4\nTone target: combat heavy, story light, tactical problem-solving u",
-    "That\u2019s what it is.)\n\n============================================================\n0) WHAT THIS GAME IS (so I don\u2019t drift)\n======================================",
-    "\u2022 PCs are a patrol team: paid to keep caravans moving, clear threats, and make examples",
-    "\u2022 Lore exists mostly to answer: who has ammo, medicine, fuel, and why they\u2019ll shoot you for it",
-    "THE VEILLINE RUN (SPACE OPERA) \u2014 GM NOTEBOOK\n(Old GM",
     "We pick up after a long break.)\n\nFormat note to self: this is not an outline",
     "It\u2019s a pile of handles to grab while we play",
     "====================================================================\nWHAT\u2019S GOING ON WITH THE GAME (REAL LIFE / TABLE)\n========================================="
   ],
   "campaign_state": {
     "version": "0.2",
-    "campaign_pressure": 0,
-    "heat": 0,
+    "campaign_pressure": 10,
+    "heat": 8,
     "scars": [],
     "factions": {
       "dustfall_council": {
@@ -38,7 +34,7 @@
         "notes": "Road Dogs"
       }
     },
-    "total_scenes_run": 5,
+    "total_scenes_run": 6,
     "total_cutoffs_seen": 0,
     "highest_severity_seen": 0
   },
@@ -101,7 +97,618 @@
         "pressure_change": 0,
         "heat_change": 0
       }
+    },
+    {
+      "session_number": 6,
+      "session_date": "2025-12-26T00:42:30.263345",
+      "what_happened": [
+        "Sudden Opening",
+        "Supplies Run Thin",
+        "Whispers in the Margin"
+      ],
+      "deltas": {
+        "pressure_change": 10,
+        "heat_change": 8,
+        "rumor_spread": false,
+        "faction_attention_change": false
+      },
+      "active_sources": [],
+      "active_source_ids": []
     }
   ],
-  "sources": []
+  "sources": [],
+  "prep_queue": [
+    {
+      "item_id": "prep_20251226_003450249981_0",
+      "created_at": "2025-12-26T00:34:50.250007",
+      "title": "Sudden Opening",
+      "summary": "",
+      "tags": [
+        "opportunity",
+        "positioning",
+        "information"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "dungeon",
+        "phase": "engage",
+        "rarity_mode": "normal",
+        "seed": 42
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    },
+    {
+      "item_id": "prep_20251226_003450250020_1",
+      "created_at": "2025-12-26T00:34:50.250027",
+      "title": "Smoke Blooms",
+      "summary": "",
+      "tags": [
+        "hazard",
+        "visibility",
+        "time_pressure"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "dungeon",
+        "phase": "engage",
+        "rarity_mode": "normal",
+        "seed": 42
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    },
+    {
+      "item_id": "prep_20251226_004050484444_0",
+      "created_at": "2025-12-26T00:40:50.484472",
+      "title": "Supplies Run Thin",
+      "summary": "",
+      "tags": [
+        "attrition",
+        "cost",
+        "time_pressure"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "dungeon",
+        "phase": "engage",
+        "rarity_mode": "normal",
+        "seed": 42
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    },
+    {
+      "item_id": "prep_20251226_004050484485_1",
+      "created_at": "2025-12-26T00:40:50.484493",
+      "title": "Bad Read",
+      "summary": "",
+      "tags": [
+        "information",
+        "time_pressure",
+        "cost"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "dungeon",
+        "phase": "engage",
+        "rarity_mode": "normal",
+        "seed": 42
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    },
+    {
+      "item_id": "prep_20251226_004050484500_2",
+      "created_at": "2025-12-26T00:40:50.484506",
+      "title": "Gear Failure",
+      "summary": "",
+      "tags": [
+        "attrition",
+        "cost",
+        "time_pressure"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "dungeon",
+        "phase": "engage",
+        "rarity_mode": "normal",
+        "seed": 42
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    },
+    {
+      "item_id": "prep_20251226_004050484510_3",
+      "created_at": "2025-12-26T00:40:50.484515",
+      "title": "Echoes Give You Away",
+      "summary": "",
+      "tags": [
+        "visibility",
+        "hazard",
+        "time_pressure"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "dungeon",
+        "phase": "engage",
+        "rarity_mode": "normal",
+        "seed": 42
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    },
+    {
+      "item_id": "prep_20251226_004050484519_4",
+      "created_at": "2025-12-26T00:40:50.484524",
+      "title": "Supplies Run Thin",
+      "summary": "",
+      "tags": [
+        "attrition",
+        "cost",
+        "time_pressure"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "dungeon",
+        "phase": "engage",
+        "rarity_mode": "normal",
+        "seed": 42
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    },
+    {
+      "item_id": "prep_20251226_004050484546_5",
+      "created_at": "2025-12-26T00:40:50.484558",
+      "title": "Echoes Give You Away",
+      "summary": "",
+      "tags": [
+        "visibility",
+        "hazard",
+        "time_pressure"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "dungeon",
+        "phase": "engage",
+        "rarity_mode": "normal",
+        "seed": 42
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    },
+    {
+      "item_id": "prep_20251226_004050484563_6",
+      "created_at": "2025-12-26T00:40:50.484570",
+      "title": "Whispers in the Margin",
+      "summary": "",
+      "tags": [
+        "mystic",
+        "information",
+        "visibility"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "dungeon",
+        "phase": "engage",
+        "rarity_mode": "normal",
+        "seed": 42
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    },
+    {
+      "item_id": "prep_20251226_004050484574_7",
+      "created_at": "2025-12-26T00:40:50.484580",
+      "title": "Sudden Collapse",
+      "summary": "",
+      "tags": [
+        "hazard",
+        "terrain",
+        "time_pressure"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "dungeon",
+        "phase": "engage",
+        "rarity_mode": "normal",
+        "seed": 42
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    },
+    {
+      "item_id": "prep_20251226_004050484584_8",
+      "created_at": "2025-12-26T00:40:50.484590",
+      "title": "Echoes Give You Away",
+      "summary": "",
+      "tags": [
+        "visibility",
+        "hazard",
+        "time_pressure"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "dungeon",
+        "phase": "engage",
+        "rarity_mode": "normal",
+        "seed": 42
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    },
+    {
+      "item_id": "prep_20251226_004050484593_9",
+      "created_at": "2025-12-26T00:40:50.484599",
+      "title": "Whispers in the Margin",
+      "summary": "",
+      "tags": [
+        "mystic",
+        "information",
+        "visibility"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "dungeon",
+        "phase": "engage",
+        "rarity_mode": "normal",
+        "seed": 42
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    },
+    {
+      "item_id": "prep_20251226_004050484602_10",
+      "created_at": "2025-12-26T00:40:50.484607",
+      "title": "Slippery Ground",
+      "summary": "",
+      "tags": [
+        "hazard",
+        "terrain",
+        "positioning"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "dungeon",
+        "phase": "engage",
+        "rarity_mode": "normal",
+        "seed": 42
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    },
+    {
+      "item_id": "prep_20251226_004050484611_11",
+      "created_at": "2025-12-26T00:40:50.484617",
+      "title": "Lights Go Out",
+      "summary": "",
+      "tags": [
+        "hazard",
+        "visibility",
+        "positioning"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "dungeon",
+        "phase": "engage",
+        "rarity_mode": "normal",
+        "seed": 42
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    },
+    {
+      "item_id": "prep_20251226_004050484621_12",
+      "created_at": "2025-12-26T00:40:50.484626",
+      "title": "Deadline Tightens",
+      "summary": "",
+      "tags": [
+        "time_pressure",
+        "visibility"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "dungeon",
+        "phase": "engage",
+        "rarity_mode": "normal",
+        "seed": 42
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    },
+    {
+      "item_id": "prep_20251226_004050484629_13",
+      "created_at": "2025-12-26T00:40:50.484634",
+      "title": "Distant Horns",
+      "summary": "",
+      "tags": [
+        "reinforcements",
+        "time_pressure",
+        "visibility"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "dungeon",
+        "phase": "engage",
+        "rarity_mode": "normal",
+        "seed": 42
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    },
+    {
+      "item_id": "prep_20251226_004050484638_14",
+      "created_at": "2025-12-26T00:40:50.484643",
+      "title": "Supplies Run Thin",
+      "summary": "",
+      "tags": [
+        "attrition",
+        "cost",
+        "time_pressure"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "dungeon",
+        "phase": "engage",
+        "rarity_mode": "normal",
+        "seed": 42
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    },
+    {
+      "item_id": "prep_20251226_004050484647_15",
+      "created_at": "2025-12-26T00:40:50.484651",
+      "title": "Bad Read",
+      "summary": "",
+      "tags": [
+        "information",
+        "time_pressure",
+        "cost"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "dungeon",
+        "phase": "engage",
+        "rarity_mode": "normal",
+        "seed": 42
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    },
+    {
+      "item_id": "prep_20251226_004050484656_16",
+      "created_at": "2025-12-26T00:40:50.484661",
+      "title": "Slippery Ground",
+      "summary": "",
+      "tags": [
+        "hazard",
+        "terrain",
+        "positioning"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "dungeon",
+        "phase": "engage",
+        "rarity_mode": "normal",
+        "seed": 42
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    },
+    {
+      "item_id": "prep_20251226_004050484664_17",
+      "created_at": "2025-12-26T00:40:50.484669",
+      "title": "Sudden Opening",
+      "summary": "",
+      "tags": [
+        "opportunity",
+        "positioning",
+        "information"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "dungeon",
+        "phase": "engage",
+        "rarity_mode": "normal",
+        "seed": 42
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    },
+    {
+      "item_id": "prep_20251226_004050484673_18",
+      "created_at": "2025-12-26T00:40:50.484678",
+      "title": "Echoes Give You Away",
+      "summary": "",
+      "tags": [
+        "visibility",
+        "hazard",
+        "time_pressure"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "dungeon",
+        "phase": "engage",
+        "rarity_mode": "normal",
+        "seed": 42
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    },
+    {
+      "item_id": "prep_20251226_004050484681_19",
+      "created_at": "2025-12-26T00:40:50.484686",
+      "title": "Distant Horns",
+      "summary": "",
+      "tags": [
+        "reinforcements",
+        "time_pressure",
+        "visibility"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "dungeon",
+        "phase": "engage",
+        "rarity_mode": "normal",
+        "seed": 42
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    },
+    {
+      "item_id": "prep_20251226_004050484690_20",
+      "created_at": "2025-12-26T00:40:50.484694",
+      "title": "Supplies Run Thin",
+      "summary": "",
+      "tags": [
+        "attrition",
+        "cost",
+        "time_pressure"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "dungeon",
+        "phase": "engage",
+        "rarity_mode": "normal",
+        "seed": 42
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    },
+    {
+      "item_id": "prep_20251226_004050484698_21",
+      "created_at": "2025-12-26T00:40:50.484703",
+      "title": "Unwanted Noise",
+      "summary": "",
+      "tags": [
+        "visibility",
+        "time_pressure",
+        "cost"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "dungeon",
+        "phase": "engage",
+        "rarity_mode": "normal",
+        "seed": 42
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    },
+    {
+      "item_id": "prep_20251226_004050484706_22",
+      "created_at": "2025-12-26T00:40:50.484711",
+      "title": "Whispers in the Margin",
+      "summary": "",
+      "tags": [
+        "mystic",
+        "information",
+        "visibility"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "dungeon",
+        "phase": "engage",
+        "rarity_mode": "normal",
+        "seed": 42
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    },
+    {
+      "item_id": "prep_20251226_004050484715_23",
+      "created_at": "2025-12-26T00:40:50.484719",
+      "title": "Deadline Tightens",
+      "summary": "",
+      "tags": [
+        "time_pressure",
+        "visibility"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "dungeon",
+        "phase": "engage",
+        "rarity_mode": "normal",
+        "seed": 42
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    },
+    {
+      "item_id": "prep_20251226_004050484723_24",
+      "created_at": "2025-12-26T00:40:50.484727",
+      "title": "Sudden Collapse",
+      "summary": "",
+      "tags": [
+        "hazard",
+        "terrain",
+        "time_pressure"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "dungeon",
+        "phase": "engage",
+        "rarity_mode": "normal",
+        "seed": 42
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    }
+  ]
 }

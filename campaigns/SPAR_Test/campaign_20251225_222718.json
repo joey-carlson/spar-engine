@@ -2,22 +2,615 @@
   "campaign_id": "campaign_20251225_222718",
   "name": "SPAR Test",
   "created": "2025-12-25T22:27:18.637827",
-  "last_played": "2025-12-25T22:27:18.637827",
+  "last_played": "2025-12-26T02:03:16.141244",
   "canon_summary": [
     "Expect bullets, reminders, and \u201cask at the table\u201d questions",
     "---\n\n## Elevator pitch\nA pulp-noir expedition game set in a coastal city where the fog is alive, the radios whisper names that don\u2019t exist, and every favor come",
-    "The PCs aren\u2019t \u201cchosen,\u201d they\u2019re *useful*, which is worse"
+    "The PCs aren\u2019t \u201cchosen,\u201d they\u2019re *useful*, which is worse",
+    "Thick Fog"
   ],
   "campaign_state": {
     "version": "0.2",
-    "campaign_pressure": 0,
-    "heat": 0,
+    "campaign_pressure": 4,
+    "heat": 5,
     "scars": [],
     "factions": {},
-    "total_scenes_run": 0,
+    "total_scenes_run": 1,
     "total_cutoffs_seen": 0,
     "highest_severity_seen": 0
   },
-  "ledger": [],
-  "sources": []
+  "ledger": [
+    {
+      "session_number": 1,
+      "session_date": "2025-12-26T02:03:16.141199",
+      "what_happened": [
+        "Thick Fog",
+        "Thick Brush",
+        "Thick Fog"
+      ],
+      "deltas": {
+        "pressure_change": 4,
+        "heat_change": 5,
+        "rumor_spread": true,
+        "faction_attention_change": true
+      },
+      "active_sources": [],
+      "active_source_ids": []
+    }
+  ],
+  "sources": [],
+  "prep_queue": [
+    {
+      "item_id": "prep_20251226_015952186923_0",
+      "created_at": "2025-12-26T01:59:52.186943",
+      "title": "Thick Fog",
+      "summary": "",
+      "tags": [
+        "hazard",
+        "visibility",
+        "positioning"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "wilderness",
+        "phase": "engage",
+        "rarity_mode": "normal",
+        "seed": 37
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    },
+    {
+      "item_id": "prep_20251226_015952186952_1",
+      "created_at": "2025-12-26T01:59:52.186958",
+      "title": "Thick Brush",
+      "summary": "",
+      "tags": [
+        "terrain",
+        "cost",
+        "positioning"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "wilderness",
+        "phase": "engage",
+        "rarity_mode": "normal",
+        "seed": 37
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    },
+    {
+      "item_id": "prep_20251226_015952186962_2",
+      "created_at": "2025-12-26T01:59:52.186965",
+      "title": "Thick Fog",
+      "summary": "",
+      "tags": [
+        "hazard",
+        "visibility",
+        "positioning"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "wilderness",
+        "phase": "engage",
+        "rarity_mode": "normal",
+        "seed": 37
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    },
+    {
+      "item_id": "prep_20251226_015952186968_3",
+      "created_at": "2025-12-26T01:59:52.186971",
+      "title": "Thick Brush",
+      "summary": "",
+      "tags": [
+        "terrain",
+        "cost",
+        "positioning"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "wilderness",
+        "phase": "engage",
+        "rarity_mode": "normal",
+        "seed": 37
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    },
+    {
+      "item_id": "prep_20251226_015952186973_4",
+      "created_at": "2025-12-26T01:59:52.186976",
+      "title": "Thick Fog",
+      "summary": "",
+      "tags": [
+        "hazard",
+        "visibility",
+        "positioning"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "wilderness",
+        "phase": "engage",
+        "rarity_mode": "normal",
+        "seed": 37
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    },
+    {
+      "item_id": "prep_20251226_015952186978_5",
+      "created_at": "2025-12-26T01:59:52.186981",
+      "title": "Thick Brush",
+      "summary": "",
+      "tags": [
+        "terrain",
+        "cost",
+        "positioning"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "wilderness",
+        "phase": "engage",
+        "rarity_mode": "normal",
+        "seed": 37
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    },
+    {
+      "item_id": "prep_20251226_015952186983_6",
+      "created_at": "2025-12-26T01:59:52.186985",
+      "title": "Hounds Released",
+      "summary": "",
+      "tags": [
+        "reinforcements",
+        "threat",
+        "visibility"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "wilderness",
+        "phase": "engage",
+        "rarity_mode": "normal",
+        "seed": 37
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    },
+    {
+      "item_id": "prep_20251226_015952186987_7",
+      "created_at": "2025-12-26T01:59:52.186990",
+      "title": "High Ground Taken",
+      "summary": "",
+      "tags": [
+        "positioning",
+        "threat",
+        "terrain"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "wilderness",
+        "phase": "engage",
+        "rarity_mode": "normal",
+        "seed": 37
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    },
+    {
+      "item_id": "prep_20251226_015952186992_8",
+      "created_at": "2025-12-26T01:59:52.186995",
+      "title": "Flanking Pressure",
+      "summary": "",
+      "tags": [
+        "reinforcements",
+        "positioning",
+        "threat"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "wilderness",
+        "phase": "engage",
+        "rarity_mode": "normal",
+        "seed": 37
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    },
+    {
+      "item_id": "prep_20251226_015952186997_9",
+      "created_at": "2025-12-26T01:59:52.186999",
+      "title": "Thick Fog",
+      "summary": "",
+      "tags": [
+        "hazard",
+        "visibility",
+        "positioning"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "wilderness",
+        "phase": "engage",
+        "rarity_mode": "normal",
+        "seed": 37
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    },
+    {
+      "item_id": "prep_20251226_015952187001_10",
+      "created_at": "2025-12-26T01:59:52.187004",
+      "title": "Thick Brush",
+      "summary": "",
+      "tags": [
+        "terrain",
+        "cost",
+        "positioning"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "wilderness",
+        "phase": "engage",
+        "rarity_mode": "normal",
+        "seed": 37
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    },
+    {
+      "item_id": "prep_20251226_015952187006_11",
+      "created_at": "2025-12-26T01:59:52.187009",
+      "title": "Thick Fog",
+      "summary": "",
+      "tags": [
+        "hazard",
+        "visibility",
+        "positioning"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "wilderness",
+        "phase": "engage",
+        "rarity_mode": "normal",
+        "seed": 37
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    },
+    {
+      "item_id": "prep_20251226_015952187011_12",
+      "created_at": "2025-12-26T01:59:52.187013",
+      "title": "Thick Brush",
+      "summary": "",
+      "tags": [
+        "terrain",
+        "cost",
+        "positioning"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "wilderness",
+        "phase": "engage",
+        "rarity_mode": "normal",
+        "seed": 37
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    },
+    {
+      "item_id": "prep_20251226_015952187015_13",
+      "created_at": "2025-12-26T01:59:52.187018",
+      "title": "Thick Fog",
+      "summary": "",
+      "tags": [
+        "hazard",
+        "visibility",
+        "positioning"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "wilderness",
+        "phase": "engage",
+        "rarity_mode": "normal",
+        "seed": 37
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    },
+    {
+      "item_id": "prep_20251226_015952187020_14",
+      "created_at": "2025-12-26T01:59:52.187022",
+      "title": "Thick Brush",
+      "summary": "",
+      "tags": [
+        "terrain",
+        "cost",
+        "positioning"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "wilderness",
+        "phase": "engage",
+        "rarity_mode": "normal",
+        "seed": 37
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    },
+    {
+      "item_id": "prep_20251226_015952187024_15",
+      "created_at": "2025-12-26T01:59:52.187027",
+      "title": "Thick Fog",
+      "summary": "",
+      "tags": [
+        "hazard",
+        "visibility",
+        "positioning"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "wilderness",
+        "phase": "engage",
+        "rarity_mode": "normal",
+        "seed": 37
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    },
+    {
+      "item_id": "prep_20251226_015952187029_16",
+      "created_at": "2025-12-26T01:59:52.187032",
+      "title": "Thick Brush",
+      "summary": "",
+      "tags": [
+        "terrain",
+        "cost",
+        "positioning"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "wilderness",
+        "phase": "engage",
+        "rarity_mode": "normal",
+        "seed": 37
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    },
+    {
+      "item_id": "prep_20251226_015952187034_17",
+      "created_at": "2025-12-26T01:59:52.187036",
+      "title": "Flanking Pressure",
+      "summary": "",
+      "tags": [
+        "reinforcements",
+        "positioning",
+        "threat"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "wilderness",
+        "phase": "engage",
+        "rarity_mode": "normal",
+        "seed": 37
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    },
+    {
+      "item_id": "prep_20251226_015952187038_18",
+      "created_at": "2025-12-26T01:59:52.187041",
+      "title": "Thick Brush",
+      "summary": "",
+      "tags": [
+        "terrain",
+        "cost",
+        "positioning"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "wilderness",
+        "phase": "engage",
+        "rarity_mode": "normal",
+        "seed": 37
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    },
+    {
+      "item_id": "prep_20251226_015952187042_19",
+      "created_at": "2025-12-26T01:59:52.187045",
+      "title": "Flanking Pressure",
+      "summary": "",
+      "tags": [
+        "reinforcements",
+        "positioning",
+        "threat"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "wilderness",
+        "phase": "engage",
+        "rarity_mode": "normal",
+        "seed": 37
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    },
+    {
+      "item_id": "prep_20251226_015952187047_20",
+      "created_at": "2025-12-26T01:59:52.187049",
+      "title": "Thick Brush",
+      "summary": "",
+      "tags": [
+        "terrain",
+        "cost",
+        "positioning"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "wilderness",
+        "phase": "engage",
+        "rarity_mode": "normal",
+        "seed": 37
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    },
+    {
+      "item_id": "prep_20251226_015952187051_21",
+      "created_at": "2025-12-26T01:59:52.187054",
+      "title": "Hounds Released",
+      "summary": "",
+      "tags": [
+        "reinforcements",
+        "threat",
+        "visibility"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "wilderness",
+        "phase": "engage",
+        "rarity_mode": "normal",
+        "seed": 37
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    },
+    {
+      "item_id": "prep_20251226_015952187056_22",
+      "created_at": "2025-12-26T01:59:52.187058",
+      "title": "High Ground Taken",
+      "summary": "",
+      "tags": [
+        "positioning",
+        "threat",
+        "terrain"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "wilderness",
+        "phase": "engage",
+        "rarity_mode": "normal",
+        "seed": 37
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    },
+    {
+      "item_id": "prep_20251226_015952187060_23",
+      "created_at": "2025-12-26T01:59:52.187063",
+      "title": "Thick Fog",
+      "summary": "",
+      "tags": [
+        "hazard",
+        "visibility",
+        "positioning"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "wilderness",
+        "phase": "engage",
+        "rarity_mode": "normal",
+        "seed": 37
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    },
+    {
+      "item_id": "prep_20251226_015952187065_24",
+      "created_at": "2025-12-26T01:59:52.187067",
+      "title": "Thick Brush",
+      "summary": "",
+      "tags": [
+        "terrain",
+        "cost",
+        "positioning"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "wilderness",
+        "phase": "engage",
+        "rarity_mode": "normal",
+        "seed": 37
+      },
+      "status": "archived",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    },
+    {
+      "item_id": "prep_20251226_020458516904_0",
+      "created_at": "2025-12-26T02:04:58.516929",
+      "title": "Supplies Run Thin",
+      "summary": "",
+      "tags": [
+        "attrition",
+        "cost",
+        "time_pressure"
+      ],
+      "source": {
+        "scenario_name": "Event Generator",
+        "preset": "dungeon",
+        "phase": "engage",
+        "rarity_mode": "normal",
+        "seed": 42
+      },
+      "status": "queued",
+      "related_factions": [],
+      "related_scars": [],
+      "notes": null
+    }
+  ]
 }
