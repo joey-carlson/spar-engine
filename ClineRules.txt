@@ -1,0 +1,146 @@
+# Field Trial Monitoring System - Cline Rules
+
+## 00-general
+You are an expert code developer who follows general best practices for software development.
+Before proposing a solution, consider alternatives. Is there a better solution?
+Design code for readibility. Don't be overly complex nor overly simple.
+Be concise but complete with documentation and commentary. Don't include the same documentation in more than one place.
+When asked to create a feature, consider if there are better options and recommend them.
+Follow the design cycle:
+flowchart TD
+   design --> implement --> test --> evaluate
+Optimize for maintainability and configurability from the start. 
+Keep changes small and discrete to avoid token throttling issues.
+We should start with a clear requirements doc and an architecture doc. Requirements doc should be more focused on user/business level reqs, which architecture doc should focus on design and technical architecture decisions.
+As we work through the lifecycle of the project, you need to also create and automatically maintain a readme/instructions doc and a changelog doc. 
+We will use standard x.y.z numbering schema. 
+As updates come in they should be documented to the appropriate docs. Changes should be versioned and appended above existing content for a given doc and/or doc section, do not overwrite historical updates.
+Others may also be working on this project's git repository, so as we work you should also ensure that local and git repositories remain synced and are up to date with no lingering pending commits
+
+## Unit Testing Strategy
+Try to produce "3 line" tests. These are very short, readable, and easy to modify.
+Arrange
+Act
+Assert
+Arrange - set up the scene. Use supporting helper functions to construct objects in a manner needed for the test. This should strive for "one line" but may be a few lines. Complicated logic should be delegated to helper construction methods, fixtures etc. This is the arrangement and construction of the "unit under test".
+Act - perform one action on the "unit under test". This is typically a function call.
+Assert - Check output, side effects
+
+## The Gist Test
+Typically a single test, gist testing tests as much of the primary functionality as possible in a single test. They are fast to write, and both showcase and test the fundamental functionality of the system. These can encorporate multiple components from the system. Or can be gists for one individual component within the system. The intention is to cover the critical code, quickly and simply, ensuring fundamentally correct functionality with minimal code.
+This is a different strategy the the formal Unit Test "AAA" strategy, and can use any number of lines of code.
+Ensure correct functionality using soft assert (like googletest "EXPECT" macros) and hard asserts (like googletest "ASSERT" macros) as needed.
+
+
+## 01-platform-mac
+You are running on Mac platform.
+Prefer to use Bash for command line actions.
+
+## 02-solid
+Follow SOLID design principles for OO development, focusing primarily on
+Single purpose
+Open/Closed
+Interface Segregation
+Prefer composition (with interface segregation) over inheritence.
+Don't repeat code. If a code is not relevant to the class, it should be in a utility or helper function or class.
+
+## 03-python
+Follow PEP8 standards.
+When running python on the CLI (e.g. for testing), you must activate the .venv in the root of the project first.
+All modules should be PyPA compliant.
+Use type hinting where possible.
+Avoid using generic dictionaries. Use dataclasses instead.
+
+## 04-pytest
+When testing features, write permanent tests with pytest.
+Do not write ephemeral tests to validate changes. Write something that can be used long-term to validate the functionality.
+Tests do not need to be elaborate or exhaustive, but should be complete and concise if possible.
+Use parameterized tests where possible.
+
+### Unit Testing Strategy
+Try to produce "3 line" tests. These are very short, readable, and easy to modify.
+Arrange
+Act
+Assert
+Arrange - set up the scene. Use supporting helper functions to construct objects in a manner needed for the test. This should strive for "one line" but may be a few lines. Complicated logic should be delegated to helper construction methods, fixtures etc. This is the arrangement and construction of the "unit under test".
+Act - perform one action on the "unit under test". This is typically a function call.
+Assert - Check output, side effects
+
+### The Gist Test
+Typically a single test, gist testing tests as much of the primary functionality as possible in a single test. They are fast to write, and both showcase and test the fundamental functionality of the system. These can encorporate multiple components from the system. Or can be gists for one individual component within the system. The intention is to cover the critical code, quickly and simply, ensuring fundamentally correct functionality with minimal code.
+This is a different strategy the the formal Unit Test "AAA" strategy, and can use any number of lines of code.
+Ensure correct functionality using soft assert (like googletest "EXPECT" macros) and hard asserts (like googletest "ASSERT" macros) as needed.
+
+## 05-field-trial-monitoring
+This project is a comprehensive real-time monitoring and alerting system for field trial data.
+Key requirements to always consider:
+- Processing ~40,000 data points/day with ability to scale to 10x
+- Alert latency must be <30 minutes
+- Handle both real-time metrics and nightly batch log uploads (up to 40GB/day)
+- Support individual user monitoring AND cross-user pattern analysis
+Always use our existing shared utilities from src/shared/ for config, logging, and database operations.
+Use InfluxDB for time-series data (metrics, alerts) and PostgreSQL for configuration/user data.
+
+## 06-fastapi
+All API endpoints must:
+- Use FastAPI with proper type hints and Pydantic models
+- Include comprehensive error handling with appropriate HTTP status codes
+- Have OpenAPI documentation with examples
+- Use dependency injection for database connections and authentication
+- Return consistent error response format using our shared models
+- Include request/response logging using our structured logger
+For authentication, use JWT tokens with our shared auth utilities.
+
+## 07-databases
+Database usage patterns:
+- InfluxDB: All time-series data (stop metrics, system metrics, alert metrics)
+- PostgreSQL: Configuration, users, alert definitions, audit logs
+Always use connection pooling from src/shared/database/
+Use proper transactions for PostgreSQL operations
+For InfluxDB, batch writes when possible for efficiency
+Never mix time-series data in PostgreSQL or config data in InfluxDB
+Use Alembic for all PostgreSQL schema changes
+
+## 08-aws-integration
+AWS service usage patterns:
+- Kinesis: Real-time data ingestion with proper error handling and retry logic
+- Lambda: Stateless functions with <5 minute execution time
+- S3: Archive storage with lifecycle policies for cost optimization
+- API Gateway: Rate limiting and request validation
+Always handle AWS service limits and implement exponential backoff
+Use boto3 with proper credential management (never hardcode)
+Implement CloudWatch logging and metrics for all AWS services
+
+## 09-security
+Security requirements for all code:
+- JWT tokens must have expiration and refresh logic
+- Never log sensitive data (use our logging filters)
+- All user input must be validated with Pydantic models
+- Database queries must use parameterized statements
+- API endpoints must have rate limiting
+- Passwords must be hashed with bcrypt
+- Environment variables for all secrets (no hardcoding)
+- CORS configuration must be restrictive to known domains
+
+## 10-monitoring-domain
+Business logic patterns specific to field trials:
+- Stop metrics: Always validate duration_phase values are positive
+- Geographic clustering: Use haversine formula for distance calculations
+- Alert deduplication: Check for similar alerts within 5-minute windows
+- Pattern detection: Configurable thresholds without code changes
+- Slack notifications: Include user context and actionable information
+- Data aggregation: Use InfluxDB continuous queries for efficiency
+- Error tracking: Include user_id, stop_id, location for debugging
+
+## 11-workdocs-sync
+When completing major features or releases:
+1. Create new version folder in WorkDocs: `/Users/joecrls/Library/CloudStorage/WorkDocsDrive-Documents/Joey's Scripts/PilotScanner/vX.Y.Z-BUILD_YYYY-MM-DD_HH-MM`
+2. Copy project files to WorkDocs version folder:
+   - BUILD_INFO.txt (from project root)
+   - REQUIREMENTS.md (from project root or docs/)
+   - CHANGELOG.md (from project root)
+   - README.md (from project root)
+3. If debug build available, create debug/ subfolder and copy APK
+4. Update version folder name to match current version and timestamp
+5. Verify all files are synced to WorkDocs successfully
+

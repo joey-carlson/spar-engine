@@ -1,0 +1,5471 @@
+{
+  "execution_mode": "campaign",
+  "suite": "Campaign Rhythm - Normal Mode",
+  "base_seed": 5000,
+  "scene_count": 6,
+  "batch_size_per_scene": 50,
+  "include_tags": "",
+  "exclude_tags": "",
+  "tick_between": true,
+  "ticks_between": 1,
+  "verbose": false,
+  "scenes": [
+    {
+      "step_index": 1,
+      "preset": "dungeon",
+      "phase": "approach",
+      "rarity_mode": "normal",
+      "seed": 5001,
+      "batch_size": 50,
+      "summary": {
+        "n": 50,
+        "cutoff_rate": 0.06,
+        "severity_buckets": {
+          "1-3": 35,
+          "4-6": 9,
+          "7-10": 6
+        },
+        "severity_min": 1,
+        "severity_max": 8,
+        "severity_avg": 2.78,
+        "top_tags": [
+          [
+            "time_pressure",
+            38
+          ],
+          [
+            "cost",
+            26
+          ],
+          [
+            "visibility",
+            24
+          ],
+          [
+            "hazard",
+            22
+          ],
+          [
+            "information",
+            14
+          ],
+          [
+            "positioning",
+            10
+          ],
+          [
+            "terrain",
+            9
+          ],
+          [
+            "reinforcements",
+            3
+          ],
+          [
+            "mystic",
+            2
+          ]
+        ],
+        "top_event_ids": [
+          [
+            "time_misread_01",
+            12
+          ],
+          [
+            "hazard_noise_01",
+            9
+          ],
+          [
+            "hazard_slippery_01",
+            9
+          ],
+          [
+            "hazard_echoes_01",
+            7
+          ],
+          [
+            "hazard_poison_air_01",
+            5
+          ],
+          [
+            "reinforce_horns_01",
+            3
+          ],
+          [
+            "time_deadline_01",
+            2
+          ],
+          [
+            "mystic_whisper_01",
+            2
+          ],
+          [
+            "hazard_darkness_01",
+            1
+          ]
+        ],
+        "cutoff_resolutions": {
+          "none": 47,
+          "omen": 3
+        }
+      },
+      "state_snapshot": {
+        "clocks": {
+          "tension": 11,
+          "heat": 7,
+          "attrition": 0,
+          "mystic_flux": 0
+        },
+        "tag_cooldowns_count": 1,
+        "recent_ids_count": 1
+      },
+      "events": null,
+      "events_sample": [
+        {
+          "event_id": "time_misread_01",
+          "title": "Bad Read",
+          "tags": [
+            "information",
+            "time_pressure",
+            "cost"
+          ],
+          "severity": 2,
+          "cutoff_applied": false,
+          "cutoff_resolution": "none",
+          "original_severity": null,
+          "effect_vector": {
+            "threat": 0,
+            "cost": 2,
+            "heat": 0,
+            "time_pressure": 3,
+            "position_shift": 2,
+            "information": 0,
+            "opportunity": 0
+          },
+          "fiction": {
+            "prompt": "You realize a detail was wrong, your plan needs a fast correction.",
+            "sensory": [
+              "cold realization",
+              "quick glances"
+            ],
+            "immediate_choice": [
+              "Re-plan on the fly",
+              "Commit and ride it out"
+            ]
+          },
+          "state_delta": {
+            "clocks": {
+              "tension": 0
+            },
+            "recent_event_ids_add": [
+              "time_misread_01"
+            ],
+            "tag_cooldowns_set": {
+              "information": 1
+            },
+            "flags_set": {}
+          },
+          "followups": [],
+          "rng_trace": [
+            {
+              "op": "severity(zipf,alpha=1.22)",
+              "index": "1",
+              "total": "2.438612"
+            },
+            {
+              "op": "content_entry",
+              "index": "4",
+              "total": "7.100000"
+            },
+            {
+              "op": "effect:cost",
+              "value": "2",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:time_pressure",
+              "value": "3",
+              "range": "1-3"
+            },
+            {
+              "op": "effect:position_shift",
+              "value": "2",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:information",
+              "value": "0",
+              "range": "0-2"
+            }
+          ]
+        },
+        {
+          "event_id": "hazard_echoes_01",
+          "title": "Echoes Give You Away",
+          "tags": [
+            "visibility",
+            "hazard",
+            "time_pressure"
+          ],
+          "severity": 1,
+          "cutoff_applied": false,
+          "cutoff_resolution": "none",
+          "original_severity": null,
+          "effect_vector": {
+            "threat": 0,
+            "cost": 0,
+            "heat": 3,
+            "time_pressure": 1,
+            "position_shift": 0,
+            "information": 1,
+            "opportunity": 0
+          },
+          "fiction": {
+            "prompt": "Sound carries farther than it should, your presence becomes obvious.",
+            "sensory": [
+              "ringing echo",
+              "distant reply"
+            ],
+            "immediate_choice": [
+              "Go silent",
+              "Move fast before it converges"
+            ]
+          },
+          "state_delta": {
+            "clocks": {
+              "tension": 0,
+              "heat": 0
+            },
+            "recent_event_ids_add": [
+              "hazard_echoes_01"
+            ],
+            "tag_cooldowns_set": {
+              "visibility": 2
+            },
+            "flags_set": {}
+          },
+          "followups": [],
+          "rng_trace": [
+            {
+              "op": "severity(zipf,alpha=1.22)",
+              "index": "0",
+              "total": "2.438612"
+            },
+            {
+              "op": "content_entry",
+              "index": "3",
+              "total": "4.800000"
+            },
+            {
+              "op": "effect:cost",
+              "value": "0",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:heat",
+              "value": "3",
+              "range": "1-3"
+            },
+            {
+              "op": "effect:time_pressure",
+              "value": "1",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:information",
+              "value": "1",
+              "range": "0-1"
+            }
+          ]
+        },
+        {
+          "event_id": "time_misread_01",
+          "title": "Bad Read",
+          "tags": [
+            "information",
+            "time_pressure",
+            "cost"
+          ],
+          "severity": 2,
+          "cutoff_applied": false,
+          "cutoff_resolution": "none",
+          "original_severity": null,
+          "effect_vector": {
+            "threat": 0,
+            "cost": 1,
+            "heat": 0,
+            "time_pressure": 2,
+            "position_shift": 0,
+            "information": 1,
+            "opportunity": 0
+          },
+          "fiction": {
+            "prompt": "You realize a detail was wrong, your plan needs a fast correction.",
+            "sensory": [
+              "cold realization",
+              "quick glances"
+            ],
+            "immediate_choice": [
+              "Re-plan on the fly",
+              "Commit and ride it out"
+            ]
+          },
+          "state_delta": {
+            "clocks": {
+              "tension": 0
+            },
+            "recent_event_ids_add": [
+              "time_misread_01"
+            ],
+            "tag_cooldowns_set": {
+              "information": 1
+            },
+            "flags_set": {}
+          },
+          "followups": [],
+          "rng_trace": [
+            {
+              "op": "severity(zipf,alpha=1.22)",
+              "index": "1",
+              "total": "2.438612"
+            },
+            {
+              "op": "content_entry",
+              "index": "1",
+              "total": "1.900000"
+            },
+            {
+              "op": "effect:cost",
+              "value": "1",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:time_pressure",
+              "value": "2",
+              "range": "1-3"
+            },
+            {
+              "op": "effect:position_shift",
+              "value": "0",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:information",
+              "value": "1",
+              "range": "0-2"
+            }
+          ]
+        },
+        {
+          "event_id": "hazard_poison_air_01",
+          "title": "Bad Air",
+          "tags": [
+            "hazard",
+            "cost",
+            "time_pressure"
+          ],
+          "severity": 4,
+          "cutoff_applied": false,
+          "cutoff_resolution": "none",
+          "original_severity": null,
+          "effect_vector": {
+            "threat": 3,
+            "cost": 3,
+            "heat": 0,
+            "time_pressure": 3,
+            "position_shift": 0,
+            "information": 1,
+            "opportunity": 0
+          },
+          "fiction": {
+            "prompt": "The air is wrong, every breath becomes a decision.",
+            "sensory": [
+              "chemical tang",
+              "burning eyes"
+            ],
+            "immediate_choice": [
+              "Mask up and push",
+              "Retreat to clean air"
+            ]
+          },
+          "state_delta": {
+            "clocks": {
+              "tension": 0
+            },
+            "recent_event_ids_add": [
+              "hazard_poison_air_01"
+            ],
+            "tag_cooldowns_set": {
+              "hazard": 2
+            },
+            "flags_set": {}
+          },
+          "followups": [],
+          "rng_trace": [
+            {
+              "op": "severity(zipf,alpha=1.22)",
+              "index": "3",
+              "total": "2.438612"
+            },
+            {
+              "op": "content_entry",
+              "index": "8",
+              "total": "8.700000"
+            },
+            {
+              "op": "effect:threat",
+              "value": "3",
+              "range": "1-3"
+            },
+            {
+              "op": "effect:cost",
+              "value": "3",
+              "range": "1-3"
+            },
+            {
+              "op": "effect:time_pressure",
+              "value": "3",
+              "range": "1-3"
+            },
+            {
+              "op": "effect:information",
+              "value": "1",
+              "range": "0-1"
+            }
+          ]
+        },
+        {
+          "event_id": "hazard_noise_01",
+          "title": "Unwanted Noise",
+          "tags": [
+            "visibility",
+            "time_pressure",
+            "cost"
+          ],
+          "severity": 2,
+          "cutoff_applied": false,
+          "cutoff_resolution": "none",
+          "original_severity": null,
+          "effect_vector": {
+            "threat": 0,
+            "cost": 0,
+            "heat": 2,
+            "time_pressure": 2,
+            "position_shift": 0,
+            "information": 0,
+            "opportunity": 0
+          },
+          "fiction": {
+            "prompt": "Something loud happens at the worst moment, attention shifts toward you.",
+            "sensory": [
+              "clang",
+              "echo"
+            ],
+            "immediate_choice": [
+              "Freeze and listen",
+              "Move fast before it converges"
+            ]
+          },
+          "state_delta": {
+            "clocks": {
+              "tension": 0,
+              "heat": 0
+            },
+            "recent_event_ids_add": [
+              "hazard_noise_01"
+            ],
+            "tag_cooldowns_set": {
+              "visibility": 2
+            },
+            "flags_set": {}
+          },
+          "followups": [],
+          "rng_trace": [
+            {
+              "op": "severity(zipf,alpha=1.22)",
+              "index": "1",
+              "total": "2.438612"
+            },
+            {
+              "op": "content_entry",
+              "index": "1",
+              "total": "4.100000"
+            },
+            {
+              "op": "effect:cost",
+              "value": "0",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:heat",
+              "value": "2",
+              "range": "1-3"
+            },
+            {
+              "op": "effect:time_pressure",
+              "value": "2",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:information",
+              "value": "0",
+              "range": "0-1"
+            }
+          ]
+        },
+        {
+          "event_id": "hazard_poison_air_01",
+          "title": "Bad Air",
+          "tags": [
+            "hazard",
+            "cost",
+            "time_pressure"
+          ],
+          "severity": 8,
+          "cutoff_applied": true,
+          "cutoff_resolution": "omen",
+          "original_severity": 10,
+          "effect_vector": {
+            "threat": 2,
+            "cost": 2,
+            "heat": 0,
+            "time_pressure": 3,
+            "position_shift": 0,
+            "information": 1,
+            "opportunity": 0
+          },
+          "fiction": {
+            "prompt": "Omen: The air is wrong, every breath becomes a decision.",
+            "sensory": [
+              "chemical tang",
+              "burning eyes"
+            ],
+            "immediate_choice": [
+              "Mask up and push",
+              "Retreat to clean air"
+            ]
+          },
+          "state_delta": {
+            "clocks": {
+              "tension": 1
+            },
+            "recent_event_ids_add": [
+              "hazard_poison_air_01"
+            ],
+            "tag_cooldowns_set": {
+              "hazard": 2
+            },
+            "flags_set": {}
+          },
+          "followups": [
+            {
+              "tag": "omen_followup",
+              "in": "aftermath"
+            }
+          ],
+          "rng_trace": [
+            {
+              "op": "severity(zipf,alpha=1.22)",
+              "index": "9",
+              "total": "2.438612"
+            },
+            {
+              "op": "content_entry",
+              "index": "0",
+              "total": "0.600000"
+            },
+            {
+              "op": "effect:threat",
+              "value": "2",
+              "range": "1-3"
+            },
+            {
+              "op": "effect:cost",
+              "value": "2",
+              "range": "1-3"
+            },
+            {
+              "op": "effect:time_pressure",
+              "value": "3",
+              "range": "1-3"
+            },
+            {
+              "op": "effect:information",
+              "value": "1",
+              "range": "0-1"
+            }
+          ]
+        },
+        {
+          "event_id": "hazard_noise_01",
+          "title": "Unwanted Noise",
+          "tags": [
+            "visibility",
+            "time_pressure",
+            "cost"
+          ],
+          "severity": 1,
+          "cutoff_applied": false,
+          "cutoff_resolution": "none",
+          "original_severity": null,
+          "effect_vector": {
+            "threat": 0,
+            "cost": 0,
+            "heat": 3,
+            "time_pressure": 1,
+            "position_shift": 0,
+            "information": 0,
+            "opportunity": 0
+          },
+          "fiction": {
+            "prompt": "Something loud happens at the worst moment, attention shifts toward you.",
+            "sensory": [
+              "clang",
+              "echo"
+            ],
+            "immediate_choice": [
+              "Freeze and listen",
+              "Move fast before it converges"
+            ]
+          },
+          "state_delta": {
+            "clocks": {
+              "tension": 0,
+              "heat": 0
+            },
+            "recent_event_ids_add": [
+              "hazard_noise_01"
+            ],
+            "tag_cooldowns_set": {
+              "visibility": 2
+            },
+            "flags_set": {}
+          },
+          "followups": [],
+          "rng_trace": [
+            {
+              "op": "severity(zipf,alpha=1.22)",
+              "index": "0",
+              "total": "2.438612"
+            },
+            {
+              "op": "content_entry",
+              "index": "0",
+              "total": "2.700000"
+            },
+            {
+              "op": "effect:cost",
+              "value": "0",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:heat",
+              "value": "3",
+              "range": "1-3"
+            },
+            {
+              "op": "effect:time_pressure",
+              "value": "1",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:information",
+              "value": "0",
+              "range": "0-1"
+            }
+          ]
+        },
+        {
+          "event_id": "hazard_poison_air_01",
+          "title": "Bad Air",
+          "tags": [
+            "hazard",
+            "cost",
+            "time_pressure"
+          ],
+          "severity": 3,
+          "cutoff_applied": false,
+          "cutoff_resolution": "none",
+          "original_severity": null,
+          "effect_vector": {
+            "threat": 3,
+            "cost": 1,
+            "heat": 0,
+            "time_pressure": 3,
+            "position_shift": 0,
+            "information": 1,
+            "opportunity": 0
+          },
+          "fiction": {
+            "prompt": "The air is wrong, every breath becomes a decision.",
+            "sensory": [
+              "chemical tang",
+              "burning eyes"
+            ],
+            "immediate_choice": [
+              "Mask up and push",
+              "Retreat to clean air"
+            ]
+          },
+          "state_delta": {
+            "clocks": {
+              "tension": 0
+            },
+            "recent_event_ids_add": [
+              "hazard_poison_air_01"
+            ],
+            "tag_cooldowns_set": {
+              "hazard": 2
+            },
+            "flags_set": {}
+          },
+          "followups": [],
+          "rng_trace": [
+            {
+              "op": "severity(zipf,alpha=1.22)",
+              "index": "2",
+              "total": "2.438612"
+            },
+            {
+              "op": "content_entry",
+              "index": "2",
+              "total": "2.500000"
+            },
+            {
+              "op": "effect:threat",
+              "value": "3",
+              "range": "1-3"
+            },
+            {
+              "op": "effect:cost",
+              "value": "1",
+              "range": "1-3"
+            },
+            {
+              "op": "effect:time_pressure",
+              "value": "3",
+              "range": "1-3"
+            },
+            {
+              "op": "effect:information",
+              "value": "1",
+              "range": "0-1"
+            }
+          ]
+        },
+        {
+          "event_id": "time_misread_01",
+          "title": "Bad Read",
+          "tags": [
+            "information",
+            "time_pressure",
+            "cost"
+          ],
+          "severity": 6,
+          "cutoff_applied": false,
+          "cutoff_resolution": "none",
+          "original_severity": null,
+          "effect_vector": {
+            "threat": 0,
+            "cost": 1,
+            "heat": 0,
+            "time_pressure": 2,
+            "position_shift": 1,
+            "information": 1,
+            "opportunity": 0
+          },
+          "fiction": {
+            "prompt": "You realize a detail was wrong, your plan needs a fast correction.",
+            "sensory": [
+              "cold realization",
+              "quick glances"
+            ],
+            "immediate_choice": [
+              "Re-plan on the fly",
+              "Commit and ride it out"
+            ]
+          },
+          "state_delta": {
+            "clocks": {
+              "tension": 1
+            },
+            "recent_event_ids_add": [
+              "time_misread_01"
+            ],
+            "tag_cooldowns_set": {
+              "information": 1
+            },
+            "flags_set": {}
+          },
+          "followups": [],
+          "rng_trace": [
+            {
+              "op": "severity(zipf,alpha=1.22)",
+              "index": "5",
+              "total": "2.438612"
+            },
+            {
+              "op": "content_entry",
+              "index": "3",
+              "total": "5.100000"
+            },
+            {
+              "op": "effect:cost",
+              "value": "1",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:time_pressure",
+              "value": "2",
+              "range": "1-3"
+            },
+            {
+              "op": "effect:position_shift",
+              "value": "1",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:information",
+              "value": "1",
+              "range": "0-2"
+            }
+          ]
+        },
+        {
+          "event_id": "reinforce_horns_01",
+          "title": "Distant Horns",
+          "tags": [
+            "reinforcements",
+            "time_pressure",
+            "visibility"
+          ],
+          "severity": 4,
+          "cutoff_applied": false,
+          "cutoff_resolution": "none",
+          "original_severity": null,
+          "effect_vector": {
+            "threat": 1,
+            "cost": 0,
+            "heat": 3,
+            "time_pressure": 2,
+            "position_shift": 1,
+            "information": 0,
+            "opportunity": 0
+          },
+          "fiction": {
+            "prompt": "A signal carries, someone has been alerted, help is moving.",
+            "sensory": [
+              "echoing horn",
+              "boots on stone"
+            ],
+            "immediate_choice": [
+              "Press the advantage now",
+              "Break line of sight and reposition"
+            ]
+          },
+          "state_delta": {
+            "clocks": {
+              "tension": 0,
+              "heat": 1
+            },
+            "recent_event_ids_add": [
+              "reinforce_horns_01"
+            ],
+            "tag_cooldowns_set": {
+              "reinforcements": 3
+            },
+            "flags_set": {}
+          },
+          "followups": [],
+          "rng_trace": [
+            {
+              "op": "severity(zipf,alpha=1.22)",
+              "index": "3",
+              "total": "2.438612"
+            },
+            {
+              "op": "content_entry",
+              "index": "0",
+              "total": "8.700000"
+            },
+            {
+              "op": "effect:threat",
+              "value": "1",
+              "range": "1-3"
+            },
+            {
+              "op": "effect:heat",
+              "value": "3",
+              "range": "1-3"
+            },
+            {
+              "op": "effect:time_pressure",
+              "value": "2",
+              "range": "1-2"
+            },
+            {
+              "op": "effect:position_shift",
+              "value": "1",
+              "range": "0-2"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "step_index": 2,
+      "preset": "dungeon",
+      "phase": "engage",
+      "rarity_mode": "normal",
+      "seed": 5002,
+      "batch_size": 50,
+      "summary": {
+        "n": 50,
+        "cutoff_rate": 0.0,
+        "severity_buckets": {
+          "1-3": 39,
+          "4-6": 8,
+          "7-10": 3
+        },
+        "severity_min": 1,
+        "severity_max": 9,
+        "severity_avg": 2.76,
+        "top_tags": [
+          [
+            "time_pressure",
+            36
+          ],
+          [
+            "cost",
+            27
+          ],
+          [
+            "visibility",
+            20
+          ],
+          [
+            "hazard",
+            14
+          ],
+          [
+            "information",
+            14
+          ],
+          [
+            "positioning",
+            11
+          ],
+          [
+            "terrain",
+            9
+          ],
+          [
+            "attrition",
+            8
+          ],
+          [
+            "opportunity",
+            4
+          ],
+          [
+            "mystic",
+            3
+          ],
+          [
+            "mystic_flux",
+            1
+          ],
+          [
+            "reinforcements",
+            1
+          ]
+        ],
+        "top_event_ids": [
+          [
+            "hazard_noise_01",
+            10
+          ],
+          [
+            "time_misread_01",
+            8
+          ],
+          [
+            "hazard_slippery_01",
+            6
+          ],
+          [
+            "attrition_gear_fail_01",
+            5
+          ],
+          [
+            "opportunity_opening_01",
+            4
+          ],
+          [
+            "time_ammo_dry_01",
+            3
+          ],
+          [
+            "hazard_echoes_01",
+            2
+          ],
+          [
+            "hazard_water_rise_01",
+            2
+          ],
+          [
+            "mystic_whisper_01",
+            2
+          ],
+          [
+            "time_deadline_01",
+            2
+          ],
+          [
+            "mystic_static_01",
+            1
+          ],
+          [
+            "reinforce_horns_01",
+            1
+          ],
+          [
+            "hazard_collapse_01",
+            1
+          ],
+          [
+            "hazard_darkness_01",
+            1
+          ],
+          [
+            "hazard_poison_air_01",
+            1
+          ]
+        ],
+        "cutoff_resolutions": {
+          "none": 50
+        }
+      },
+      "state_snapshot": {
+        "clocks": {
+          "tension": 12,
+          "heat": 12,
+          "attrition": 0,
+          "mystic_flux": 0
+        },
+        "tag_cooldowns_count": 2,
+        "recent_ids_count": 2
+      },
+      "events": null,
+      "events_sample": [
+        {
+          "event_id": "attrition_gear_fail_01",
+          "title": "Gear Failure",
+          "tags": [
+            "attrition",
+            "cost",
+            "time_pressure"
+          ],
+          "severity": 3,
+          "cutoff_applied": false,
+          "cutoff_resolution": "none",
+          "original_severity": null,
+          "effect_vector": {
+            "threat": 0,
+            "cost": 1,
+            "heat": 0,
+            "time_pressure": 2,
+            "position_shift": 0,
+            "information": 0,
+            "opportunity": 1
+          },
+          "fiction": {
+            "prompt": "A critical item slips, snaps, or jams, the timing is brutal.",
+            "sensory": [
+              "metal snap",
+              "wet click"
+            ],
+            "immediate_choice": [
+              "Spend time to fix it",
+              "Adapt with what you have"
+            ]
+          },
+          "state_delta": {
+            "clocks": {
+              "tension": 1
+            },
+            "recent_event_ids_add": [
+              "attrition_gear_fail_01"
+            ],
+            "tag_cooldowns_set": {
+              "attrition": 2
+            },
+            "flags_set": {}
+          },
+          "followups": [],
+          "rng_trace": [
+            {
+              "op": "severity(zipf,alpha=1.22)",
+              "index": "2",
+              "total": "2.438612"
+            },
+            {
+              "op": "content_entry",
+              "index": "2",
+              "total": "8.300000"
+            },
+            {
+              "op": "effect:threat",
+              "value": "0",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:cost",
+              "value": "1",
+              "range": "1-4"
+            },
+            {
+              "op": "effect:time_pressure",
+              "value": "2",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:opportunity",
+              "value": "1",
+              "range": "0-1"
+            }
+          ]
+        },
+        {
+          "event_id": "hazard_slippery_01",
+          "title": "Slippery Ground",
+          "tags": [
+            "hazard",
+            "terrain",
+            "positioning"
+          ],
+          "severity": 2,
+          "cutoff_applied": false,
+          "cutoff_resolution": "none",
+          "original_severity": null,
+          "effect_vector": {
+            "threat": 2,
+            "cost": 0,
+            "heat": 0,
+            "time_pressure": 1,
+            "position_shift": 1,
+            "information": 0,
+            "opportunity": 0
+          },
+          "fiction": {
+            "prompt": "The footing changes, movement becomes a risk and a weapon.",
+            "sensory": [
+              "slick stone",
+              "oil sheen"
+            ],
+            "immediate_choice": [
+              "Slow down and control space",
+              "Use momentum to force mistakes"
+            ]
+          },
+          "state_delta": {
+            "clocks": {
+              "tension": 0
+            },
+            "recent_event_ids_add": [
+              "hazard_slippery_01"
+            ],
+            "tag_cooldowns_set": {
+              "terrain": 2
+            },
+            "flags_set": {}
+          },
+          "followups": [],
+          "rng_trace": [
+            {
+              "op": "severity(zipf,alpha=1.22)",
+              "index": "1",
+              "total": "2.438612"
+            },
+            {
+              "op": "content_entry",
+              "index": "0",
+              "total": "2.800000"
+            },
+            {
+              "op": "effect:threat",
+              "value": "2",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:cost",
+              "value": "0",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:time_pressure",
+              "value": "1",
+              "range": "0-1"
+            },
+            {
+              "op": "effect:position_shift",
+              "value": "1",
+              "range": "1-3"
+            }
+          ]
+        },
+        {
+          "event_id": "hazard_noise_01",
+          "title": "Unwanted Noise",
+          "tags": [
+            "visibility",
+            "time_pressure",
+            "cost"
+          ],
+          "severity": 1,
+          "cutoff_applied": false,
+          "cutoff_resolution": "none",
+          "original_severity": null,
+          "effect_vector": {
+            "threat": 0,
+            "cost": 2,
+            "heat": 1,
+            "time_pressure": 1,
+            "position_shift": 0,
+            "information": 1,
+            "opportunity": 0
+          },
+          "fiction": {
+            "prompt": "Something loud happens at the worst moment, attention shifts toward you.",
+            "sensory": [
+              "clang",
+              "echo"
+            ],
+            "immediate_choice": [
+              "Freeze and listen",
+              "Move fast before it converges"
+            ]
+          },
+          "state_delta": {
+            "clocks": {
+              "tension": 0,
+              "heat": 0
+            },
+            "recent_event_ids_add": [
+              "hazard_noise_01"
+            ],
+            "tag_cooldowns_set": {
+              "visibility": 2
+            },
+            "flags_set": {}
+          },
+          "followups": [],
+          "rng_trace": [
+            {
+              "op": "severity(zipf,alpha=1.22)",
+              "index": "0",
+              "total": "2.438612"
+            },
+            {
+              "op": "content_entry",
+              "index": "0",
+              "total": "3.800000"
+            },
+            {
+              "op": "effect:cost",
+              "value": "2",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:heat",
+              "value": "1",
+              "range": "1-3"
+            },
+            {
+              "op": "effect:time_pressure",
+              "value": "1",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:information",
+              "value": "1",
+              "range": "0-1"
+            }
+          ]
+        },
+        {
+          "event_id": "time_misread_01",
+          "title": "Bad Read",
+          "tags": [
+            "information",
+            "time_pressure",
+            "cost"
+          ],
+          "severity": 6,
+          "cutoff_applied": false,
+          "cutoff_resolution": "none",
+          "original_severity": null,
+          "effect_vector": {
+            "threat": 0,
+            "cost": 2,
+            "heat": 0,
+            "time_pressure": 1,
+            "position_shift": 1,
+            "information": 0,
+            "opportunity": 0
+          },
+          "fiction": {
+            "prompt": "You realize a detail was wrong, your plan needs a fast correction.",
+            "sensory": [
+              "cold realization",
+              "quick glances"
+            ],
+            "immediate_choice": [
+              "Re-plan on the fly",
+              "Commit and ride it out"
+            ]
+          },
+          "state_delta": {
+            "clocks": {
+              "tension": 1
+            },
+            "recent_event_ids_add": [
+              "time_misread_01"
+            ],
+            "tag_cooldowns_set": {
+              "information": 1
+            },
+            "flags_set": {}
+          },
+          "followups": [],
+          "rng_trace": [
+            {
+              "op": "severity(zipf,alpha=1.22)",
+              "index": "5",
+              "total": "2.438612"
+            },
+            {
+              "op": "content_entry",
+              "index": "6",
+              "total": "10.700000"
+            },
+            {
+              "op": "effect:cost",
+              "value": "2",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:time_pressure",
+              "value": "1",
+              "range": "1-3"
+            },
+            {
+              "op": "effect:position_shift",
+              "value": "1",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:information",
+              "value": "0",
+              "range": "0-2"
+            }
+          ]
+        },
+        {
+          "event_id": "hazard_noise_01",
+          "title": "Unwanted Noise",
+          "tags": [
+            "visibility",
+            "time_pressure",
+            "cost"
+          ],
+          "severity": 1,
+          "cutoff_applied": false,
+          "cutoff_resolution": "none",
+          "original_severity": null,
+          "effect_vector": {
+            "threat": 0,
+            "cost": 1,
+            "heat": 3,
+            "time_pressure": 0,
+            "position_shift": 0,
+            "information": 1,
+            "opportunity": 0
+          },
+          "fiction": {
+            "prompt": "Something loud happens at the worst moment, attention shifts toward you.",
+            "sensory": [
+              "clang",
+              "echo"
+            ],
+            "immediate_choice": [
+              "Freeze and listen",
+              "Move fast before it converges"
+            ]
+          },
+          "state_delta": {
+            "clocks": {
+              "tension": 0,
+              "heat": 0
+            },
+            "recent_event_ids_add": [
+              "hazard_noise_01"
+            ],
+            "tag_cooldowns_set": {
+              "visibility": 2
+            },
+            "flags_set": {}
+          },
+          "followups": [],
+          "rng_trace": [
+            {
+              "op": "severity(zipf,alpha=1.22)",
+              "index": "0",
+              "total": "2.438612"
+            },
+            {
+              "op": "content_entry",
+              "index": "0",
+              "total": "3.900000"
+            },
+            {
+              "op": "effect:cost",
+              "value": "1",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:heat",
+              "value": "3",
+              "range": "1-3"
+            },
+            {
+              "op": "effect:time_pressure",
+              "value": "0",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:information",
+              "value": "1",
+              "range": "0-1"
+            }
+          ]
+        },
+        {
+          "event_id": "hazard_slippery_01",
+          "title": "Slippery Ground",
+          "tags": [
+            "hazard",
+            "terrain",
+            "positioning"
+          ],
+          "severity": 1,
+          "cutoff_applied": false,
+          "cutoff_resolution": "none",
+          "original_severity": null,
+          "effect_vector": {
+            "threat": 1,
+            "cost": 2,
+            "heat": 0,
+            "time_pressure": 1,
+            "position_shift": 2,
+            "information": 0,
+            "opportunity": 0
+          },
+          "fiction": {
+            "prompt": "The footing changes, movement becomes a risk and a weapon.",
+            "sensory": [
+              "slick stone",
+              "oil sheen"
+            ],
+            "immediate_choice": [
+              "Slow down and control space",
+              "Use momentum to force mistakes"
+            ]
+          },
+          "state_delta": {
+            "clocks": {
+              "tension": 0
+            },
+            "recent_event_ids_add": [
+              "hazard_slippery_01"
+            ],
+            "tag_cooldowns_set": {
+              "terrain": 2
+            },
+            "flags_set": {}
+          },
+          "followups": [],
+          "rng_trace": [
+            {
+              "op": "severity(zipf,alpha=1.22)",
+              "index": "0",
+              "total": "2.438612"
+            },
+            {
+              "op": "content_entry",
+              "index": "0",
+              "total": "1.900000"
+            },
+            {
+              "op": "effect:threat",
+              "value": "1",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:cost",
+              "value": "2",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:time_pressure",
+              "value": "1",
+              "range": "0-1"
+            },
+            {
+              "op": "effect:position_shift",
+              "value": "2",
+              "range": "1-3"
+            }
+          ]
+        },
+        {
+          "event_id": "hazard_echoes_01",
+          "title": "Echoes Give You Away",
+          "tags": [
+            "visibility",
+            "hazard",
+            "time_pressure"
+          ],
+          "severity": 2,
+          "cutoff_applied": false,
+          "cutoff_resolution": "none",
+          "original_severity": null,
+          "effect_vector": {
+            "threat": 0,
+            "cost": 1,
+            "heat": 3,
+            "time_pressure": 1,
+            "position_shift": 0,
+            "information": 0,
+            "opportunity": 0
+          },
+          "fiction": {
+            "prompt": "Sound carries farther than it should, your presence becomes obvious.",
+            "sensory": [
+              "ringing echo",
+              "distant reply"
+            ],
+            "immediate_choice": [
+              "Go silent",
+              "Move fast before it converges"
+            ]
+          },
+          "state_delta": {
+            "clocks": {
+              "tension": 0,
+              "heat": 0
+            },
+            "recent_event_ids_add": [
+              "hazard_echoes_01"
+            ],
+            "tag_cooldowns_set": {
+              "visibility": 2
+            },
+            "flags_set": {}
+          },
+          "followups": [],
+          "rng_trace": [
+            {
+              "op": "severity(zipf,alpha=1.22)",
+              "index": "1",
+              "total": "2.438612"
+            },
+            {
+              "op": "content_entry",
+              "index": "7",
+              "total": "10.800000"
+            },
+            {
+              "op": "effect:cost",
+              "value": "1",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:heat",
+              "value": "3",
+              "range": "1-3"
+            },
+            {
+              "op": "effect:time_pressure",
+              "value": "1",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:information",
+              "value": "0",
+              "range": "0-1"
+            }
+          ]
+        },
+        {
+          "event_id": "time_misread_01",
+          "title": "Bad Read",
+          "tags": [
+            "information",
+            "time_pressure",
+            "cost"
+          ],
+          "severity": 2,
+          "cutoff_applied": false,
+          "cutoff_resolution": "none",
+          "original_severity": null,
+          "effect_vector": {
+            "threat": 0,
+            "cost": 1,
+            "heat": 0,
+            "time_pressure": 2,
+            "position_shift": 0,
+            "information": 0,
+            "opportunity": 0
+          },
+          "fiction": {
+            "prompt": "You realize a detail was wrong, your plan needs a fast correction.",
+            "sensory": [
+              "cold realization",
+              "quick glances"
+            ],
+            "immediate_choice": [
+              "Re-plan on the fly",
+              "Commit and ride it out"
+            ]
+          },
+          "state_delta": {
+            "clocks": {
+              "tension": 0
+            },
+            "recent_event_ids_add": [
+              "time_misread_01"
+            ],
+            "tag_cooldowns_set": {
+              "information": 1
+            },
+            "flags_set": {}
+          },
+          "followups": [],
+          "rng_trace": [
+            {
+              "op": "severity(zipf,alpha=1.22)",
+              "index": "1",
+              "total": "2.438612"
+            },
+            {
+              "op": "content_entry",
+              "index": "3",
+              "total": "5.600000"
+            },
+            {
+              "op": "effect:cost",
+              "value": "1",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:time_pressure",
+              "value": "2",
+              "range": "1-3"
+            },
+            {
+              "op": "effect:position_shift",
+              "value": "0",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:information",
+              "value": "0",
+              "range": "0-2"
+            }
+          ]
+        },
+        {
+          "event_id": "hazard_noise_01",
+          "title": "Unwanted Noise",
+          "tags": [
+            "visibility",
+            "time_pressure",
+            "cost"
+          ],
+          "severity": 1,
+          "cutoff_applied": false,
+          "cutoff_resolution": "none",
+          "original_severity": null,
+          "effect_vector": {
+            "threat": 0,
+            "cost": 2,
+            "heat": 1,
+            "time_pressure": 1,
+            "position_shift": 0,
+            "information": 0,
+            "opportunity": 0
+          },
+          "fiction": {
+            "prompt": "Something loud happens at the worst moment, attention shifts toward you.",
+            "sensory": [
+              "clang",
+              "echo"
+            ],
+            "immediate_choice": [
+              "Freeze and listen",
+              "Move fast before it converges"
+            ]
+          },
+          "state_delta": {
+            "clocks": {
+              "tension": 0,
+              "heat": 0
+            },
+            "recent_event_ids_add": [
+              "hazard_noise_01"
+            ],
+            "tag_cooldowns_set": {
+              "visibility": 2
+            },
+            "flags_set": {}
+          },
+          "followups": [],
+          "rng_trace": [
+            {
+              "op": "severity(zipf,alpha=1.22)",
+              "index": "0",
+              "total": "2.438612"
+            },
+            {
+              "op": "content_entry",
+              "index": "0",
+              "total": "3.900000"
+            },
+            {
+              "op": "effect:cost",
+              "value": "2",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:heat",
+              "value": "1",
+              "range": "1-3"
+            },
+            {
+              "op": "effect:time_pressure",
+              "value": "1",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:information",
+              "value": "0",
+              "range": "0-1"
+            }
+          ]
+        },
+        {
+          "event_id": "hazard_water_rise_01",
+          "title": "Water Rising",
+          "tags": [
+            "hazard",
+            "terrain",
+            "time_pressure"
+          ],
+          "severity": 3,
+          "cutoff_applied": false,
+          "cutoff_resolution": "none",
+          "original_severity": null,
+          "effect_vector": {
+            "threat": 1,
+            "cost": 0,
+            "heat": 0,
+            "time_pressure": 2,
+            "position_shift": 1,
+            "information": 0,
+            "opportunity": 0
+          },
+          "fiction": {
+            "prompt": "Water creeps in, routes narrow, options sink.",
+            "sensory": [
+              "dripping rush",
+              "cold splash"
+            ],
+            "immediate_choice": [
+              "Move to higher ground",
+              "Use the water to your advantage"
+            ]
+          },
+          "state_delta": {
+            "clocks": {
+              "tension": 1
+            },
+            "recent_event_ids_add": [
+              "hazard_water_rise_01"
+            ],
+            "tag_cooldowns_set": {
+              "hazard": 2,
+              "terrain": 2
+            },
+            "flags_set": {}
+          },
+          "followups": [],
+          "rng_trace": [
+            {
+              "op": "severity(zipf,alpha=1.22)",
+              "index": "2",
+              "total": "2.438612"
+            },
+            {
+              "op": "content_entry",
+              "index": "8",
+              "total": "8.300000"
+            },
+            {
+              "op": "effect:threat",
+              "value": "1",
+              "range": "1-3"
+            },
+            {
+              "op": "effect:cost",
+              "value": "0",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:time_pressure",
+              "value": "2",
+              "range": "1-3"
+            },
+            {
+              "op": "effect:position_shift",
+              "value": "1",
+              "range": "1-3"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "step_index": 3,
+      "preset": "dungeon",
+      "phase": "aftermath",
+      "rarity_mode": "normal",
+      "seed": 5003,
+      "batch_size": 50,
+      "summary": {
+        "n": 50,
+        "cutoff_rate": 0.0,
+        "severity_buckets": {
+          "1-3": 35,
+          "4-6": 7,
+          "7-10": 8
+        },
+        "severity_min": 1,
+        "severity_max": 10,
+        "severity_avg": 3.06,
+        "top_tags": [
+          [
+            "time_pressure",
+            27
+          ],
+          [
+            "information",
+            26
+          ],
+          [
+            "terrain",
+            17
+          ],
+          [
+            "visibility",
+            15
+          ],
+          [
+            "opportunity",
+            14
+          ],
+          [
+            "attrition",
+            13
+          ],
+          [
+            "cost",
+            13
+          ],
+          [
+            "hazard",
+            11
+          ],
+          [
+            "mystic",
+            8
+          ],
+          [
+            "positioning",
+            6
+          ]
+        ],
+        "top_event_ids": [
+          [
+            "aftermath_revelation_delayed_01",
+            8
+          ],
+          [
+            "attrition_gear_fail_01",
+            6
+          ],
+          [
+            "aftermath_terrain_marked_01",
+            6
+          ],
+          [
+            "aftermath_quiet_too_quiet_01",
+            6
+          ],
+          [
+            "aftermath_structural_groan_01",
+            5
+          ],
+          [
+            "time_ammo_dry_01",
+            4
+          ],
+          [
+            "hazard_water_rise_01",
+            3
+          ],
+          [
+            "aftermath_opportunity_window_01",
+            3
+          ],
+          [
+            "aftermath_resource_revealed_01",
+            3
+          ],
+          [
+            "attrition_fatigue_01",
+            3
+          ],
+          [
+            "hazard_smoke_01",
+            3
+          ]
+        ],
+        "cutoff_resolutions": {
+          "none": 50
+        }
+      },
+      "state_snapshot": {
+        "clocks": {
+          "tension": 12,
+          "heat": 12,
+          "attrition": 0,
+          "mystic_flux": 0
+        },
+        "tag_cooldowns_count": 3,
+        "recent_ids_count": 3
+      },
+      "events": null,
+      "events_sample": [
+        {
+          "event_id": "aftermath_revelation_delayed_01",
+          "title": "Delayed Revelation",
+          "tags": [
+            "information",
+            "opportunity",
+            "mystic"
+          ],
+          "severity": 1,
+          "cutoff_applied": false,
+          "cutoff_resolution": "none",
+          "original_severity": null,
+          "effect_vector": {
+            "threat": 0,
+            "cost": 0,
+            "heat": 0,
+            "time_pressure": 0,
+            "position_shift": 0,
+            "information": 3,
+            "opportunity": 3
+          },
+          "fiction": {
+            "prompt": "Only now does a detail click into place, the meaning was always there.",
+            "sensory": [
+              "sudden clarity",
+              "overlapping patterns"
+            ],
+            "immediate_choice": [
+              "Act on it immediately",
+              "Store it for later use"
+            ]
+          },
+          "state_delta": {
+            "clocks": {
+              "tension": 0
+            },
+            "recent_event_ids_add": [
+              "aftermath_revelation_delayed_01"
+            ],
+            "tag_cooldowns_set": {
+              "information": 2,
+              "mystic": 1
+            },
+            "flags_set": {}
+          },
+          "followups": [],
+          "rng_trace": [
+            {
+              "op": "severity(zipf,alpha=1.22)",
+              "index": "0",
+              "total": "2.438612"
+            },
+            {
+              "op": "content_entry",
+              "index": "1",
+              "total": "1.700000"
+            },
+            {
+              "op": "effect:information",
+              "value": "3",
+              "range": "2-4"
+            },
+            {
+              "op": "effect:opportunity",
+              "value": "3",
+              "range": "1-3"
+            }
+          ]
+        },
+        {
+          "event_id": "hazard_water_rise_01",
+          "title": "Water Rising",
+          "tags": [
+            "hazard",
+            "terrain",
+            "time_pressure"
+          ],
+          "severity": 1,
+          "cutoff_applied": false,
+          "cutoff_resolution": "none",
+          "original_severity": null,
+          "effect_vector": {
+            "threat": 2,
+            "cost": 2,
+            "heat": 0,
+            "time_pressure": 2,
+            "position_shift": 3,
+            "information": 0,
+            "opportunity": 0
+          },
+          "fiction": {
+            "prompt": "Water creeps in, routes narrow, options sink.",
+            "sensory": [
+              "dripping rush",
+              "cold splash"
+            ],
+            "immediate_choice": [
+              "Move to higher ground",
+              "Use the water to your advantage"
+            ]
+          },
+          "state_delta": {
+            "clocks": {
+              "tension": 0
+            },
+            "recent_event_ids_add": [
+              "hazard_water_rise_01"
+            ],
+            "tag_cooldowns_set": {
+              "hazard": 2,
+              "terrain": 2
+            },
+            "flags_set": {}
+          },
+          "followups": [],
+          "rng_trace": [
+            {
+              "op": "severity(zipf,alpha=1.22)",
+              "index": "0",
+              "total": "2.438612"
+            },
+            {
+              "op": "content_entry",
+              "index": "3",
+              "total": "4.300000"
+            },
+            {
+              "op": "effect:threat",
+              "value": "2",
+              "range": "1-3"
+            },
+            {
+              "op": "effect:cost",
+              "value": "2",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:time_pressure",
+              "value": "2",
+              "range": "1-3"
+            },
+            {
+              "op": "effect:position_shift",
+              "value": "3",
+              "range": "1-3"
+            }
+          ]
+        },
+        {
+          "event_id": "aftermath_opportunity_window_01",
+          "title": "Brief Opening",
+          "tags": [
+            "opportunity",
+            "information",
+            "time_pressure"
+          ],
+          "severity": 1,
+          "cutoff_applied": false,
+          "cutoff_resolution": "none",
+          "original_severity": null,
+          "effect_vector": {
+            "threat": 0,
+            "cost": 0,
+            "heat": 0,
+            "time_pressure": 2,
+            "position_shift": 0,
+            "information": 1,
+            "opportunity": 3
+          },
+          "fiction": {
+            "prompt": "Something previously blocked is now accessible, but not for long.",
+            "sensory": [
+              "clearing dust",
+              "exposed passage"
+            ],
+            "immediate_choice": [
+              "Take it now",
+              "Mark it for later"
+            ]
+          },
+          "state_delta": {
+            "clocks": {
+              "tension": 0
+            },
+            "recent_event_ids_add": [
+              "aftermath_opportunity_window_01"
+            ],
+            "tag_cooldowns_set": {
+              "opportunity": 2
+            },
+            "flags_set": {}
+          },
+          "followups": [],
+          "rng_trace": [
+            {
+              "op": "severity(zipf,alpha=1.22)",
+              "index": "0",
+              "total": "2.438612"
+            },
+            {
+              "op": "content_entry",
+              "index": "0",
+              "total": "1.800000"
+            },
+            {
+              "op": "effect:time_pressure",
+              "value": "2",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:information",
+              "value": "1",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:opportunity",
+              "value": "3",
+              "range": "2-4"
+            }
+          ]
+        },
+        {
+          "event_id": "time_ammo_dry_01",
+          "title": "Supplies Run Thin",
+          "tags": [
+            "attrition",
+            "cost",
+            "time_pressure"
+          ],
+          "severity": 2,
+          "cutoff_applied": false,
+          "cutoff_resolution": "none",
+          "original_severity": null,
+          "effect_vector": {
+            "threat": 0,
+            "cost": 1,
+            "heat": 0,
+            "time_pressure": 2,
+            "position_shift": 0,
+            "information": 1,
+            "opportunity": 0
+          },
+          "fiction": {
+            "prompt": "A key resource is lower than expected, you feel it immediately.",
+            "sensory": [
+              "empty click",
+              "frayed strap"
+            ],
+            "immediate_choice": [
+              "Spend time to stabilize",
+              "Press on and accept risk"
+            ]
+          },
+          "state_delta": {
+            "clocks": {
+              "tension": 0
+            },
+            "recent_event_ids_add": [
+              "time_ammo_dry_01"
+            ],
+            "tag_cooldowns_set": {
+              "attrition": 2
+            },
+            "flags_set": {}
+          },
+          "followups": [],
+          "rng_trace": [
+            {
+              "op": "severity(zipf,alpha=1.22)",
+              "index": "1",
+              "total": "2.438612"
+            },
+            {
+              "op": "content_entry",
+              "index": "1",
+              "total": "6.400000"
+            },
+            {
+              "op": "effect:cost",
+              "value": "1",
+              "range": "1-4"
+            },
+            {
+              "op": "effect:time_pressure",
+              "value": "2",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:information",
+              "value": "1",
+              "range": "0-1"
+            },
+            {
+              "op": "effect:opportunity",
+              "value": "0",
+              "range": "0-1"
+            }
+          ]
+        },
+        {
+          "event_id": "aftermath_structural_groan_01",
+          "title": "Structural Aftermath",
+          "tags": [
+            "terrain",
+            "hazard",
+            "time_pressure"
+          ],
+          "severity": 2,
+          "cutoff_applied": false,
+          "cutoff_resolution": "none",
+          "original_severity": null,
+          "effect_vector": {
+            "threat": 1,
+            "cost": 0,
+            "heat": 0,
+            "time_pressure": 1,
+            "position_shift": 0,
+            "information": 0,
+            "opportunity": 0
+          },
+          "fiction": {
+            "prompt": "The space protests, settling sounds hint at instability.",
+            "sensory": [
+              "stone grinding",
+              "dust sifting"
+            ],
+            "immediate_choice": [
+              "Move carefully",
+              "Exit before it worsens"
+            ]
+          },
+          "state_delta": {
+            "clocks": {
+              "tension": 0
+            },
+            "recent_event_ids_add": [
+              "aftermath_structural_groan_01"
+            ],
+            "tag_cooldowns_set": {
+              "terrain": 2,
+              "hazard": 1
+            },
+            "flags_set": {}
+          },
+          "followups": [],
+          "rng_trace": [
+            {
+              "op": "severity(zipf,alpha=1.22)",
+              "index": "1",
+              "total": "2.438612"
+            },
+            {
+              "op": "content_entry",
+              "index": "1",
+              "total": "5.300000"
+            },
+            {
+              "op": "effect:threat",
+              "value": "1",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:time_pressure",
+              "value": "1",
+              "range": "1-3"
+            },
+            {
+              "op": "effect:position_shift",
+              "value": "0",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:information",
+              "value": "0",
+              "range": "0-1"
+            }
+          ]
+        },
+        {
+          "event_id": "attrition_gear_fail_01",
+          "title": "Gear Failure",
+          "tags": [
+            "attrition",
+            "cost",
+            "time_pressure"
+          ],
+          "severity": 2,
+          "cutoff_applied": false,
+          "cutoff_resolution": "none",
+          "original_severity": null,
+          "effect_vector": {
+            "threat": 2,
+            "cost": 4,
+            "heat": 0,
+            "time_pressure": 0,
+            "position_shift": 0,
+            "information": 0,
+            "opportunity": 0
+          },
+          "fiction": {
+            "prompt": "A critical item slips, snaps, or jams, the timing is brutal.",
+            "sensory": [
+              "metal snap",
+              "wet click"
+            ],
+            "immediate_choice": [
+              "Spend time to fix it",
+              "Adapt with what you have"
+            ]
+          },
+          "state_delta": {
+            "clocks": {
+              "tension": 0
+            },
+            "recent_event_ids_add": [
+              "attrition_gear_fail_01"
+            ],
+            "tag_cooldowns_set": {
+              "attrition": 2
+            },
+            "flags_set": {}
+          },
+          "followups": [],
+          "rng_trace": [
+            {
+              "op": "severity(zipf,alpha=1.22)",
+              "index": "1",
+              "total": "2.438612"
+            },
+            {
+              "op": "content_entry",
+              "index": "1",
+              "total": "5.400000"
+            },
+            {
+              "op": "effect:threat",
+              "value": "2",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:cost",
+              "value": "4",
+              "range": "1-4"
+            },
+            {
+              "op": "effect:time_pressure",
+              "value": "0",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:opportunity",
+              "value": "0",
+              "range": "0-1"
+            }
+          ]
+        },
+        {
+          "event_id": "aftermath_resource_revealed_01",
+          "title": "Hidden Resource Exposed",
+          "tags": [
+            "opportunity",
+            "information",
+            "terrain"
+          ],
+          "severity": 2,
+          "cutoff_applied": false,
+          "cutoff_resolution": "none",
+          "original_severity": null,
+          "effect_vector": {
+            "threat": 0,
+            "cost": 0,
+            "heat": 0,
+            "time_pressure": 0,
+            "position_shift": 0,
+            "information": 1,
+            "opportunity": 2
+          },
+          "fiction": {
+            "prompt": "The fight exposed something valuable that was previously hidden.",
+            "sensory": [
+              "glinting metal",
+              "revealed cache"
+            ],
+            "immediate_choice": [
+              "Claim it now",
+              "Note it for later"
+            ]
+          },
+          "state_delta": {
+            "clocks": {
+              "tension": 0
+            },
+            "recent_event_ids_add": [
+              "aftermath_resource_revealed_01"
+            ],
+            "tag_cooldowns_set": {
+              "opportunity": 2
+            },
+            "flags_set": {}
+          },
+          "followups": [],
+          "rng_trace": [
+            {
+              "op": "severity(zipf,alpha=1.22)",
+              "index": "1",
+              "total": "2.438612"
+            },
+            {
+              "op": "content_entry",
+              "index": "5",
+              "total": "5.400000"
+            },
+            {
+              "op": "effect:information",
+              "value": "1",
+              "range": "1-2"
+            },
+            {
+              "op": "effect:opportunity",
+              "value": "2",
+              "range": "2-4"
+            }
+          ]
+        },
+        {
+          "event_id": "aftermath_terrain_marked_01",
+          "title": "Landscape Remembers",
+          "tags": [
+            "terrain",
+            "information",
+            "visibility"
+          ],
+          "severity": 1,
+          "cutoff_applied": false,
+          "cutoff_resolution": "none",
+          "original_severity": null,
+          "effect_vector": {
+            "threat": 0,
+            "cost": 0,
+            "heat": 0,
+            "time_pressure": 0,
+            "position_shift": 1,
+            "information": 1,
+            "opportunity": 0
+          },
+          "fiction": {
+            "prompt": "The fight left marks on the space, the terrain tells what happened.",
+            "sensory": [
+              "scorched stone",
+              "splintered wood",
+              "disturbed earth"
+            ],
+            "immediate_choice": [
+              "Obscure the signs",
+              "Leave them as warning"
+            ]
+          },
+          "state_delta": {
+            "clocks": {
+              "tension": 0,
+              "heat": 0
+            },
+            "recent_event_ids_add": [
+              "aftermath_terrain_marked_01"
+            ],
+            "tag_cooldowns_set": {
+              "terrain": 2
+            },
+            "flags_set": {}
+          },
+          "followups": [],
+          "rng_trace": [
+            {
+              "op": "severity(zipf,alpha=1.22)",
+              "index": "0",
+              "total": "2.438612"
+            },
+            {
+              "op": "content_entry",
+              "index": "0",
+              "total": "1.800000"
+            },
+            {
+              "op": "effect:position_shift",
+              "value": "1",
+              "range": "0-1"
+            },
+            {
+              "op": "effect:information",
+              "value": "1",
+              "range": "1-2"
+            },
+            {
+              "op": "effect:opportunity",
+              "value": "0",
+              "range": "0-1"
+            }
+          ]
+        },
+        {
+          "event_id": "aftermath_revelation_delayed_01",
+          "title": "Delayed Revelation",
+          "tags": [
+            "information",
+            "opportunity",
+            "mystic"
+          ],
+          "severity": 1,
+          "cutoff_applied": false,
+          "cutoff_resolution": "none",
+          "original_severity": null,
+          "effect_vector": {
+            "threat": 0,
+            "cost": 0,
+            "heat": 0,
+            "time_pressure": 0,
+            "position_shift": 0,
+            "information": 2,
+            "opportunity": 2
+          },
+          "fiction": {
+            "prompt": "Only now does a detail click into place, the meaning was always there.",
+            "sensory": [
+              "sudden clarity",
+              "overlapping patterns"
+            ],
+            "immediate_choice": [
+              "Act on it immediately",
+              "Store it for later use"
+            ]
+          },
+          "state_delta": {
+            "clocks": {
+              "tension": 0
+            },
+            "recent_event_ids_add": [
+              "aftermath_revelation_delayed_01"
+            ],
+            "tag_cooldowns_set": {
+              "information": 2,
+              "mystic": 1
+            },
+            "flags_set": {}
+          },
+          "followups": [],
+          "rng_trace": [
+            {
+              "op": "severity(zipf,alpha=1.22)",
+              "index": "0",
+              "total": "2.438612"
+            },
+            {
+              "op": "content_entry",
+              "index": "1",
+              "total": "2.600000"
+            },
+            {
+              "op": "effect:information",
+              "value": "2",
+              "range": "2-4"
+            },
+            {
+              "op": "effect:opportunity",
+              "value": "2",
+              "range": "1-3"
+            }
+          ]
+        },
+        {
+          "event_id": "hazard_water_rise_01",
+          "title": "Water Rising",
+          "tags": [
+            "hazard",
+            "terrain",
+            "time_pressure"
+          ],
+          "severity": 1,
+          "cutoff_applied": false,
+          "cutoff_resolution": "none",
+          "original_severity": null,
+          "effect_vector": {
+            "threat": 3,
+            "cost": 2,
+            "heat": 0,
+            "time_pressure": 1,
+            "position_shift": 2,
+            "information": 0,
+            "opportunity": 0
+          },
+          "fiction": {
+            "prompt": "Water creeps in, routes narrow, options sink.",
+            "sensory": [
+              "dripping rush",
+              "cold splash"
+            ],
+            "immediate_choice": [
+              "Move to higher ground",
+              "Use the water to your advantage"
+            ]
+          },
+          "state_delta": {
+            "clocks": {
+              "tension": 0
+            },
+            "recent_event_ids_add": [
+              "hazard_water_rise_01"
+            ],
+            "tag_cooldowns_set": {
+              "hazard": 2,
+              "terrain": 2
+            },
+            "flags_set": {}
+          },
+          "followups": [],
+          "rng_trace": [
+            {
+              "op": "severity(zipf,alpha=1.22)",
+              "index": "0",
+              "total": "2.438612"
+            },
+            {
+              "op": "content_entry",
+              "index": "4",
+              "total": "5.300000"
+            },
+            {
+              "op": "effect:threat",
+              "value": "3",
+              "range": "1-3"
+            },
+            {
+              "op": "effect:cost",
+              "value": "2",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:time_pressure",
+              "value": "1",
+              "range": "1-3"
+            },
+            {
+              "op": "effect:position_shift",
+              "value": "2",
+              "range": "1-3"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "step_index": 4,
+      "preset": "dungeon",
+      "phase": "approach",
+      "rarity_mode": "normal",
+      "seed": 5004,
+      "batch_size": 50,
+      "summary": {
+        "n": 50,
+        "cutoff_rate": 0.0,
+        "severity_buckets": {
+          "1-3": 37,
+          "4-6": 6,
+          "7-10": 7
+        },
+        "severity_min": 1,
+        "severity_max": 10,
+        "severity_avg": 2.96,
+        "top_tags": [
+          [
+            "time_pressure",
+            32
+          ],
+          [
+            "visibility",
+            27
+          ],
+          [
+            "hazard",
+            24
+          ],
+          [
+            "cost",
+            20
+          ],
+          [
+            "information",
+            13
+          ],
+          [
+            "positioning",
+            12
+          ],
+          [
+            "terrain",
+            8
+          ],
+          [
+            "mystic",
+            6
+          ],
+          [
+            "reinforcements",
+            3
+          ],
+          [
+            "mystic_flux",
+            2
+          ]
+        ],
+        "top_event_ids": [
+          [
+            "time_misread_01",
+            9
+          ],
+          [
+            "hazard_slippery_01",
+            8
+          ],
+          [
+            "hazard_poison_air_01",
+            6
+          ],
+          [
+            "hazard_echoes_01",
+            6
+          ],
+          [
+            "hazard_noise_01",
+            5
+          ],
+          [
+            "mystic_whisper_01",
+            4
+          ],
+          [
+            "hazard_darkness_01",
+            4
+          ],
+          [
+            "time_deadline_01",
+            3
+          ],
+          [
+            "reinforce_horns_01",
+            3
+          ],
+          [
+            "mystic_static_01",
+            2
+          ]
+        ],
+        "cutoff_resolutions": {
+          "none": 50
+        }
+      },
+      "state_snapshot": {
+        "clocks": {
+          "tension": 12,
+          "heat": 12,
+          "attrition": 0,
+          "mystic_flux": 0
+        },
+        "tag_cooldowns_count": 2,
+        "recent_ids_count": 4
+      },
+      "events": null,
+      "events_sample": [
+        {
+          "event_id": "hazard_poison_air_01",
+          "title": "Bad Air",
+          "tags": [
+            "hazard",
+            "cost",
+            "time_pressure"
+          ],
+          "severity": 1,
+          "cutoff_applied": false,
+          "cutoff_resolution": "none",
+          "original_severity": null,
+          "effect_vector": {
+            "threat": 3,
+            "cost": 3,
+            "heat": 0,
+            "time_pressure": 1,
+            "position_shift": 0,
+            "information": 1,
+            "opportunity": 0
+          },
+          "fiction": {
+            "prompt": "The air is wrong, every breath becomes a decision.",
+            "sensory": [
+              "chemical tang",
+              "burning eyes"
+            ],
+            "immediate_choice": [
+              "Mask up and push",
+              "Retreat to clean air"
+            ]
+          },
+          "state_delta": {
+            "clocks": {
+              "tension": 0
+            },
+            "recent_event_ids_add": [
+              "hazard_poison_air_01"
+            ],
+            "tag_cooldowns_set": {
+              "hazard": 2
+            },
+            "flags_set": {}
+          },
+          "followups": [],
+          "rng_trace": [
+            {
+              "op": "severity(zipf,alpha=1.22)",
+              "index": "0",
+              "total": "2.438612"
+            },
+            {
+              "op": "content_entry",
+              "index": "0",
+              "total": "0.600000"
+            },
+            {
+              "op": "effect:threat",
+              "value": "3",
+              "range": "1-3"
+            },
+            {
+              "op": "effect:cost",
+              "value": "3",
+              "range": "1-3"
+            },
+            {
+              "op": "effect:time_pressure",
+              "value": "1",
+              "range": "1-3"
+            },
+            {
+              "op": "effect:information",
+              "value": "1",
+              "range": "0-1"
+            }
+          ]
+        },
+        {
+          "event_id": "hazard_noise_01",
+          "title": "Unwanted Noise",
+          "tags": [
+            "visibility",
+            "time_pressure",
+            "cost"
+          ],
+          "severity": 1,
+          "cutoff_applied": false,
+          "cutoff_resolution": "none",
+          "original_severity": null,
+          "effect_vector": {
+            "threat": 0,
+            "cost": 0,
+            "heat": 1,
+            "time_pressure": 0,
+            "position_shift": 0,
+            "information": 0,
+            "opportunity": 0
+          },
+          "fiction": {
+            "prompt": "Something loud happens at the worst moment, attention shifts toward you.",
+            "sensory": [
+              "clang",
+              "echo"
+            ],
+            "immediate_choice": [
+              "Freeze and listen",
+              "Move fast before it converges"
+            ]
+          },
+          "state_delta": {
+            "clocks": {
+              "tension": 0,
+              "heat": 0
+            },
+            "recent_event_ids_add": [
+              "hazard_noise_01"
+            ],
+            "tag_cooldowns_set": {
+              "visibility": 2
+            },
+            "flags_set": {}
+          },
+          "followups": [],
+          "rng_trace": [
+            {
+              "op": "severity(zipf,alpha=1.22)",
+              "index": "0",
+              "total": "2.438612"
+            },
+            {
+              "op": "content_entry",
+              "index": "0",
+              "total": "2.700000"
+            },
+            {
+              "op": "effect:cost",
+              "value": "0",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:heat",
+              "value": "1",
+              "range": "1-3"
+            },
+            {
+              "op": "effect:time_pressure",
+              "value": "0",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:information",
+              "value": "0",
+              "range": "0-1"
+            }
+          ]
+        },
+        {
+          "event_id": "hazard_slippery_01",
+          "title": "Slippery Ground",
+          "tags": [
+            "hazard",
+            "terrain",
+            "positioning"
+          ],
+          "severity": 8,
+          "cutoff_applied": false,
+          "cutoff_resolution": "none",
+          "original_severity": null,
+          "effect_vector": {
+            "threat": 1,
+            "cost": 2,
+            "heat": 0,
+            "time_pressure": 0,
+            "position_shift": 3,
+            "information": 0,
+            "opportunity": 0
+          },
+          "fiction": {
+            "prompt": "The footing changes, movement becomes a risk and a weapon.",
+            "sensory": [
+              "slick stone",
+              "oil sheen"
+            ],
+            "immediate_choice": [
+              "Slow down and control space",
+              "Use momentum to force mistakes"
+            ]
+          },
+          "state_delta": {
+            "clocks": {
+              "tension": 1
+            },
+            "recent_event_ids_add": [
+              "hazard_slippery_01"
+            ],
+            "tag_cooldowns_set": {
+              "terrain": 2
+            },
+            "flags_set": {}
+          },
+          "followups": [],
+          "rng_trace": [
+            {
+              "op": "severity(zipf,alpha=1.22)",
+              "index": "7",
+              "total": "2.438612"
+            },
+            {
+              "op": "content_entry",
+              "index": "0",
+              "total": "1.900000"
+            },
+            {
+              "op": "effect:threat",
+              "value": "1",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:cost",
+              "value": "2",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:time_pressure",
+              "value": "0",
+              "range": "0-1"
+            },
+            {
+              "op": "effect:position_shift",
+              "value": "3",
+              "range": "1-3"
+            }
+          ]
+        },
+        {
+          "event_id": "hazard_echoes_01",
+          "title": "Echoes Give You Away",
+          "tags": [
+            "visibility",
+            "hazard",
+            "time_pressure"
+          ],
+          "severity": 1,
+          "cutoff_applied": false,
+          "cutoff_resolution": "none",
+          "original_severity": null,
+          "effect_vector": {
+            "threat": 0,
+            "cost": 2,
+            "heat": 1,
+            "time_pressure": 0,
+            "position_shift": 0,
+            "information": 0,
+            "opportunity": 0
+          },
+          "fiction": {
+            "prompt": "Sound carries farther than it should, your presence becomes obvious.",
+            "sensory": [
+              "ringing echo",
+              "distant reply"
+            ],
+            "immediate_choice": [
+              "Go silent",
+              "Move fast before it converges"
+            ]
+          },
+          "state_delta": {
+            "clocks": {
+              "tension": 0,
+              "heat": 0
+            },
+            "recent_event_ids_add": [
+              "hazard_echoes_01"
+            ],
+            "tag_cooldowns_set": {
+              "visibility": 2
+            },
+            "flags_set": {}
+          },
+          "followups": [],
+          "rng_trace": [
+            {
+              "op": "severity(zipf,alpha=1.22)",
+              "index": "0",
+              "total": "2.438612"
+            },
+            {
+              "op": "content_entry",
+              "index": "1",
+              "total": "2.600000"
+            },
+            {
+              "op": "effect:cost",
+              "value": "2",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:heat",
+              "value": "1",
+              "range": "1-3"
+            },
+            {
+              "op": "effect:time_pressure",
+              "value": "0",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:information",
+              "value": "0",
+              "range": "0-1"
+            }
+          ]
+        },
+        {
+          "event_id": "time_misread_01",
+          "title": "Bad Read",
+          "tags": [
+            "information",
+            "time_pressure",
+            "cost"
+          ],
+          "severity": 1,
+          "cutoff_applied": false,
+          "cutoff_resolution": "none",
+          "original_severity": null,
+          "effect_vector": {
+            "threat": 0,
+            "cost": 0,
+            "heat": 0,
+            "time_pressure": 1,
+            "position_shift": 0,
+            "information": 1,
+            "opportunity": 0
+          },
+          "fiction": {
+            "prompt": "You realize a detail was wrong, your plan needs a fast correction.",
+            "sensory": [
+              "cold realization",
+              "quick glances"
+            ],
+            "immediate_choice": [
+              "Re-plan on the fly",
+              "Commit and ride it out"
+            ]
+          },
+          "state_delta": {
+            "clocks": {
+              "tension": 0
+            },
+            "recent_event_ids_add": [
+              "time_misread_01"
+            ],
+            "tag_cooldowns_set": {
+              "information": 1
+            },
+            "flags_set": {}
+          },
+          "followups": [],
+          "rng_trace": [
+            {
+              "op": "severity(zipf,alpha=1.22)",
+              "index": "0",
+              "total": "2.438612"
+            },
+            {
+              "op": "content_entry",
+              "index": "0",
+              "total": "0.900000"
+            },
+            {
+              "op": "effect:cost",
+              "value": "0",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:time_pressure",
+              "value": "1",
+              "range": "1-3"
+            },
+            {
+              "op": "effect:position_shift",
+              "value": "0",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:information",
+              "value": "1",
+              "range": "0-2"
+            }
+          ]
+        },
+        {
+          "event_id": "mystic_whisper_01",
+          "title": "Whispers in the Margin",
+          "tags": [
+            "mystic",
+            "information",
+            "visibility"
+          ],
+          "severity": 10,
+          "cutoff_applied": false,
+          "cutoff_resolution": "none",
+          "original_severity": null,
+          "effect_vector": {
+            "threat": 0,
+            "cost": 0,
+            "heat": 0,
+            "time_pressure": 0,
+            "position_shift": 0,
+            "information": 3,
+            "opportunity": 1
+          },
+          "fiction": {
+            "prompt": "You catch a half-meaning, a hint that isn\u2019t meant for you.",
+            "sensory": [
+              "soft whisper",
+              "cold draft"
+            ],
+            "immediate_choice": [
+              "Follow the hint",
+              "Ignore it and stay focused"
+            ]
+          },
+          "state_delta": {
+            "clocks": {
+              "tension": 1,
+              "heat": 1
+            },
+            "recent_event_ids_add": [
+              "mystic_whisper_01"
+            ],
+            "tag_cooldowns_set": {
+              "mystic": 2
+            },
+            "flags_set": {}
+          },
+          "followups": [],
+          "rng_trace": [
+            {
+              "op": "severity(zipf,alpha=1.22)",
+              "index": "9",
+              "total": "2.438612"
+            },
+            {
+              "op": "content_entry",
+              "index": "6",
+              "total": "5.700000"
+            },
+            {
+              "op": "effect:threat",
+              "value": "0",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:heat",
+              "value": "0",
+              "range": "0-1"
+            },
+            {
+              "op": "effect:information",
+              "value": "3",
+              "range": "1-4"
+            },
+            {
+              "op": "effect:opportunity",
+              "value": "1",
+              "range": "0-2"
+            }
+          ]
+        },
+        {
+          "event_id": "hazard_noise_01",
+          "title": "Unwanted Noise",
+          "tags": [
+            "visibility",
+            "time_pressure",
+            "cost"
+          ],
+          "severity": 4,
+          "cutoff_applied": false,
+          "cutoff_resolution": "none",
+          "original_severity": null,
+          "effect_vector": {
+            "threat": 0,
+            "cost": 1,
+            "heat": 3,
+            "time_pressure": 1,
+            "position_shift": 0,
+            "information": 0,
+            "opportunity": 0
+          },
+          "fiction": {
+            "prompt": "Something loud happens at the worst moment, attention shifts toward you.",
+            "sensory": [
+              "clang",
+              "echo"
+            ],
+            "immediate_choice": [
+              "Freeze and listen",
+              "Move fast before it converges"
+            ]
+          },
+          "state_delta": {
+            "clocks": {
+              "tension": 0,
+              "heat": 1
+            },
+            "recent_event_ids_add": [
+              "hazard_noise_01"
+            ],
+            "tag_cooldowns_set": {
+              "visibility": 2
+            },
+            "flags_set": {}
+          },
+          "followups": [],
+          "rng_trace": [
+            {
+              "op": "severity(zipf,alpha=1.22)",
+              "index": "3",
+              "total": "2.438612"
+            },
+            {
+              "op": "content_entry",
+              "index": "1",
+              "total": "5.500000"
+            },
+            {
+              "op": "effect:cost",
+              "value": "1",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:heat",
+              "value": "3",
+              "range": "1-3"
+            },
+            {
+              "op": "effect:time_pressure",
+              "value": "1",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:information",
+              "value": "0",
+              "range": "0-1"
+            }
+          ]
+        },
+        {
+          "event_id": "hazard_slippery_01",
+          "title": "Slippery Ground",
+          "tags": [
+            "hazard",
+            "terrain",
+            "positioning"
+          ],
+          "severity": 2,
+          "cutoff_applied": false,
+          "cutoff_resolution": "none",
+          "original_severity": null,
+          "effect_vector": {
+            "threat": 2,
+            "cost": 1,
+            "heat": 0,
+            "time_pressure": 1,
+            "position_shift": 3,
+            "information": 0,
+            "opportunity": 0
+          },
+          "fiction": {
+            "prompt": "The footing changes, movement becomes a risk and a weapon.",
+            "sensory": [
+              "slick stone",
+              "oil sheen"
+            ],
+            "immediate_choice": [
+              "Slow down and control space",
+              "Use momentum to force mistakes"
+            ]
+          },
+          "state_delta": {
+            "clocks": {
+              "tension": 0
+            },
+            "recent_event_ids_add": [
+              "hazard_slippery_01"
+            ],
+            "tag_cooldowns_set": {
+              "terrain": 2
+            },
+            "flags_set": {}
+          },
+          "followups": [],
+          "rng_trace": [
+            {
+              "op": "severity(zipf,alpha=1.22)",
+              "index": "1",
+              "total": "2.438612"
+            },
+            {
+              "op": "content_entry",
+              "index": "0",
+              "total": "1.000000"
+            },
+            {
+              "op": "effect:threat",
+              "value": "2",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:cost",
+              "value": "1",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:time_pressure",
+              "value": "1",
+              "range": "0-1"
+            },
+            {
+              "op": "effect:position_shift",
+              "value": "3",
+              "range": "1-3"
+            }
+          ]
+        },
+        {
+          "event_id": "time_deadline_01",
+          "title": "Deadline Tightens",
+          "tags": [
+            "time_pressure",
+            "visibility"
+          ],
+          "severity": 3,
+          "cutoff_applied": false,
+          "cutoff_resolution": "none",
+          "original_severity": null,
+          "effect_vector": {
+            "threat": 0,
+            "cost": 0,
+            "heat": 2,
+            "time_pressure": 4,
+            "position_shift": 0,
+            "information": 1,
+            "opportunity": 0
+          },
+          "fiction": {
+            "prompt": "The window closes faster than expected, you feel the squeeze.",
+            "sensory": [
+              "clock tick",
+              "distant movement"
+            ],
+            "immediate_choice": [
+              "Commit to the objective",
+              "Cut losses and reposition"
+            ]
+          },
+          "state_delta": {
+            "clocks": {
+              "tension": 0,
+              "heat": 0
+            },
+            "recent_event_ids_add": [
+              "time_deadline_01"
+            ],
+            "tag_cooldowns_set": {
+              "time_pressure": 2
+            },
+            "flags_set": {}
+          },
+          "followups": [],
+          "rng_trace": [
+            {
+              "op": "severity(zipf,alpha=1.22)",
+              "index": "2",
+              "total": "2.438612"
+            },
+            {
+              "op": "content_entry",
+              "index": "5",
+              "total": "5.900000"
+            },
+            {
+              "op": "effect:cost",
+              "value": "0",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:heat",
+              "value": "2",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:time_pressure",
+              "value": "4",
+              "range": "2-4"
+            },
+            {
+              "op": "effect:information",
+              "value": "1",
+              "range": "0-1"
+            }
+          ]
+        },
+        {
+          "event_id": "mystic_static_01",
+          "title": "Mystic Static",
+          "tags": [
+            "mystic",
+            "mystic_flux",
+            "visibility"
+          ],
+          "severity": 9,
+          "cutoff_applied": false,
+          "cutoff_resolution": "none",
+          "original_severity": null,
+          "effect_vector": {
+            "threat": 2,
+            "cost": 0,
+            "heat": 0,
+            "time_pressure": 0,
+            "position_shift": 0,
+            "information": 1,
+            "opportunity": 0
+          },
+          "fiction": {
+            "prompt": "A wrong-note hum skates across your senses, something watches back.",
+            "sensory": [
+              "hair rises",
+              "low hum",
+              "afterimage"
+            ],
+            "immediate_choice": [
+              "Lean into the signal",
+              "Shut it out and move"
+            ]
+          },
+          "state_delta": {
+            "clocks": {
+              "tension": 1,
+              "heat": 1
+            },
+            "recent_event_ids_add": [
+              "mystic_static_01"
+            ],
+            "tag_cooldowns_set": {
+              "mystic": 3
+            },
+            "flags_set": {}
+          },
+          "followups": [],
+          "rng_trace": [
+            {
+              "op": "severity(zipf,alpha=1.22)",
+              "index": "8",
+              "total": "2.438612"
+            },
+            {
+              "op": "content_entry",
+              "index": "0",
+              "total": "2.100000"
+            },
+            {
+              "op": "effect:threat",
+              "value": "2",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:heat",
+              "value": "0",
+              "range": "0-1"
+            },
+            {
+              "op": "effect:information",
+              "value": "1",
+              "range": "1-3"
+            },
+            {
+              "op": "effect:opportunity",
+              "value": "0",
+              "range": "0-2"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "step_index": 5,
+      "preset": "dungeon",
+      "phase": "engage",
+      "rarity_mode": "normal",
+      "seed": 5005,
+      "batch_size": 50,
+      "summary": {
+        "n": 50,
+        "cutoff_rate": 0.0,
+        "severity_buckets": {
+          "1-3": 37,
+          "4-6": 7,
+          "7-10": 6
+        },
+        "severity_min": 1,
+        "severity_max": 9,
+        "severity_avg": 2.76,
+        "top_tags": [
+          [
+            "time_pressure",
+            34
+          ],
+          [
+            "cost",
+            23
+          ],
+          [
+            "hazard",
+            21
+          ],
+          [
+            "visibility",
+            17
+          ],
+          [
+            "information",
+            13
+          ],
+          [
+            "terrain",
+            12
+          ],
+          [
+            "positioning",
+            10
+          ],
+          [
+            "mystic",
+            7
+          ],
+          [
+            "attrition",
+            6
+          ],
+          [
+            "mystic_flux",
+            3
+          ],
+          [
+            "opportunity",
+            2
+          ],
+          [
+            "reinforcements",
+            1
+          ]
+        ],
+        "top_event_ids": [
+          [
+            "time_misread_01",
+            7
+          ],
+          [
+            "hazard_slippery_01",
+            7
+          ],
+          [
+            "hazard_noise_01",
+            6
+          ],
+          [
+            "mystic_whisper_01",
+            4
+          ],
+          [
+            "hazard_echoes_01",
+            4
+          ],
+          [
+            "hazard_poison_air_01",
+            4
+          ],
+          [
+            "attrition_fatigue_01",
+            4
+          ],
+          [
+            "hazard_water_rise_01",
+            2
+          ],
+          [
+            "opportunity_opening_01",
+            2
+          ],
+          [
+            "mystic_ward_backlash_01",
+            2
+          ],
+          [
+            "time_ammo_dry_01",
+            1
+          ],
+          [
+            "time_deadline_01",
+            1
+          ],
+          [
+            "reinforce_gate_close_01",
+            1
+          ],
+          [
+            "attrition_gear_fail_01",
+            1
+          ],
+          [
+            "hazard_smoke_01",
+            1
+          ]
+        ],
+        "cutoff_resolutions": {
+          "none": 50
+        }
+      },
+      "state_snapshot": {
+        "clocks": {
+          "tension": 12,
+          "heat": 12,
+          "attrition": 0,
+          "mystic_flux": 0
+        },
+        "tag_cooldowns_count": 2,
+        "recent_ids_count": 5
+      },
+      "events": null,
+      "events_sample": [
+        {
+          "event_id": "time_ammo_dry_01",
+          "title": "Supplies Run Thin",
+          "tags": [
+            "attrition",
+            "cost",
+            "time_pressure"
+          ],
+          "severity": 1,
+          "cutoff_applied": false,
+          "cutoff_resolution": "none",
+          "original_severity": null,
+          "effect_vector": {
+            "threat": 0,
+            "cost": 4,
+            "heat": 0,
+            "time_pressure": 1,
+            "position_shift": 0,
+            "information": 1,
+            "opportunity": 1
+          },
+          "fiction": {
+            "prompt": "A key resource is lower than expected, you feel it immediately.",
+            "sensory": [
+              "empty click",
+              "frayed strap"
+            ],
+            "immediate_choice": [
+              "Spend time to stabilize",
+              "Press on and accept risk"
+            ]
+          },
+          "state_delta": {
+            "clocks": {
+              "tension": 0
+            },
+            "recent_event_ids_add": [
+              "time_ammo_dry_01"
+            ],
+            "tag_cooldowns_set": {
+              "attrition": 2
+            },
+            "flags_set": {}
+          },
+          "followups": [],
+          "rng_trace": [
+            {
+              "op": "severity(zipf,alpha=1.22)",
+              "index": "0",
+              "total": "2.438612"
+            },
+            {
+              "op": "content_entry",
+              "index": "0",
+              "total": "5.700000"
+            },
+            {
+              "op": "effect:cost",
+              "value": "4",
+              "range": "1-4"
+            },
+            {
+              "op": "effect:time_pressure",
+              "value": "1",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:information",
+              "value": "1",
+              "range": "0-1"
+            },
+            {
+              "op": "effect:opportunity",
+              "value": "1",
+              "range": "0-1"
+            }
+          ]
+        },
+        {
+          "event_id": "time_misread_01",
+          "title": "Bad Read",
+          "tags": [
+            "information",
+            "time_pressure",
+            "cost"
+          ],
+          "severity": 1,
+          "cutoff_applied": false,
+          "cutoff_resolution": "none",
+          "original_severity": null,
+          "effect_vector": {
+            "threat": 0,
+            "cost": 2,
+            "heat": 0,
+            "time_pressure": 3,
+            "position_shift": 0,
+            "information": 2,
+            "opportunity": 0
+          },
+          "fiction": {
+            "prompt": "You realize a detail was wrong, your plan needs a fast correction.",
+            "sensory": [
+              "cold realization",
+              "quick glances"
+            ],
+            "immediate_choice": [
+              "Re-plan on the fly",
+              "Commit and ride it out"
+            ]
+          },
+          "state_delta": {
+            "clocks": {
+              "tension": 0
+            },
+            "recent_event_ids_add": [
+              "time_misread_01"
+            ],
+            "tag_cooldowns_set": {
+              "information": 1
+            },
+            "flags_set": {}
+          },
+          "followups": [],
+          "rng_trace": [
+            {
+              "op": "severity(zipf,alpha=1.22)",
+              "index": "0",
+              "total": "2.438612"
+            },
+            {
+              "op": "content_entry",
+              "index": "0",
+              "total": "0.900000"
+            },
+            {
+              "op": "effect:cost",
+              "value": "2",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:time_pressure",
+              "value": "3",
+              "range": "1-3"
+            },
+            {
+              "op": "effect:position_shift",
+              "value": "0",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:information",
+              "value": "2",
+              "range": "0-2"
+            }
+          ]
+        },
+        {
+          "event_id": "time_deadline_01",
+          "title": "Deadline Tightens",
+          "tags": [
+            "time_pressure",
+            "visibility"
+          ],
+          "severity": 3,
+          "cutoff_applied": false,
+          "cutoff_resolution": "none",
+          "original_severity": null,
+          "effect_vector": {
+            "threat": 0,
+            "cost": 2,
+            "heat": 0,
+            "time_pressure": 2,
+            "position_shift": 0,
+            "information": 0,
+            "opportunity": 0
+          },
+          "fiction": {
+            "prompt": "The window closes faster than expected, you feel the squeeze.",
+            "sensory": [
+              "clock tick",
+              "distant movement"
+            ],
+            "immediate_choice": [
+              "Commit to the objective",
+              "Cut losses and reposition"
+            ]
+          },
+          "state_delta": {
+            "clocks": {
+              "tension": 1,
+              "heat": 0
+            },
+            "recent_event_ids_add": [
+              "time_deadline_01"
+            ],
+            "tag_cooldowns_set": {
+              "time_pressure": 2
+            },
+            "flags_set": {}
+          },
+          "followups": [],
+          "rng_trace": [
+            {
+              "op": "severity(zipf,alpha=1.22)",
+              "index": "2",
+              "total": "2.438612"
+            },
+            {
+              "op": "content_entry",
+              "index": "10",
+              "total": "11.500000"
+            },
+            {
+              "op": "effect:cost",
+              "value": "2",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:heat",
+              "value": "0",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:time_pressure",
+              "value": "2",
+              "range": "2-4"
+            },
+            {
+              "op": "effect:information",
+              "value": "0",
+              "range": "0-1"
+            }
+          ]
+        },
+        {
+          "event_id": "hazard_slippery_01",
+          "title": "Slippery Ground",
+          "tags": [
+            "hazard",
+            "terrain",
+            "positioning"
+          ],
+          "severity": 1,
+          "cutoff_applied": false,
+          "cutoff_resolution": "none",
+          "original_severity": null,
+          "effect_vector": {
+            "threat": 1,
+            "cost": 0,
+            "heat": 0,
+            "time_pressure": 0,
+            "position_shift": 3,
+            "information": 0,
+            "opportunity": 0
+          },
+          "fiction": {
+            "prompt": "The footing changes, movement becomes a risk and a weapon.",
+            "sensory": [
+              "slick stone",
+              "oil sheen"
+            ],
+            "immediate_choice": [
+              "Slow down and control space",
+              "Use momentum to force mistakes"
+            ]
+          },
+          "state_delta": {
+            "clocks": {
+              "tension": 0
+            },
+            "recent_event_ids_add": [
+              "hazard_slippery_01"
+            ],
+            "tag_cooldowns_set": {
+              "terrain": 2
+            },
+            "flags_set": {}
+          },
+          "followups": [],
+          "rng_trace": [
+            {
+              "op": "severity(zipf,alpha=1.22)",
+              "index": "0",
+              "total": "2.438612"
+            },
+            {
+              "op": "content_entry",
+              "index": "0",
+              "total": "1.600000"
+            },
+            {
+              "op": "effect:threat",
+              "value": "1",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:cost",
+              "value": "0",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:time_pressure",
+              "value": "0",
+              "range": "0-1"
+            },
+            {
+              "op": "effect:position_shift",
+              "value": "3",
+              "range": "1-3"
+            }
+          ]
+        },
+        {
+          "event_id": "hazard_noise_01",
+          "title": "Unwanted Noise",
+          "tags": [
+            "visibility",
+            "time_pressure",
+            "cost"
+          ],
+          "severity": 5,
+          "cutoff_applied": false,
+          "cutoff_resolution": "none",
+          "original_severity": null,
+          "effect_vector": {
+            "threat": 0,
+            "cost": 1,
+            "heat": 2,
+            "time_pressure": 2,
+            "position_shift": 0,
+            "information": 1,
+            "opportunity": 0
+          },
+          "fiction": {
+            "prompt": "Something loud happens at the worst moment, attention shifts toward you.",
+            "sensory": [
+              "clang",
+              "echo"
+            ],
+            "immediate_choice": [
+              "Freeze and listen",
+              "Move fast before it converges"
+            ]
+          },
+          "state_delta": {
+            "clocks": {
+              "tension": 1,
+              "heat": 1
+            },
+            "recent_event_ids_add": [
+              "hazard_noise_01"
+            ],
+            "tag_cooldowns_set": {
+              "visibility": 2
+            },
+            "flags_set": {}
+          },
+          "followups": [],
+          "rng_trace": [
+            {
+              "op": "severity(zipf,alpha=1.22)",
+              "index": "4",
+              "total": "2.438612"
+            },
+            {
+              "op": "content_entry",
+              "index": "4",
+              "total": "11.100000"
+            },
+            {
+              "op": "effect:cost",
+              "value": "1",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:heat",
+              "value": "2",
+              "range": "1-3"
+            },
+            {
+              "op": "effect:time_pressure",
+              "value": "2",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:information",
+              "value": "1",
+              "range": "0-1"
+            }
+          ]
+        },
+        {
+          "event_id": "hazard_water_rise_01",
+          "title": "Water Rising",
+          "tags": [
+            "hazard",
+            "terrain",
+            "time_pressure"
+          ],
+          "severity": 1,
+          "cutoff_applied": false,
+          "cutoff_resolution": "none",
+          "original_severity": null,
+          "effect_vector": {
+            "threat": 1,
+            "cost": 2,
+            "heat": 0,
+            "time_pressure": 1,
+            "position_shift": 1,
+            "information": 0,
+            "opportunity": 0
+          },
+          "fiction": {
+            "prompt": "Water creeps in, routes narrow, options sink.",
+            "sensory": [
+              "dripping rush",
+              "cold splash"
+            ],
+            "immediate_choice": [
+              "Move to higher ground",
+              "Use the water to your advantage"
+            ]
+          },
+          "state_delta": {
+            "clocks": {
+              "tension": 0
+            },
+            "recent_event_ids_add": [
+              "hazard_water_rise_01"
+            ],
+            "tag_cooldowns_set": {
+              "hazard": 2,
+              "terrain": 2
+            },
+            "flags_set": {}
+          },
+          "followups": [],
+          "rng_trace": [
+            {
+              "op": "severity(zipf,alpha=1.22)",
+              "index": "0",
+              "total": "2.438612"
+            },
+            {
+              "op": "content_entry",
+              "index": "8",
+              "total": "8.800000"
+            },
+            {
+              "op": "effect:threat",
+              "value": "1",
+              "range": "1-3"
+            },
+            {
+              "op": "effect:cost",
+              "value": "2",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:time_pressure",
+              "value": "1",
+              "range": "1-3"
+            },
+            {
+              "op": "effect:position_shift",
+              "value": "1",
+              "range": "1-3"
+            }
+          ]
+        },
+        {
+          "event_id": "mystic_whisper_01",
+          "title": "Whispers in the Margin",
+          "tags": [
+            "mystic",
+            "information",
+            "visibility"
+          ],
+          "severity": 2,
+          "cutoff_applied": false,
+          "cutoff_resolution": "none",
+          "original_severity": null,
+          "effect_vector": {
+            "threat": 2,
+            "cost": 0,
+            "heat": 0,
+            "time_pressure": 0,
+            "position_shift": 0,
+            "information": 3,
+            "opportunity": 0
+          },
+          "fiction": {
+            "prompt": "You catch a half-meaning, a hint that isn\u2019t meant for you.",
+            "sensory": [
+              "soft whisper",
+              "cold draft"
+            ],
+            "immediate_choice": [
+              "Follow the hint",
+              "Ignore it and stay focused"
+            ]
+          },
+          "state_delta": {
+            "clocks": {
+              "tension": 0,
+              "heat": 0
+            },
+            "recent_event_ids_add": [
+              "mystic_whisper_01"
+            ],
+            "tag_cooldowns_set": {
+              "mystic": 2
+            },
+            "flags_set": {}
+          },
+          "followups": [],
+          "rng_trace": [
+            {
+              "op": "severity(zipf,alpha=1.22)",
+              "index": "1",
+              "total": "2.438612"
+            },
+            {
+              "op": "content_entry",
+              "index": "6",
+              "total": "5.800000"
+            },
+            {
+              "op": "effect:threat",
+              "value": "2",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:heat",
+              "value": "0",
+              "range": "0-1"
+            },
+            {
+              "op": "effect:information",
+              "value": "3",
+              "range": "1-4"
+            },
+            {
+              "op": "effect:opportunity",
+              "value": "0",
+              "range": "0-2"
+            }
+          ]
+        },
+        {
+          "event_id": "time_misread_01",
+          "title": "Bad Read",
+          "tags": [
+            "information",
+            "time_pressure",
+            "cost"
+          ],
+          "severity": 1,
+          "cutoff_applied": false,
+          "cutoff_resolution": "none",
+          "original_severity": null,
+          "effect_vector": {
+            "threat": 0,
+            "cost": 2,
+            "heat": 0,
+            "time_pressure": 1,
+            "position_shift": 0,
+            "information": 1,
+            "opportunity": 0
+          },
+          "fiction": {
+            "prompt": "You realize a detail was wrong, your plan needs a fast correction.",
+            "sensory": [
+              "cold realization",
+              "quick glances"
+            ],
+            "immediate_choice": [
+              "Re-plan on the fly",
+              "Commit and ride it out"
+            ]
+          },
+          "state_delta": {
+            "clocks": {
+              "tension": 0
+            },
+            "recent_event_ids_add": [
+              "time_misread_01"
+            ],
+            "tag_cooldowns_set": {
+              "information": 1
+            },
+            "flags_set": {}
+          },
+          "followups": [],
+          "rng_trace": [
+            {
+              "op": "severity(zipf,alpha=1.22)",
+              "index": "0",
+              "total": "2.438612"
+            },
+            {
+              "op": "content_entry",
+              "index": "0",
+              "total": "2.000000"
+            },
+            {
+              "op": "effect:cost",
+              "value": "2",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:time_pressure",
+              "value": "1",
+              "range": "1-3"
+            },
+            {
+              "op": "effect:position_shift",
+              "value": "0",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:information",
+              "value": "1",
+              "range": "0-2"
+            }
+          ]
+        },
+        {
+          "event_id": "hazard_echoes_01",
+          "title": "Echoes Give You Away",
+          "tags": [
+            "visibility",
+            "hazard",
+            "time_pressure"
+          ],
+          "severity": 1,
+          "cutoff_applied": false,
+          "cutoff_resolution": "none",
+          "original_severity": null,
+          "effect_vector": {
+            "threat": 0,
+            "cost": 1,
+            "heat": 3,
+            "time_pressure": 1,
+            "position_shift": 0,
+            "information": 0,
+            "opportunity": 0
+          },
+          "fiction": {
+            "prompt": "Sound carries farther than it should, your presence becomes obvious.",
+            "sensory": [
+              "ringing echo",
+              "distant reply"
+            ],
+            "immediate_choice": [
+              "Go silent",
+              "Move fast before it converges"
+            ]
+          },
+          "state_delta": {
+            "clocks": {
+              "tension": 0,
+              "heat": 0
+            },
+            "recent_event_ids_add": [
+              "hazard_echoes_01"
+            ],
+            "tag_cooldowns_set": {
+              "visibility": 2
+            },
+            "flags_set": {}
+          },
+          "followups": [],
+          "rng_trace": [
+            {
+              "op": "severity(zipf,alpha=1.22)",
+              "index": "0",
+              "total": "2.438612"
+            },
+            {
+              "op": "content_entry",
+              "index": "1",
+              "total": "2.100000"
+            },
+            {
+              "op": "effect:cost",
+              "value": "1",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:heat",
+              "value": "3",
+              "range": "1-3"
+            },
+            {
+              "op": "effect:time_pressure",
+              "value": "1",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:information",
+              "value": "0",
+              "range": "0-1"
+            }
+          ]
+        },
+        {
+          "event_id": "hazard_slippery_01",
+          "title": "Slippery Ground",
+          "tags": [
+            "hazard",
+            "terrain",
+            "positioning"
+          ],
+          "severity": 1,
+          "cutoff_applied": false,
+          "cutoff_resolution": "none",
+          "original_severity": null,
+          "effect_vector": {
+            "threat": 0,
+            "cost": 1,
+            "heat": 0,
+            "time_pressure": 0,
+            "position_shift": 3,
+            "information": 0,
+            "opportunity": 0
+          },
+          "fiction": {
+            "prompt": "The footing changes, movement becomes a risk and a weapon.",
+            "sensory": [
+              "slick stone",
+              "oil sheen"
+            ],
+            "immediate_choice": [
+              "Slow down and control space",
+              "Use momentum to force mistakes"
+            ]
+          },
+          "state_delta": {
+            "clocks": {
+              "tension": 0
+            },
+            "recent_event_ids_add": [
+              "hazard_slippery_01"
+            ],
+            "tag_cooldowns_set": {
+              "terrain": 2
+            },
+            "flags_set": {}
+          },
+          "followups": [],
+          "rng_trace": [
+            {
+              "op": "severity(zipf,alpha=1.22)",
+              "index": "0",
+              "total": "2.438612"
+            },
+            {
+              "op": "content_entry",
+              "index": "0",
+              "total": "1.000000"
+            },
+            {
+              "op": "effect:threat",
+              "value": "0",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:cost",
+              "value": "1",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:time_pressure",
+              "value": "0",
+              "range": "0-1"
+            },
+            {
+              "op": "effect:position_shift",
+              "value": "3",
+              "range": "1-3"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "step_index": 6,
+      "preset": "dungeon",
+      "phase": "aftermath",
+      "rarity_mode": "normal",
+      "seed": 5006,
+      "batch_size": 50,
+      "summary": {
+        "n": 50,
+        "cutoff_rate": 0.0,
+        "severity_buckets": {
+          "1-3": 30,
+          "4-6": 8,
+          "7-10": 12
+        },
+        "severity_min": 1,
+        "severity_max": 10,
+        "severity_avg": 3.42,
+        "top_tags": [
+          [
+            "information",
+            28
+          ],
+          [
+            "time_pressure",
+            28
+          ],
+          [
+            "opportunity",
+            16
+          ],
+          [
+            "terrain",
+            16
+          ],
+          [
+            "visibility",
+            14
+          ],
+          [
+            "attrition",
+            14
+          ],
+          [
+            "cost",
+            14
+          ],
+          [
+            "hazard",
+            8
+          ],
+          [
+            "positioning",
+            7
+          ],
+          [
+            "mystic",
+            5
+          ]
+        ],
+        "top_event_ids": [
+          [
+            "aftermath_quiet_too_quiet_01",
+            7
+          ],
+          [
+            "aftermath_opportunity_window_01",
+            6
+          ],
+          [
+            "aftermath_resource_revealed_01",
+            5
+          ],
+          [
+            "aftermath_terrain_marked_01",
+            5
+          ],
+          [
+            "time_ammo_dry_01",
+            5
+          ],
+          [
+            "aftermath_revelation_delayed_01",
+            5
+          ],
+          [
+            "attrition_fatigue_01",
+            5
+          ],
+          [
+            "hazard_water_rise_01",
+            4
+          ],
+          [
+            "attrition_gear_fail_01",
+            4
+          ],
+          [
+            "aftermath_structural_groan_01",
+            2
+          ],
+          [
+            "hazard_smoke_01",
+            2
+          ]
+        ],
+        "cutoff_resolutions": {
+          "none": 50
+        }
+      },
+      "state_snapshot": {
+        "clocks": {
+          "tension": 12,
+          "heat": 12,
+          "attrition": 0,
+          "mystic_flux": 0
+        },
+        "tag_cooldowns_count": 2,
+        "recent_ids_count": 6
+      },
+      "events": null,
+      "events_sample": [
+        {
+          "event_id": "aftermath_resource_revealed_01",
+          "title": "Hidden Resource Exposed",
+          "tags": [
+            "opportunity",
+            "information",
+            "terrain"
+          ],
+          "severity": 1,
+          "cutoff_applied": false,
+          "cutoff_resolution": "none",
+          "original_severity": null,
+          "effect_vector": {
+            "threat": 0,
+            "cost": 0,
+            "heat": 0,
+            "time_pressure": 0,
+            "position_shift": 0,
+            "information": 1,
+            "opportunity": 2
+          },
+          "fiction": {
+            "prompt": "The fight exposed something valuable that was previously hidden.",
+            "sensory": [
+              "glinting metal",
+              "revealed cache"
+            ],
+            "immediate_choice": [
+              "Claim it now",
+              "Note it for later"
+            ]
+          },
+          "state_delta": {
+            "clocks": {
+              "tension": 0
+            },
+            "recent_event_ids_add": [
+              "aftermath_resource_revealed_01"
+            ],
+            "tag_cooldowns_set": {
+              "opportunity": 2
+            },
+            "flags_set": {}
+          },
+          "followups": [],
+          "rng_trace": [
+            {
+              "op": "severity(zipf,alpha=1.22)",
+              "index": "0",
+              "total": "2.438612"
+            },
+            {
+              "op": "content_entry",
+              "index": "3",
+              "total": "3.600000"
+            },
+            {
+              "op": "effect:information",
+              "value": "1",
+              "range": "1-2"
+            },
+            {
+              "op": "effect:opportunity",
+              "value": "2",
+              "range": "2-4"
+            }
+          ]
+        },
+        {
+          "event_id": "aftermath_quiet_too_quiet_01",
+          "title": "Unnatural Silence",
+          "tags": [
+            "information",
+            "visibility",
+            "positioning"
+          ],
+          "severity": 4,
+          "cutoff_applied": false,
+          "cutoff_resolution": "none",
+          "original_severity": null,
+          "effect_vector": {
+            "threat": 0,
+            "cost": 0,
+            "heat": 0,
+            "time_pressure": 0,
+            "position_shift": 1,
+            "information": 3,
+            "opportunity": 0
+          },
+          "fiction": {
+            "prompt": "The absence of sound suggests something watching, waiting, or fled.",
+            "sensory": [
+              "oppressive quiet",
+              "held breath"
+            ],
+            "immediate_choice": [
+              "Investigate cautiously",
+              "Take the opening to move"
+            ]
+          },
+          "state_delta": {
+            "clocks": {
+              "tension": 0,
+              "heat": 1
+            },
+            "recent_event_ids_add": [
+              "aftermath_quiet_too_quiet_01"
+            ],
+            "tag_cooldowns_set": {
+              "information": 1,
+              "visibility": 1
+            },
+            "flags_set": {}
+          },
+          "followups": [],
+          "rng_trace": [
+            {
+              "op": "severity(zipf,alpha=1.22)",
+              "index": "3",
+              "total": "2.438612"
+            },
+            {
+              "op": "content_entry",
+              "index": "4",
+              "total": "4.600000"
+            },
+            {
+              "op": "effect:threat",
+              "value": "0",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:position_shift",
+              "value": "1",
+              "range": "0-1"
+            },
+            {
+              "op": "effect:information",
+              "value": "3",
+              "range": "1-3"
+            }
+          ]
+        },
+        {
+          "event_id": "hazard_water_rise_01",
+          "title": "Water Rising",
+          "tags": [
+            "hazard",
+            "terrain",
+            "time_pressure"
+          ],
+          "severity": 8,
+          "cutoff_applied": false,
+          "cutoff_resolution": "none",
+          "original_severity": null,
+          "effect_vector": {
+            "threat": 1,
+            "cost": 1,
+            "heat": 0,
+            "time_pressure": 1,
+            "position_shift": 3,
+            "information": 0,
+            "opportunity": 0
+          },
+          "fiction": {
+            "prompt": "Water creeps in, routes narrow, options sink.",
+            "sensory": [
+              "dripping rush",
+              "cold splash"
+            ],
+            "immediate_choice": [
+              "Move to higher ground",
+              "Use the water to your advantage"
+            ]
+          },
+          "state_delta": {
+            "clocks": {
+              "tension": 0
+            },
+            "recent_event_ids_add": [
+              "hazard_water_rise_01"
+            ],
+            "tag_cooldowns_set": {
+              "hazard": 2,
+              "terrain": 2
+            },
+            "flags_set": {}
+          },
+          "followups": [],
+          "rng_trace": [
+            {
+              "op": "severity(zipf,alpha=1.22)",
+              "index": "7",
+              "total": "2.438612"
+            },
+            {
+              "op": "content_entry",
+              "index": "0",
+              "total": "0.700000"
+            },
+            {
+              "op": "effect:threat",
+              "value": "1",
+              "range": "1-3"
+            },
+            {
+              "op": "effect:cost",
+              "value": "1",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:time_pressure",
+              "value": "1",
+              "range": "1-3"
+            },
+            {
+              "op": "effect:position_shift",
+              "value": "3",
+              "range": "1-3"
+            }
+          ]
+        },
+        {
+          "event_id": "attrition_gear_fail_01",
+          "title": "Gear Failure",
+          "tags": [
+            "attrition",
+            "cost",
+            "time_pressure"
+          ],
+          "severity": 5,
+          "cutoff_applied": false,
+          "cutoff_resolution": "none",
+          "original_severity": null,
+          "effect_vector": {
+            "threat": 1,
+            "cost": 3,
+            "heat": 0,
+            "time_pressure": 0,
+            "position_shift": 0,
+            "information": 0,
+            "opportunity": 0
+          },
+          "fiction": {
+            "prompt": "A critical item slips, snaps, or jams, the timing is brutal.",
+            "sensory": [
+              "metal snap",
+              "wet click"
+            ],
+            "immediate_choice": [
+              "Spend time to fix it",
+              "Adapt with what you have"
+            ]
+          },
+          "state_delta": {
+            "clocks": {
+              "tension": 0
+            },
+            "recent_event_ids_add": [
+              "attrition_gear_fail_01"
+            ],
+            "tag_cooldowns_set": {
+              "attrition": 2
+            },
+            "flags_set": {}
+          },
+          "followups": [],
+          "rng_trace": [
+            {
+              "op": "severity(zipf,alpha=1.22)",
+              "index": "4",
+              "total": "2.438612"
+            },
+            {
+              "op": "content_entry",
+              "index": "1",
+              "total": "3.600000"
+            },
+            {
+              "op": "effect:threat",
+              "value": "1",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:cost",
+              "value": "3",
+              "range": "1-4"
+            },
+            {
+              "op": "effect:time_pressure",
+              "value": "0",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:opportunity",
+              "value": "0",
+              "range": "0-1"
+            }
+          ]
+        },
+        {
+          "event_id": "aftermath_terrain_marked_01",
+          "title": "Landscape Remembers",
+          "tags": [
+            "terrain",
+            "information",
+            "visibility"
+          ],
+          "severity": 1,
+          "cutoff_applied": false,
+          "cutoff_resolution": "none",
+          "original_severity": null,
+          "effect_vector": {
+            "threat": 0,
+            "cost": 0,
+            "heat": 0,
+            "time_pressure": 0,
+            "position_shift": 0,
+            "information": 2,
+            "opportunity": 0
+          },
+          "fiction": {
+            "prompt": "The fight left marks on the space, the terrain tells what happened.",
+            "sensory": [
+              "scorched stone",
+              "splintered wood",
+              "disturbed earth"
+            ],
+            "immediate_choice": [
+              "Obscure the signs",
+              "Leave them as warning"
+            ]
+          },
+          "state_delta": {
+            "clocks": {
+              "tension": 0,
+              "heat": 0
+            },
+            "recent_event_ids_add": [
+              "aftermath_terrain_marked_01"
+            ],
+            "tag_cooldowns_set": {
+              "terrain": 2
+            },
+            "flags_set": {}
+          },
+          "followups": [],
+          "rng_trace": [
+            {
+              "op": "severity(zipf,alpha=1.22)",
+              "index": "0",
+              "total": "2.438612"
+            },
+            {
+              "op": "content_entry",
+              "index": "2",
+              "total": "2.600000"
+            },
+            {
+              "op": "effect:position_shift",
+              "value": "0",
+              "range": "0-1"
+            },
+            {
+              "op": "effect:information",
+              "value": "2",
+              "range": "1-2"
+            },
+            {
+              "op": "effect:opportunity",
+              "value": "0",
+              "range": "0-1"
+            }
+          ]
+        },
+        {
+          "event_id": "aftermath_opportunity_window_01",
+          "title": "Brief Opening",
+          "tags": [
+            "opportunity",
+            "information",
+            "time_pressure"
+          ],
+          "severity": 1,
+          "cutoff_applied": false,
+          "cutoff_resolution": "none",
+          "original_severity": null,
+          "effect_vector": {
+            "threat": 0,
+            "cost": 0,
+            "heat": 0,
+            "time_pressure": 2,
+            "position_shift": 0,
+            "information": 0,
+            "opportunity": 3
+          },
+          "fiction": {
+            "prompt": "Something previously blocked is now accessible, but not for long.",
+            "sensory": [
+              "clearing dust",
+              "exposed passage"
+            ],
+            "immediate_choice": [
+              "Take it now",
+              "Mark it for later"
+            ]
+          },
+          "state_delta": {
+            "clocks": {
+              "tension": 0
+            },
+            "recent_event_ids_add": [
+              "aftermath_opportunity_window_01"
+            ],
+            "tag_cooldowns_set": {
+              "opportunity": 2
+            },
+            "flags_set": {}
+          },
+          "followups": [],
+          "rng_trace": [
+            {
+              "op": "severity(zipf,alpha=1.22)",
+              "index": "0",
+              "total": "2.438612"
+            },
+            {
+              "op": "content_entry",
+              "index": "0",
+              "total": "1.700000"
+            },
+            {
+              "op": "effect:time_pressure",
+              "value": "2",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:information",
+              "value": "0",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:opportunity",
+              "value": "3",
+              "range": "2-4"
+            }
+          ]
+        },
+        {
+          "event_id": "time_ammo_dry_01",
+          "title": "Supplies Run Thin",
+          "tags": [
+            "attrition",
+            "cost",
+            "time_pressure"
+          ],
+          "severity": 1,
+          "cutoff_applied": false,
+          "cutoff_resolution": "none",
+          "original_severity": null,
+          "effect_vector": {
+            "threat": 0,
+            "cost": 4,
+            "heat": 0,
+            "time_pressure": 1,
+            "position_shift": 0,
+            "information": 0,
+            "opportunity": 0
+          },
+          "fiction": {
+            "prompt": "A key resource is lower than expected, you feel it immediately.",
+            "sensory": [
+              "empty click",
+              "frayed strap"
+            ],
+            "immediate_choice": [
+              "Spend time to stabilize",
+              "Press on and accept risk"
+            ]
+          },
+          "state_delta": {
+            "clocks": {
+              "tension": 0
+            },
+            "recent_event_ids_add": [
+              "time_ammo_dry_01"
+            ],
+            "tag_cooldowns_set": {
+              "attrition": 2
+            },
+            "flags_set": {}
+          },
+          "followups": [],
+          "rng_trace": [
+            {
+              "op": "severity(zipf,alpha=1.22)",
+              "index": "0",
+              "total": "2.438612"
+            },
+            {
+              "op": "content_entry",
+              "index": "1",
+              "total": "3.600000"
+            },
+            {
+              "op": "effect:cost",
+              "value": "4",
+              "range": "1-4"
+            },
+            {
+              "op": "effect:time_pressure",
+              "value": "1",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:information",
+              "value": "0",
+              "range": "0-1"
+            },
+            {
+              "op": "effect:opportunity",
+              "value": "0",
+              "range": "0-1"
+            }
+          ]
+        },
+        {
+          "event_id": "aftermath_structural_groan_01",
+          "title": "Structural Aftermath",
+          "tags": [
+            "terrain",
+            "hazard",
+            "time_pressure"
+          ],
+          "severity": 6,
+          "cutoff_applied": false,
+          "cutoff_resolution": "none",
+          "original_severity": null,
+          "effect_vector": {
+            "threat": 2,
+            "cost": 0,
+            "heat": 0,
+            "time_pressure": 3,
+            "position_shift": 2,
+            "information": 1,
+            "opportunity": 0
+          },
+          "fiction": {
+            "prompt": "The space protests, settling sounds hint at instability.",
+            "sensory": [
+              "stone grinding",
+              "dust sifting"
+            ],
+            "immediate_choice": [
+              "Move carefully",
+              "Exit before it worsens"
+            ]
+          },
+          "state_delta": {
+            "clocks": {
+              "tension": 0
+            },
+            "recent_event_ids_add": [
+              "aftermath_structural_groan_01"
+            ],
+            "tag_cooldowns_set": {
+              "terrain": 2,
+              "hazard": 1
+            },
+            "flags_set": {}
+          },
+          "followups": [],
+          "rng_trace": [
+            {
+              "op": "severity(zipf,alpha=1.22)",
+              "index": "5",
+              "total": "2.438612"
+            },
+            {
+              "op": "content_entry",
+              "index": "1",
+              "total": "1.800000"
+            },
+            {
+              "op": "effect:threat",
+              "value": "2",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:time_pressure",
+              "value": "3",
+              "range": "1-3"
+            },
+            {
+              "op": "effect:position_shift",
+              "value": "2",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:information",
+              "value": "1",
+              "range": "0-1"
+            }
+          ]
+        },
+        {
+          "event_id": "aftermath_quiet_too_quiet_01",
+          "title": "Unnatural Silence",
+          "tags": [
+            "information",
+            "visibility",
+            "positioning"
+          ],
+          "severity": 10,
+          "cutoff_applied": false,
+          "cutoff_resolution": "none",
+          "original_severity": null,
+          "effect_vector": {
+            "threat": 0,
+            "cost": 0,
+            "heat": 0,
+            "time_pressure": 0,
+            "position_shift": 1,
+            "information": 3,
+            "opportunity": 0
+          },
+          "fiction": {
+            "prompt": "The absence of sound suggests something watching, waiting, or fled.",
+            "sensory": [
+              "oppressive quiet",
+              "held breath"
+            ],
+            "immediate_choice": [
+              "Investigate cautiously",
+              "Take the opening to move"
+            ]
+          },
+          "state_delta": {
+            "clocks": {
+              "tension": 0,
+              "heat": 1
+            },
+            "recent_event_ids_add": [
+              "aftermath_quiet_too_quiet_01"
+            ],
+            "tag_cooldowns_set": {
+              "information": 1,
+              "visibility": 1
+            },
+            "flags_set": {}
+          },
+          "followups": [],
+          "rng_trace": [
+            {
+              "op": "severity(zipf,alpha=1.22)",
+              "index": "9",
+              "total": "2.438612"
+            },
+            {
+              "op": "content_entry",
+              "index": "3",
+              "total": "3.500000"
+            },
+            {
+              "op": "effect:threat",
+              "value": "0",
+              "range": "0-2"
+            },
+            {
+              "op": "effect:position_shift",
+              "value": "1",
+              "range": "0-1"
+            },
+            {
+              "op": "effect:information",
+              "value": "3",
+              "range": "1-3"
+            }
+          ]
+        },
+        {
+          "event_id": "aftermath_revelation_delayed_01",
+          "title": "Delayed Revelation",
+          "tags": [
+            "information",
+            "opportunity",
+            "mystic"
+          ],
+          "severity": 1,
+          "cutoff_applied": false,
+          "cutoff_resolution": "none",
+          "original_severity": null,
+          "effect_vector": {
+            "threat": 0,
+            "cost": 0,
+            "heat": 0,
+            "time_pressure": 0,
+            "position_shift": 0,
+            "information": 4,
+            "opportunity": 2
+          },
+          "fiction": {
+            "prompt": "Only now does a detail click into place, the meaning was always there.",
+            "sensory": [
+              "sudden clarity",
+              "overlapping patterns"
+            ],
+            "immediate_choice": [
+              "Act on it immediately",
+              "Store it for later use"
+            ]
+          },
+          "state_delta": {
+            "clocks": {
+              "tension": 0
+            },
+            "recent_event_ids_add": [
+              "aftermath_revelation_delayed_01"
+            ],
+            "tag_cooldowns_set": {
+              "information": 2,
+              "mystic": 1
+            },
+            "flags_set": {}
+          },
+          "followups": [],
+          "rng_trace": [
+            {
+              "op": "severity(zipf,alpha=1.22)",
+              "index": "0",
+              "total": "2.438612"
+            },
+            {
+              "op": "content_entry",
+              "index": "0",
+              "total": "1.700000"
+            },
+            {
+              "op": "effect:information",
+              "value": "4",
+              "range": "2-4"
+            },
+            {
+              "op": "effect:opportunity",
+              "value": "2",
+              "range": "1-3"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "initial_state": {
+    "clocks": {
+      "tension": 0,
+      "heat": 0,
+      "attrition": 0,
+      "mystic_flux": 0
+    },
+    "recent_event_ids": [],
+    "tag_cooldowns": {},
+    "flags": {
+      "alarm_raised": false,
+      "reinforcements_possible": true,
+      "exit_available": true
+    }
+  },
+  "final_state": {
+    "clocks": {
+      "tension": 12,
+      "heat": 12,
+      "attrition": 0,
+      "mystic_flux": 0
+    },
+    "recent_event_ids": [
+      "attrition_fatigue_01",
+      "aftermath_revelation_delayed_01",
+      "hazard_water_rise_01",
+      "attrition_gear_fail_01",
+      "aftermath_quiet_too_quiet_01",
+      "aftermath_opportunity_window_01"
+    ],
+    "tag_cooldowns": {
+      "information": 1,
+      "attrition": 2
+    },
+    "flags": {
+      "alarm_raised": false,
+      "reinforcements_possible": true,
+      "exit_available": true
+    }
+  }
+}
