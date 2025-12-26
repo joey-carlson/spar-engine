@@ -1103,10 +1103,15 @@ def render_campaign_dashboard() -> None:
                         st.rerun()
                 
                 with col3:
+                    # C: HARD cap check for Prep → Session Draft
+                    over_cap = selected_prep_count > 25
+                    if over_cap:
+                        st.error(f"⚠️ Session drafts support up to 25 items. Currently selected: {selected_prep_count}")
+                    
                     if st.button(
                         f"📝 Create Session Draft from Selected ({selected_prep_count})",
-                        disabled=(selected_prep_count == 0),
-                        type="primary" if selected_prep_count > 0 else "secondary",
+                        disabled=(selected_prep_count == 0 or over_cap),
+                        type="primary" if (selected_prep_count > 0 and not over_cap) else "secondary",
                         use_container_width=True,
                         key="create_session_from_prep"
                     ):
@@ -1207,6 +1212,171 @@ def render_campaign_dashboard() -> None:
                 with st.expander(f"📦 Archived ({len(archived_items)})", expanded=False):
                     for item in archived_items:
                         _render_prep_item(campaign, item, show_unarchive=True)
+    
+    st.divider()
+    
+    # D: Markdown Export Section
+    with st.expander("📄 Export Campaign History", expanded=False):
+        st.caption("Export campaign history (Canon Summary + Ledger) as Markdown")
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            st.markdown("**Campaign History Export**")
+            
+            # Default path for campaign history
+            normalized_name = campaign.name.lower().replace(' ', '_').replace('/', '_')
+            default_history_path = f"campaigns/{normalized_name}_campaign_history_{datetime.now().strftime('%Y%m%d')}.md"
+            
+            history_path = st.text_input(
+                "Export path",
+                value=default_history_path,
+                key="history_export_path",
+                help="Path for campaign history markdown file"
+            )
+            
+            if st.button("📥 Export Campaign History", use_container_width=True):
+                if history_path:
+                    # Generate markdown content
+                    lines = []
+                    lines.append(f"# {campaign.name}")
+                    lines.append(f"*Campaign history exported: {datetime.now().strftime('%Y-%m-%d %H:%M')}*")
+                    lines.append("")
+                    
+                    # Canon Summary
+                    lines.append("## Canon Summary")
+                    lines.append("")
+                    for bullet in campaign.canon_summary:
+                        lines.append(f"- {bullet}")
+                    lines.append("")
+                    
+                    # Campaign Ledger
+                    if campaign.ledger:
+                        lines.append("## Campaign Ledger")
+                        lines.append("")
+                        for entry in campaign.ledger:
+                            session_num = entry.get('session_number', '?')
+                            session_date = entry.get('session_date', '')[:10]
+                            lines.append(f"### Session {session_num} — {session_date}")
+                            lines.append("")
+                            
+                            what_happened = entry.get('what_happened', [])
+                            if what_happened:
+                                lines.append("**What Happened:**")
+                                for bullet in what_happened:
+                                    lines.append(f"- {bullet}")
+                                lines.append("")
+                            
+                            deltas = entry.get('deltas', {})
+                            if deltas:
+                                lines.append("**State Changes:**")
+                                if deltas.get('pressure_change'):
+                                    lines.append(f"- Pressure: {deltas['pressure_change']:+d}")
+                                if deltas.get('heat_change'):
+                                    lines.append(f"- Heat: {deltas['heat_change']:+d}")
+                                lines.append("")
+                            
+                            sources = entry.get('active_sources', [])
+                            if sources:
+                                lines.append(f"*Sources: {', '.join(sources)}*")
+                                lines.append("")
+                    
+                    markdown_content = "\n".join(lines)
+                    
+                    # Try local write, fallback to download
+                    try:
+                        path = Path(history_path)
+                        path.parent.mkdir(parents=True, exist_ok=True)
+                        path.write_text(markdown_content)
+                        st.success(f"✓ Exported to {history_path}")
+                    except Exception as e:
+                        # Fallback to download
+                        st.warning(f"Could not write to {history_path}: {e}")
+                        st.download_button(
+                            label="📥 Download Campaign History",
+                            data=markdown_content,
+                            file_name=Path(history_path).name,
+                            mime="text/markdown",
+                            use_container_width=True,
+                        )
+        
+        with col2:
+            st.markdown("**Session Export (Optional)**")
+            
+            # Default path for most recent session
+            session_num = len(campaign.ledger)
+            if session_num > 0:
+                normalized_name = campaign.name.lower().replace(' ', '_').replace('/', '_')
+                padded_num = str(session_num).zfill(3)
+                default_session_path = f"campaigns/{normalized_name}_session_{padded_num}_{datetime.now().strftime('%Y%m%d')}.md"
+                
+                session_path = st.text_input(
+                    "Export path",
+                    value=default_session_path,
+                    key="session_export_path",
+                    help="Path for session markdown file"
+                )
+                
+                if st.button("📥 Export Last Session", use_container_width=True):
+                    if session_path and campaign.ledger:
+                        # Get last session
+                        entry = campaign.ledger[-1]
+                        
+                        # Generate markdown content
+                        lines = []
+                        session_num = entry.get('session_number', '?')
+                        session_date = entry.get('session_date', '')[:10]
+                        lines.append(f"# {campaign.name} — Session {session_num}")
+                        lines.append(f"*Session date: {session_date}*")
+                        lines.append("")
+                        
+                        what_happened = entry.get('what_happened', [])
+                        if what_happened:
+                            lines.append("## What Happened")
+                            lines.append("")
+                            for bullet in what_happened:
+                                lines.append(f"- {bullet}")
+                            lines.append("")
+                        
+                        deltas = entry.get('deltas', {})
+                        if deltas:
+                            lines.append("## State Changes")
+                            lines.append("")
+                            if deltas.get('pressure_change'):
+                                lines.append(f"- Campaign Pressure: {deltas['pressure_change']:+d}")
+                            if deltas.get('heat_change'):
+                                lines.append(f"- Heat: {deltas['heat_change']:+d}")
+                            if deltas.get('rumor_spread'):
+                                lines.append("- Rumor spread")
+                            if deltas.get('faction_attention_change'):
+                                lines.append("- Faction attention increased")
+                            lines.append("")
+                        
+                        sources = entry.get('active_sources', [])
+                        if sources:
+                            lines.append(f"*Content Sources: {', '.join(sources)}*")
+                        
+                        markdown_content = "\n".join(lines)
+                        
+                        # Try local write, fallback to download
+                        try:
+                            path = Path(session_path)
+                            path.parent.mkdir(parents=True, exist_ok=True)
+                            path.write_text(markdown_content)
+                            st.success(f"✓ Exported to {session_path}")
+                        except Exception as e:
+                            # Fallback to download
+                            st.warning(f"Could not write to {session_path}: {e}")
+                            st.download_button(
+                                label="📥 Download Session",
+                                data=markdown_content,
+                                file_name=Path(session_path).name,
+                                mime="text/markdown",
+                                use_container_width=True,
+                                key="download_session_fallback"
+                            )
+            else:
+                st.info("No sessions to export yet")
     
     st.divider()
     
@@ -1595,11 +1765,29 @@ def render_finalize_session() -> None:
             st.write(f"**Severity Avg**: {session_packet.severity_avg:.2f}")
             st.write(f"**Cutoff Rate**: {session_packet.cutoff_rate*100:.1f}%")
             st.write(f"**Top Tags**: {', '.join([tag for tag, _ in session_packet.top_tags[:5]])}")
+    
+    # B: Suggestions panel - actionable optional commit helpers with checkboxes
+    # Only show if we have actionable suggestions (not just info notes)
+    actionable_suggestions = []
+    if session_packet and session_packet.suggested_faction_updates:
+        for faction_id, change in session_packet.suggested_faction_updates.items():
+            actionable_suggestions.append(f"Consider updating faction '{faction_id}': {change}")
+    if session_packet and session_packet.candidate_scars:
+        for scar in session_packet.candidate_scars:
+            actionable_suggestions.append(f"Consider adding scar: {scar}")
+    
+    # B: MUST hide panel if zero actionable items (no empty panels)
+    if actionable_suggestions:
+        with st.expander("💡 Suggestions (Optional)", expanded=False):
+            st.caption("Optional actionable commit helpers - commit works without checking these")
             
-            if session_packet.notes:
-                st.markdown("**Suggestions:**")
-                for note in session_packet.notes:
-                    st.caption(f"• {note}")
+            for idx, suggestion in enumerate(actionable_suggestions):
+                # Initialize checkbox state
+                checkbox_key = f"suggestion_check_{idx}"
+                if checkbox_key not in st.session_state:
+                    st.session_state[checkbox_key] = False
+                
+                st.checkbox(suggestion, key=checkbox_key)
     
     with st.form("finalize_session_form"):
         st.subheader("What Happened?")

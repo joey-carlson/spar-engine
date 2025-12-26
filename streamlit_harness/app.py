@@ -982,10 +982,15 @@ def main() -> None:
                         with send_col1:
                             if st.button(
                                 f"📤 Send Selected ({selected_count})",
-                                disabled=(selected_count == 0),
+                                disabled=(selected_count == 0 or selected_count > 50),
                                 use_container_width=True,
-                                type="primary" if selected_count > 0 else "secondary"
+                                type="primary" if (selected_count > 0 and selected_count <= 50) else "secondary"
                             ):
+                                # CAP CHECK: Generator → Prep Queue
+                                if selected_count > 50:
+                                    st.error("⚠️ Selection limit exceeded! Maximum 50 items per batch. Please deselect some items.")
+                                    st.stop()
+                                
                                 from datetime import datetime as dt
                                 # Get selected indices from checkbox keys
                                 selected_indices = [
@@ -1017,14 +1022,23 @@ def main() -> None:
                                 # Clear all checkbox states
                                 for idx in range(min(25, len(hs.events))):
                                     st.session_state[f"select_event_{idx}"] = False
-                                st.success(f"✓ Sent {len(selected_indices)} events to Prep Queue!")
+                                
+                                # A: Success banner with "Go to Campaign" CTA
+                                st.session_state.send_success_count = len(selected_indices)
+                                st.session_state.send_success_campaign = campaign.name
                                 st.rerun()
                         
                         with send_col2:
-                            if st.button("📤 Send All", use_container_width=True):
+                            if st.button("📤 Send All", use_container_width=True, disabled=(len(hs.events[:25]) > 50)):
+                                # CAP CHECK: Generator → Prep Queue
+                                send_count = min(50, len(hs.events[:25]))
+                                if len(hs.events[:25]) > 50:
+                                    st.error("⚠️ Too many items! Maximum 50 items per batch. Use 'Send Selected' to choose specific items.")
+                                    st.stop()
+                                
                                 from datetime import datetime as dt
-                                # Create prep items from all events
-                                for idx, e in enumerate(hs.events[:25]):
+                                # Create prep items from all events (capped at 50)
+                                for idx, e in enumerate(hs.events[:send_count]):
                                     prep_item = PrepItem(
                                         item_id=f"prep_{dt.now().strftime('%Y%m%d_%H%M%S%f')}_{idx}",
                                         created_at=dt.now().isoformat(),
@@ -1046,10 +1060,38 @@ def main() -> None:
                                 # Clear all checkbox states
                                 for idx in range(min(25, len(hs.events))):
                                     st.session_state[f"select_event_{idx}"] = False
-                                st.success(f"✓ Sent {len(hs.events[:25])} events to Prep Queue!")
+                                
+                                # A: Success banner with "Go to Campaign" CTA
+                                st.session_state.send_success_count = send_count
+                                st.session_state.send_success_campaign = campaign.name
+                                st.rerun()
+                        
+                        # A: Show success banner and "Go to Campaign" CTA after send
+                        if "send_success_count" in st.session_state:
+                            count = st.session_state.send_success_count
+                            camp_name = st.session_state.send_success_campaign
+                            
+                            st.success(f"✓ Sent {count} item{'s' if count != 1 else ''} to Prep Queue for **{camp_name}**")
+                            
+                            if st.button("🎯 Go to Campaign", type="primary", use_container_width=True):
+                                # Clear success state
+                                del st.session_state.send_success_count
+                                del st.session_state.send_success_campaign
+                                # Switch to Campaign Manager mode and dashboard
+                                st.session_state.campaign_page = "dashboard"
+                                st.rerun()
+                            
+                            # Clear button to dismiss
+                            if st.button("Dismiss", use_container_width=True):
+                                del st.session_state.send_success_count
+                                del st.session_state.send_success_campaign
                                 st.rerun()
                         
                         st.divider()
+                
+                # C: Show warning if selection would exceed cap
+                if len(hs.events) > 50:
+                    st.warning(f"⚠️ Generator has {len(hs.events)} events, but max 50 can be sent per batch. Use 'Send Selected' to choose items.")
                 
                 # Display events with checkboxes
                 for idx, e in enumerate(hs.events[:25]):
