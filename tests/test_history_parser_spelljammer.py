@@ -4,6 +4,7 @@ Tests section-aware parsing, entity classification, and correct handling
 of structured campaign history documents.
 """
 
+import re
 import sys
 from pathlib import Path
 
@@ -144,6 +145,51 @@ def test_session_parsing_uses_actual_dates():
     assert 6 not in session_nums
 
 
+def test_session_title_is_clean():
+    """Test that session titles don't include bullet points."""
+    parsed = parse_campaign_history(SPELLJAMMER_HISTORY)
+    sessions = parsed["sessions"]
+    
+    for session in sessions:
+        title = session["title"]
+        
+        # Title should NOT contain bullet markers
+        assert not re.match(r'[\-\*•]', title)
+        
+        # Title should NOT contain newlines
+        assert '\n' not in title
+        
+        # Title should be reasonably short (< 100 chars)
+        assert len(title) < 100
+    
+    # Session 0 title should be clean
+    assert sessions[0]["title"] == "Radiant Citadel: Formation and Omens"
+    
+    # Bullets should be in separate field
+    assert "bullets" in sessions[0]
+    assert len(sessions[0]["bullets"]) >= 2  # Has 2 bullet points
+
+
+def test_canon_includes_premise_and_situation():
+    """Test that Canon Summary includes content from multiple subsections."""
+    parsed = parse_campaign_history(SPELLJAMMER_HISTORY)
+    canon = parsed["canon_summary"]
+    
+    # Should have multiple bullets (not just 1)
+    assert len(canon) >= 3, f"Expected at least 3 canon bullets, got {len(canon)}"
+    
+    canon_text = ' '.join(canon).lower()
+    
+    # Should include NPC/Powers content
+    assert "biziver" in canon_text or "solstice pact" in canon_text or "temporal guardians" in canon_text
+    
+    # Should include current situation (party at staircase doorway)
+    assert "infinite staircase" in canon_text or "warforged" in canon_text or "radiant citadel" in canon_text
+    
+    # Should include artifacts
+    assert "chronolens" in canon_text
+
+
 def test_entity_classification():
     """Test that entities are classified correctly (factions vs places vs artifacts)."""
     parsed = parse_campaign_history(SPELLJAMMER_HISTORY)
@@ -155,6 +201,13 @@ def test_entity_classification():
     assert "Temporal Guardians" in factions
     assert "Solstice Pact" in factions
     
+    # Should NOT have "The Solstice Pact" (normalized to remove "The ")
+    assert "The Solstice Pact" not in factions
+    
+    # Should NOT have false positives like "Future Sessions" or "Guardians Spiral"
+    assert "Future Sessions" not in factions
+    assert "Guardians Spiral" not in factions
+    
     # Should classify Radiant Citadel as place, not faction
     assert "Radiant Citadel" not in factions
     if entities.get("places"):
@@ -164,6 +217,15 @@ def test_entity_classification():
     assert "Infinite Staircase" not in factions
     if entities.get("places"):
         assert "Infinite Staircase" in entities["places"]
+
+
+def test_artifact_extraction():
+    """Test that artifacts are extracted from Major Artifacts section."""
+    parsed = parse_campaign_history(SPELLJAMMER_HISTORY)
+    artifacts = parsed["entities"]["artifacts"]
+    
+    # Should detect Chronolens
+    assert any("Chronolens" in a for a in artifacts), f"Chronolens not found in {artifacts}"
 
 
 def test_future_sessions_not_in_ledger():
