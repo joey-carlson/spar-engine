@@ -1,6 +1,9 @@
 # Changelog
 
 ### Added
+- **Section-Aware History Parser v0.2** - Complete rewrite of campaign history parser with section-aware parsing and entity classification. Parser now respects document structure (splits by ## headings), extracts canon only from Canon Summary section (no bleed from ledger/notes), parses sessions from Campaign Ledger section using actual YYYY-MM-DD dates (not line numbers), classifies entities as factions vs places vs artifacts vs concepts, and parses Future Sessions and Open Threads into separate buckets (not added to ledger/canon). UI preview shows entities categorized, future sessions, and open threads in dedicated expanders. JSON export includes full parsed structure. Added comprehensive test suite (`tests/test_history_parser_spelljammer.py`) with 7 tests validating section isolation, entity classification, and proper handling of structured documents. Fixes: Canon Summary pollution, session date confusion, faction over-classification, future content bleed. All tests passing (85/85 suite + 7/7 parser tests). (commit 77896c5)
+
+### Added
 - **Campaign System Documentation Suite** - Created comprehensive documentation for Campaign Mechanics v0.2 and Integration Flows A-D. Added `docs/PLAY_GUIDE_campaigns.md` (user-facing guide covering campaign creation, session finalization, history import workflows, tips and troubleshooting) and `docs/ARCH_campaign_integration.md` (technical architecture detailing data models, flow patterns, persistence layer, design decisions, and testing strategy). Updated `docs/KEY_DOCS.md` to include campaign documentation in governance structure. Documentation covers all four integration flows: Flow A (Context → Generator), Flow B (Session Finalization), Flow C (Import to Existing Campaign), Flow D (Import to New Campaign). Complete with examples, edge cases, performance considerations, and extensibility points. (commit 81a212f)
 
 ### Added
