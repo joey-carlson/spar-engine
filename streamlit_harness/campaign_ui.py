@@ -877,23 +877,64 @@ def render_campaign_dashboard() -> None:
     # Display as editable bullet list
     st.caption("Current state of the world (8-12 bullets recommended)")
     
-    for idx, bullet in enumerate(campaign.canon_summary[:15]):  # Cap at 15
+    # Use version counter to force widget refresh on deletion
+    if "canon_version" not in st.session_state:
+        st.session_state.canon_version = 0
+    
+    canon_version = st.session_state.canon_version
+    bullets_to_display = campaign.canon_summary[:15]  # Display first 15
+    delete_index = None
+    text_edits = {}
+    
+    # Phase 1: Collect changes during render (no modifications yet)
+    for idx, bullet in enumerate(bullets_to_display):
         col1, col2 = st.columns([11, 1])
         with col1:
+            # CRITICAL: Include version in key to force widget recreation on deletion
             new_text = st.text_input(
                 f"Canon {idx+1}",
                 value=bullet,
-                key=f"canon_bullet_{idx}",
+                key=f"canon_bullet_{idx}_v{canon_version}",
                 label_visibility="collapsed"
             )
             if new_text != bullet:
-                campaign.canon_summary[idx] = new_text
-                campaign.save()
+                text_edits[idx] = new_text  # Map index to new content
         with col2:
-            if st.button("🗑️", key=f"delete_canon_{idx}"):
-                campaign.canon_summary.pop(idx)
-                campaign.save()
-                st.rerun()
+            if st.button("🗑️", key=f"delete_canon_{idx}_v{canon_version}"):
+                delete_index = idx  # Store which index to delete
+    
+    # Phase 2: Apply changes after render loop completes
+    if text_edits or delete_index is not None:
+        working_list = list(campaign.canon_summary)
+        
+        # CRITICAL: If deletion occurred, IGNORE text edits
+        # Text edits from widgets will be stale after rerun/reindex
+        if delete_index is not None:
+            # Just do deletion, skip text edits
+            deleted_content = None
+            if delete_index < len(working_list):
+                deleted_content = working_list[delete_index]
+                working_list.pop(delete_index)
+            
+            # Save changes
+            campaign.canon_summary = working_list
+            campaign.save()
+            
+            # CRITICAL: Increment version to force new widget keys on next render
+            # This creates entirely new widgets instead of reusing cached ones
+            st.session_state.canon_version += 1
+            
+            # Use st.stop() to immediately halt execution before rerun
+            st.rerun()
+            st.stop()  # Ensure no further rendering happens with stale data
+        else:
+            # No deletion, just apply text edits
+            for idx, new_text in text_edits.items():
+                if idx < len(working_list):
+                    working_list[idx] = new_text
+            
+            campaign.canon_summary = working_list
+            campaign.save()
     
     if st.button("➕ Add Canon Bullet"):
         campaign.canon_summary.append("New development...")
