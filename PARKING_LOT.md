@@ -72,6 +72,34 @@ Potential future enhancements (v0.3+):
 
 ---
 
+## Campaign History Import - Phase 3 UI Controls (In Progress)
+
+**Status**: Parser integration COMPLETE, UI controls deferred
+
+**Completed (Phase 2 + Foundation)**:
+- ✅ markdown-it-py token parsing (handles heading variants)
+- ✅ dateparser date normalization
+- ✅ rapidfuzz fuzzy deduplication
+- ✅ ImportOverrides data model
+- ✅ Parser accepts campaign_id and applies overrides
+- ✅ All tests passing (10/10 + 88/88)
+
+**Remaining UI Work** (Phase 3):
+Inline promote/demote controls in Parse Preview (no subdialogs):
+- Add Promote▲ buttons for places/artifacts/concepts
+- Add Demote▼ buttons for factions  
+- Add Remove✕ buttons for all entities
+- Controls update parsed data immediately
+- Changes save to ImportOverrides on action
+
+**Implementation locations**:
+- Flow D: render_campaign_selector() "show_history_import" section
+- Flow C: render_campaign_dashboard() "show_dashboard_history_import" section
+
+**Estimated**: ~40-50 small UI additions per requirements
+
+---
+
 ## SPAR ↔ D&D Adapter Formalization (Explicitly Deferred)
 
 **Status**: Parked pending content richness and campaign mechanics validation
