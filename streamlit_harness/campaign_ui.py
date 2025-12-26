@@ -1279,9 +1279,10 @@ def render_campaign_dashboard() -> None:
         with col1:
             st.markdown("**Campaign History Export**")
             
-            # Default path for campaign history
+            # Default path for campaign history (save in campaign subdirectory)
             normalized_name = campaign.name.lower().replace(' ', '_').replace('/', '_')
-            default_history_path = f"campaigns/{normalized_name}_campaign_history_{datetime.now().strftime('%Y%m%d')}.md"
+            campaign_dir = normalize_campaign_name_to_dir(campaign.name)
+            default_history_path = f"campaigns/{campaign_dir}/{normalized_name}_campaign_history_{datetime.now().strftime('%Y%m%d')}.md"
             
             history_path = st.text_input(
                 "Export path",
@@ -1385,12 +1386,13 @@ def render_campaign_dashboard() -> None:
         with col2:
             st.markdown("**Session Export (Optional)**")
             
-            # Default path for most recent session
+            # Default path for most recent session (save in campaign subdirectory)
             session_num = len(campaign.ledger)
             if session_num > 0:
                 normalized_name = campaign.name.lower().replace(' ', '_').replace('/', '_')
+                campaign_dir = normalize_campaign_name_to_dir(campaign.name)
                 padded_num = str(session_num).zfill(3)
-                default_session_path = f"campaigns/{normalized_name}_session_{padded_num}_{datetime.now().strftime('%Y%m%d')}.md"
+                default_session_path = f"campaigns/{campaign_dir}/{normalized_name}_session_{padded_num}_{datetime.now().strftime('%Y%m%d')}.md"
                 
                 session_path = st.text_input(
                     "Export path",
