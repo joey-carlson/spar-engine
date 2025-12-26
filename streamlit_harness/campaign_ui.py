@@ -323,6 +323,8 @@ def _render_prep_item(campaign: Campaign, item: PrepItem, show_unarchive: bool =
             # Inline controls
             if item.status == "pinned":
                 if st.button("📌", key=f"unpin_{item.item_id}", help="Unpin"):
+                    # Keep prep queue expanded after action
+                    st.session_state.prep_queue_expanded = True
                     # Find and update item
                     for i, p in enumerate(campaign.prep_queue):
                         if p.item_id == item.item_id:
@@ -332,6 +334,8 @@ def _render_prep_item(campaign: Campaign, item: PrepItem, show_unarchive: bool =
                     st.rerun()
             else:
                 if st.button("📌", key=f"pin_{item.item_id}", help="Pin"):
+                    # Keep prep queue expanded after action
+                    st.session_state.prep_queue_expanded = True
                     # Find and update item
                     for i, p in enumerate(campaign.prep_queue):
                         if p.item_id == item.item_id:
@@ -342,6 +346,8 @@ def _render_prep_item(campaign: Campaign, item: PrepItem, show_unarchive: bool =
             
             if show_unarchive:
                 if st.button("↩️", key=f"unarchive_{item.item_id}", help="Unarchive"):
+                    # Keep prep queue expanded after action
+                    st.session_state.prep_queue_expanded = True
                     for i, p in enumerate(campaign.prep_queue):
                         if p.item_id == item.item_id:
                             campaign.prep_queue[i].status = "queued"
@@ -350,6 +356,8 @@ def _render_prep_item(campaign: Campaign, item: PrepItem, show_unarchive: bool =
                     st.rerun()
             else:
                 if st.button("📦", key=f"archive_{item.item_id}", help="Archive"):
+                    # Keep prep queue expanded after action
+                    st.session_state.prep_queue_expanded = True
                     for i, p in enumerate(campaign.prep_queue):
                         if p.item_id == item.item_id:
                             campaign.prep_queue[i].status = "archived"
@@ -358,6 +366,8 @@ def _render_prep_item(campaign: Campaign, item: PrepItem, show_unarchive: bool =
                     st.rerun()
             
             if st.button("🗑️", key=f"delete_{item.item_id}", help="Delete"):
+                # Keep prep queue expanded after action
+                st.session_state.prep_queue_expanded = True
                 campaign.prep_queue = [p for p in campaign.prep_queue if p.item_id != item.item_id]
                 campaign.save()
                 st.rerun()
@@ -1073,7 +1083,11 @@ def render_campaign_dashboard() -> None:
     archived_items = [p for p in campaign.prep_queue if p.status == "archived"]
     active_count = len(queued_items) + len(pinned_items)
     
-    with st.expander(f"🎴 Prep Queue ({active_count}) — Not Yet Canon", expanded=False):
+    # Initialize prep queue expanded state if not set
+    if "prep_queue_expanded" not in st.session_state:
+        st.session_state.prep_queue_expanded = False
+    
+    with st.expander(f"🎴 Prep Queue ({active_count}) — Not Yet Canon", expanded=st.session_state.prep_queue_expanded):
         st.caption("Potential encounters/events that haven't happened yet")
         
         if not campaign.prep_queue:
