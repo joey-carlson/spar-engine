@@ -141,10 +141,16 @@ Add past sessions to current campaign:
    - Session dates (looks for date patterns)
    - Canon events (bullet points, significant events)
    - Faction references (@ mentions, organization names)
-6. **Preview Results** before merging:
-   - Shows detected sessions with dates
-   - Canon bullets extracted
-   - Factions identified
+6. **Review and Correct Entity Classifications**:
+   - Parser uses heuristics to classify entities as Factions/Places/Artifacts/Concepts
+   - Use inline controls to correct misclassifications:
+     - **Factions**: →Place, →Artifact, →Concept, ✕ (remove)
+     - **Places**: ↑Faction (promote), →Artifact, →Concept, ✕
+     - **Artifacts**: ↑Faction, →Place, →Concept, ✕
+     - **Concepts**: ↑Faction, →Place, →Artifact, ✕
+   - All corrections save to campaign-specific overrides file
+   - Future imports automatically apply your corrections
+   - No subdialogs required - all controls inline
 7. **Optional: Download Parsed JSON**
    - Click "📥 Download Parsed JSON" to export raw parser output
    - Useful for debugging, analysis, or external processing
@@ -164,7 +170,16 @@ Create campaign from existing narrative:
 3. Paste campaign history text
 4. Click **"Parse History"** to analyze the text
 5. Parser extracts structure (sessions, canon, factions)
-6. Preview parsed data
+6. **Review and Correct Entity Classifications**:
+   - Parser uses heuristics to classify entities as Factions/Places/Artifacts/Concepts
+   - Use inline controls to correct misclassifications:
+     - **Factions**: →Place, →Artifact, →Concept, ✕ (remove)
+     - **Places**: ↑Faction (promote), →Artifact, →Concept, ✕
+     - **Artifacts**: ↑Faction, →Place, →Concept, ✕
+     - **Concepts**: ↑Faction, →Place, →Artifact, ✕
+   - All corrections save to campaign-specific overrides file
+   - Future imports automatically apply your corrections
+   - No subdialogs required - all controls inline
 7. **Optional: Download Parsed JSON**
    - Click "📥 Download Parsed JSON" to export raw parser output
    - Useful for debugging, analysis, or external processing
@@ -242,6 +257,28 @@ Create campaign from existing narrative:
 - Add modular content packs as needed
 - Review available complications before session
 - Understand severity distribution
+
+### Using Inline Entity Classification Controls
+
+When importing campaign history, the parser classifies entities automatically using heuristics. Use inline controls to correct:
+
+**Common Corrections:**
+- Places misclassified as factions (e.g., "Maker Tunnels" → demote to Place)
+- Generic names needing faction promotion (e.g., "The Makers" → stays Faction)
+- Artifacts with generic names (e.g., "The Ring" → add context via removal + manual entry)
+
+**Best Practices:**
+- Review Factions list first - these drive campaign mechanics
+- Only promote to Faction if entity has agency (can act, react, remember)
+- Use Remove (✕) for obvious false positives (section headers, meta text)
+- Corrections persist automatically - no "Save" button needed
+- Future imports to same campaign apply your corrections
+
+**Persistence Behavior:**
+- Overrides stored in `campaigns/{campaign_id}_import_overrides.json`
+- One file per campaign, tracks all corrections
+- Next import automatically applies: promotes, demotes, lateral moves, ignores
+- Corrections are deterministic - same input + overrides = same result
 
 ## Troubleshooting
 
