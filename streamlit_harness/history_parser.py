@@ -1,7 +1,7 @@
 """Campaign history parser for imports.
 
 Version History:
-- v0.4 (2025-12-25): Markdown-it-py + dateparser + rapidfuzz integration [IN PROGRESS]
+- v0.4 (2025-12-25): Markdown-it-py + dateparser + rapidfuzz integration COMPLETE
 - v0.3 (2025-12-25): Ledger field separation, canon synthesis, faction cleanup
 - v0.2 (2025-12-25): Section-aware parsing with entity classification
 - v0.1 (2025-12-25): Initial history parsing implementation
@@ -130,9 +130,81 @@ def _simple_dedupe(names: List[str]) -> List[str]:
 def split_by_sections(text: str) -> Dict[str, str]:
     """Split document by top-level markdown headings (##).
     
+    Uses markdown-it-py for robust structure parsing (handles heading variants).
+    Falls back to regex if markdown-it-py unavailable.
+    
     Returns dict mapping section name -> section content.
     Preserves section ordering for later processing.
     """
+    if MARKDOWN_IT_AVAILABLE:
+        return _markdown_it_split_sections(text)
+    else:
+        return _regex_split_sections(text)
+
+
+def _markdown_it_split_sections(text: str) -> Dict[str, str]:
+    """Split sections using markdown-it-py token parsing.
+    
+    Handles heading variants like "Canon Summary (Expanded)" robustly.
+    Uses line mapping to extract original text directly.
+    """
+    md = MarkdownIt()
+    tokens = md.parse(text)
+    
+    # Split text into lines for mapping
+    text_lines = text.split('\n')
+    
+    sections = {}
+    section_boundaries = []  # (heading, start_line, end_line)
+    
+    # Find all h2 headings and their line positions
+    for i, token in enumerate(tokens):
+        if token.type == 'heading_open' and token.tag == 'h2':
+            # Get heading text from next inline token
+            if i + 1 < len(tokens) and tokens[i + 1].type == 'inline':
+                heading_text = tokens[i + 1].content.strip()
+                
+                # Normalize: remove (parens), lowercase
+                normalized = heading_text.lower()
+                normalized = re.sub(r'\s*\([^)]*\)\s*', '', normalized)
+                normalized = normalized.strip()
+                
+                # Get line number from token map (0-indexed)
+                if token.map:
+                    start_line = token.map[0]
+                    section_boundaries.append((normalized, start_line))
+    
+    # Extract content between section boundaries
+    if not section_boundaries:
+        # No h2 headings found, entire text is preamble
+        sections["_preamble"] = text.strip()
+        return sections
+    
+    # Preamble: before first h2
+    if section_boundaries[0][1] > 0:
+        preamble_lines = text_lines[:section_boundaries[0][1]]
+        sections["_preamble"] = '\n'.join(preamble_lines).strip()
+    
+    # Extract each section's content
+    for idx, (heading, start_line) in enumerate(section_boundaries):
+        # Content starts after heading line
+        content_start = start_line + 1
+        
+        # Content ends at next heading or end of document
+        if idx + 1 < len(section_boundaries):
+            content_end = section_boundaries[idx + 1][1]
+        else:
+            content_end = len(text_lines)
+        
+        # Extract lines
+        content_lines = text_lines[content_start:content_end]
+        sections[heading] = '\n'.join(content_lines).strip()
+    
+    return sections
+
+
+def _regex_split_sections(text: str) -> Dict[str, str]:
+    """Fallback regex-based section splitting."""
     sections = {}
     
     # Split on ## headings
