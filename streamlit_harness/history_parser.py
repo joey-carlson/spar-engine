@@ -1,6 +1,8 @@
 """Campaign history parser for imports.
 
 Version History:
+- v0.4 (2025-12-25): Markdown-it-py + dateparser + rapidfuzz integration [IN PROGRESS]
+- v0.3 (2025-12-25): Ledger field separation, canon synthesis, faction cleanup
 - v0.2 (2025-12-25): Section-aware parsing with entity classification
 - v0.1 (2025-12-25): Initial history parsing implementation
 
@@ -9,11 +11,120 @@ Provides section-aware parsing of structured campaign history documents into:
 - Canon summary bullets (from Canon Summary section only)
 - Faction extraction with entity classification
 - Future sessions and open threads (separate buckets)
+
+v0.4 adds production-grade dependencies:
+- markdown-it-py: Structured markdown token parsing (replaces regex)
+- dateparser: Flexible date normalization
+- rapidfuzz: Fuzzy string matching for deduplication
 """
 
 import re
 from datetime import datetime
 from typing import Any, Dict, List, Optional, Tuple
+
+# Import new dependencies with graceful fallback
+try:
+    from markdown_it import MarkdownIt
+    MARKDOWN_IT_AVAILABLE = True
+except ImportError:
+    MARKDOWN_IT_AVAILABLE = False
+
+try:
+    import dateparser
+    DATEPARSER_AVAILABLE = True
+except ImportError:
+    DATEPARSER_AVAILABLE = False
+
+try:
+    from rapidfuzz import fuzz, process
+    RAPIDFUZZ_AVAILABLE = True
+except ImportError:
+    RAPIDFUZZ_AVAILABLE = False
+
+
+def normalize_date(date_str: str) -> Optional[str]:
+    """Normalize date string to ISO YYYY-MM-DD format using dateparser.
+    
+    Returns None if date cannot be parsed.
+    """
+    if not DATEPARSER_AVAILABLE:
+        # Fallback: try ISO format only
+        if re.match(r'\d{4}-\d{2}-\d{2}', date_str):
+            return date_str
+        return None
+    
+    try:
+        parsed = dateparser.parse(date_str)
+        if parsed:
+            return parsed.strftime('%Y-%m-%d')
+    except Exception:
+        pass
+    
+    return None
+
+
+def fuzzy_dedupe_entities(names: List[str], threshold: int = 85) -> List[str]:
+    """Deduplicate entity names using fuzzy matching with rapidfuzz.
+    
+    Handles:
+    - "The Solstice Pact" vs "Solstice Pact"
+    - Case variations
+    - Near-duplicates
+    
+    Returns deduplicated list, keeping best variant.
+    """
+    if not RAPIDFUZZ_AVAILABLE or not names:
+        # Fallback: simple normalization
+        return _simple_dedupe(names)
+    
+    # Normalize: strip "The " and lowercase for comparison
+    normalized_map = {}
+    for name in names:
+        normalized = re.sub(r'^The\s+', '', name, flags=re.IGNORECASE).lower()
+        if normalized not in normalized_map:
+            normalized_map[normalized] = []
+        normalized_map[normalized].append(name)
+    
+    # For each cluster, keep variant without "The " if available
+    result = []
+    for variants in normalized_map.values():
+        without_the = [v for v in variants if not v.startswith('The ')]
+        if without_the:
+            result.append(without_the[0])
+        else:
+            result.append(variants[0])
+    
+    # Use rapidfuzz to catch near-duplicates across clusters
+    if len(result) > 1:
+        seen = set()
+        final = []
+        for name in sorted(result):  # Sort for determinism
+            if name in seen:
+                continue
+            
+            # Check if similar to any already added
+            matches = process.extract(name, final, scorer=fuzz.ratio, limit=1)
+            if matches and matches[0][1] >= threshold:
+                seen.add(name)  # Too similar, skip
+                continue
+            
+            final.append(name)
+            seen.add(name)
+        
+        return sorted(final)
+    
+    return sorted(result)
+
+
+def _simple_dedupe(names: List[str]) -> List[str]:
+    """Fallback deduplication without rapidfuzz."""
+    seen = {}
+    for name in names:
+        normalized = re.sub(r'^The\s+', '', name, flags=re.IGNORECASE)
+        key = normalized.lower()
+        if key not in seen:
+            seen[key] = normalized
+    return sorted(seen.values())
 
 
 def split_by_sections(text: str) -> Dict[str, str]:
@@ -128,6 +239,7 @@ def parse_ledger_sessions(ledger_section: str) -> List[Dict[str, Any]]:
     - Bullet points...
     
     Returns list of sessions with actual dates, clean titles, and bullets.
+    Uses dateparser for flexible date normalization.
     """
     if not ledger_section:
         return []
@@ -141,6 +253,11 @@ def parse_ledger_sessions(ledger_section: str) -> List[Dict[str, Any]]:
         date_str = match.group(1)
         session_num = int(match.group(2))
         title = match.group(3).strip()
+        
+        # Normalize date with dateparser
+        normalized_date = normalize_date(date_str)
+        if not normalized_date:
+            normalized_date = date_str  # Keep original if normalization fails
         
         # Get content after header line (everything until next ### or end)
         content_start = match.end()
@@ -169,7 +286,7 @@ def parse_ledger_sessions(ledger_section: str) -> List[Dict[str, Any]]:
         
         sessions.append({
             "session_number": session_num,
-            "date": date_str,
+            "date": normalized_date,  # Normalized via dateparser
             "title": title,  # Clean title only
             "bullets": bullets,  # Structured bullet list
             "content": raw_content,  # Raw text for reference
@@ -295,17 +412,6 @@ def classify_entities(text: str, canon_section: Optional[str] = None) -> Dict[st
             # Plurals or "X of Y" patterns suggest groups
             factions.append(normalized)
     
-    # Deduplicate case-insensitively
-    def dedupe_case_insensitive(items: List[str]) -> List[str]:
-        seen = {}
-        result = []
-        for item in items:
-            key = item.lower()
-            if key not in seen:
-                seen[key] = item
-                result.append(item)
-        return sorted(result)
-    
     # Extract artifacts from Major Artifacts section if available
     if canon_section:
         sections = split_by_sections(text)
@@ -323,11 +429,12 @@ def classify_entities(text: str, canon_section: Optional[str] = None) -> Dict[st
                         artifacts.extend(extracted)
                         break
     
+    # Apply fuzzy deduplication using rapidfuzz
     return {
-        "factions": dedupe_case_insensitive(factions),
-        "places": dedupe_case_insensitive(places),
-        "artifacts": dedupe_case_insensitive(artifacts),
-        "concepts": dedupe_case_insensitive(concepts),
+        "factions": fuzzy_dedupe_entities(factions),
+        "places": fuzzy_dedupe_entities(places),
+        "artifacts": fuzzy_dedupe_entities(artifacts),
+        "concepts": fuzzy_dedupe_entities(concepts),
     }
 
 
