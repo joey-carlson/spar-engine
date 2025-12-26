@@ -281,6 +281,38 @@ def render_campaign_selector() -> None:
                 else:
                     st.caption("No factions detected")
             
+            # Show classified entities (non-factions)
+            entities = parsed.get("entities", {})
+            if any(entities.values()):
+                with st.expander("Entities (Non-Factions)", expanded=False):
+                    if entities.get("places"):
+                        st.markdown("**Places:**")
+                        for place in entities["places"]:
+                            st.caption(f"• {place}")
+                    if entities.get("artifacts"):
+                        st.markdown("**Artifacts:**")
+                        for artifact in entities["artifacts"]:
+                            st.caption(f"• {artifact}")
+                    if entities.get("concepts"):
+                        st.markdown("**Concepts/Powers:**")
+                        for concept in entities["concepts"]:
+                            st.caption(f"• {concept}")
+            
+            # Show future sessions (not imported)
+            future = parsed.get("future_sessions", [])
+            if future:
+                with st.expander("Future Sessions (Not Imported)", expanded=False):
+                    for session in future:
+                        st.markdown(f"**{session['title']}**")
+                        st.caption(session['notes'][:100] + "..." if len(session['notes']) > 100 else session['notes'])
+            
+            # Show open threads (not imported)
+            threads = parsed.get("open_threads", [])
+            if threads:
+                with st.expander("Open Threads (Not Imported)", expanded=False):
+                    for thread in threads:
+                        st.caption(f"• {thread[:150]}..." if len(thread) > 150 else f"• {thread}")
+            
             # Create campaign from parsed history
             campaign_name_import = st.text_input("Campaign Name", value="Imported Campaign")
             

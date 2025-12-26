@@ -1,13 +1,14 @@
 """Campaign history parser for imports.
 
 Version History:
+- v0.2 (2025-12-25): Section-aware parsing with entity classification
 - v0.1 (2025-12-25): Initial history parsing implementation
 
-Provides heuristic parsing of campaign history documents into:
-- Session entries with dates
-- Canon summary bullets
-- Faction extraction
-- Scar candidates
+Provides section-aware parsing of structured campaign history documents into:
+- Session entries with dates (from Campaign Ledger section only)
+- Canon summary bullets (from Canon Summary section only)
+- Faction extraction with entity classification
+- Future sessions and open threads (separate buckets)
 """
 
 import re
@@ -15,175 +16,351 @@ from datetime import datetime
 from typing import Any, Dict, List, Optional, Tuple
 
 
-def detect_dates(text: str) -> List[Tuple[int, str]]:
-    """Detect dates in text and return (position, date_string) tuples.
+def split_by_sections(text: str) -> Dict[str, str]:
+    """Split document by top-level markdown headings (##).
     
-    Supports common formats:
-    - YYYY-MM-DD
-    - MM/DD/YYYY
-    - Month DD, YYYY
-    - "Session N" headers
+    Returns dict mapping section name -> section content.
+    Preserves section ordering for later processing.
     """
-    dates = []
+    sections = {}
     
-    # YYYY-MM-DD pattern
-    pattern1 = r'\b(\d{4})-(\d{2})-(\d{2})\b'
-    for match in re.finditer(pattern1, text):
-        dates.append((match.start(), match.group(0)))
+    # Split on ## headings
+    parts = re.split(r'\n##\s+(.+?)\n', text)
     
-    # MM/DD/YYYY pattern
-    pattern2 = r'\b(\d{1,2})/(\d{1,2})/(\d{4})\b'
-    for match in re.finditer(pattern2, text):
-        dates.append((match.start(), match.group(0)))
+    # First part is before any section (preamble/notes)
+    if parts[0].strip():
+        sections["_preamble"] = parts[0].strip()
     
-    # Month DD, YYYY pattern
-    months = r'(January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)'
-    pattern3 = rf'{months}\s+(\d{{1,2}}),?\s+(\d{{4}})'
-    for match in re.finditer(pattern3, text, re.IGNORECASE):
-        dates.append((match.start(), match.group(0)))
+    # Process section pairs (heading, content)
+    for i in range(1, len(parts), 2):
+        if i + 1 < len(parts):
+            heading = parts[i].strip()
+            content = parts[i + 1].strip()
+            
+            # Normalize heading for easier lookup
+            key = heading.lower().replace('(', '').replace(')', '').strip()
+            sections[key] = content
     
-    # Session headers (Session N, Game N, etc.)
-    pattern4 = r'Session\s+(\d+)|Game\s+#?(\d+)'
-    for match in re.finditer(pattern4, text, re.IGNORECASE):
-        dates.append((match.start(), f"Session {match.group(1) or match.group(2)}"))
-    
-    return sorted(dates, key=lambda x: x[0])
+    return sections
 
 
-def split_into_sessions(text: str) -> List[Dict[str, Any]]:
-    """Split history text into session chunks.
+def extract_canon_from_section(canon_section: str) -> List[str]:
+    """Extract canon bullets from Canon Summary section.
     
-    Returns list of session dicts with:
-    - session_number: int
-    - date: str (detected or "Unknown")
-    - content: str (session text)
+    Compresses subsections into 8-12 key bullets.
+    Ignores preamble, focuses on subsection content.
     """
-    dates = detect_dates(text)
+    if not canon_section:
+        return []
     
-    if not dates:
-        # No dates found - create single imported session
-        return [{
-            "session_number": 1,
-            "date": "Unknown",
-            "content": text.strip(),
-        }]
+    bullets = []
+    
+    # Split by ### subsections
+    subsections = re.split(r'\n###\s+(.+?)\n', canon_section)
+    
+    # Process each subsection
+    for i in range(1, len(subsections), 2):
+        if i + 1 < len(subsections):
+            heading = subsections[i].strip()
+            content = subsections[i + 1].strip()
+            
+            # Extract substantive sentences from content
+            # Split on newlines first to handle bullet lists
+            lines = content.split('\n')
+            for line in lines:
+                line = line.strip()
+                
+                # Skip empty lines and meta-notes
+                if not line or line.startswith('#'):
+                    continue
+                
+                # Remove leading bullets/dashes
+                cleaned = re.sub(r'^[\-\*•]\s*', '', line)
+                
+                # Take substantive lines (>30 chars)
+                if len(cleaned) > 30:
+                    bullets.append(cleaned)
+    
+    # Limit to 12 bullets max
+    return bullets[:12]
+
+
+def parse_ledger_sessions(ledger_section: str) -> List[Dict[str, Any]]:
+    """Parse sessions from Campaign Ledger section.
+    
+    Expected format:
+    ### YYYY-MM-DD — Session N — Title
+    - Bullet points...
+    
+    Returns list of sessions with actual dates and titles.
+    """
+    if not ledger_section:
+        return []
     
     sessions = []
     
-    # Split at each date marker
-    for idx, (pos, date_str) in enumerate(dates):
-        # Get content from this date to next date (or end)
-        start = pos
-        end = dates[idx + 1][0] if idx + 1 < len(dates) else len(text)
-        content = text[start:end].strip()
+    # Pattern for session headers: ### YYYY-MM-DD — Session N — Title
+    session_pattern = r'###\s+(\d{4}-\d{2}-\d{2})\s+[—–]\s+Session\s+(\d+)(?:\s+\(Current\))?\s+[—–]\s+(.+?)(?=\n###|\Z)'
+    
+    for match in re.finditer(session_pattern, ledger_section, re.DOTALL):
+        date_str = match.group(1)
+        session_num = int(match.group(2))
+        title = match.group(3).strip()
         
-        # Remove date header from content
-        content_lines = content.split('\n')
-        if content_lines and date_str in content_lines[0]:
-            content = '\n'.join(content_lines[1:]).strip()
+        # Get content after title (everything until next ### or end)
+        content_start = match.end(3)
+        content_end = ledger_section.find('\n###', content_start)
+        if content_end == -1:
+            content_end = len(ledger_section)
         
-        if content:  # Only add non-empty sessions
-            sessions.append({
-                "session_number": idx + 1,
-                "date": date_str,
-                "content": content,
-            })
+        content = ledger_section[content_start:content_end].strip()
+        
+        sessions.append({
+            "session_number": session_num,
+            "date": date_str,
+            "title": title,
+            "content": content,
+        })
+    
+    # Sort by date for consistency
+    sessions.sort(key=lambda s: s["date"])
     
     return sessions
 
 
-def extract_canon_summary(text: str, max_bullets: int = 12) -> List[str]:
-    """Extract canon summary bullets from history text.
+def classify_entities(text: str) -> Dict[str, List[str]]:
+    """Classify capitalized entities as factions, places, artifacts, or concepts.
     
-    Heuristics:
-    - Look for recurring themes/names
-    - Extract key outcomes
-    - Prioritize recent content (end of text)
-    - Limit to max_bullets
+    Returns dict with:
+    - factions: Organizations that act (Guilds, Pacts, Orders, etc.)
+    - places: Locations (Cities, Citadels, Spheres)
+    - artifacts: Named objects (Lenses, Rings, Devices)
+    - concepts: Abstract powers (Incarnates, Seeds)
     """
-    # Simple heuristic: Split into sentences, extract last N substantive ones
-    sentences = re.split(r'[.!?]\s+', text)
-    
-    # Filter out very short sentences
-    substantive = [s.strip() for s in sentences if len(s.strip()) > 20]
-    
-    # Take last max_bullets (most recent)
-    bullets = substantive[-max_bullets:] if len(substantive) > max_bullets else substantive
-    
-    # Clean up bullets
-    cleaned = []
-    for bullet in bullets:
-        # Capitalize first letter
-        if bullet and not bullet[0].isupper():
-            bullet = bullet[0].upper() + bullet[1:]
-        # Remove leading bullets/numbers
-        bullet = re.sub(r'^[\-\*\d\.]+\s*', '', bullet)
-        cleaned.append(bullet)
-    
-    return cleaned
-
-
-def extract_factions(text: str) -> List[str]:
-    """Extract potential faction names from history text.
-    
-    Looks for:
-    - Capitalized multi-word phrases (proper nouns)
-    - Recurring named entities
-    - Common faction patterns ("X Guild", "The Y", "Z Watch")
-    """
-    # Pattern for faction-like names (capitalized, 2-3 words)
-    faction_pattern = r'\b([A-Z][a-z]+(?:\s+[A-Z][a-z]+){1,2})\b'
-    matches = re.findall(faction_pattern, text)
+    # Extract all capitalized phrases (2-3 words)
+    entity_pattern = r'\b([A-Z][a-z]+(?:\s+[A-Z][a-z]+){1,2})\b'
+    matches = re.findall(entity_pattern, text)
     
     # Count frequency
-    faction_counts = {}
+    entity_counts = {}
     for match in matches:
-        faction_counts[match] = faction_counts.get(match, 0) + 1
+        entity_counts[match] = entity_counts.get(match, 0) + 1
     
-    # Return top 6 by frequency (appearing at least 2 times)
-    frequent = [(name, count) for name, count in faction_counts.items() if count >= 2]
-    frequent.sort(key=lambda x: x[1], reverse=True)
+    # Only consider entities mentioned 2+ times
+    frequent = {name: count for name, count in entity_counts.items() if count >= 2}
     
-    return [name for name, _ in frequent[:6]]
+    # Classification patterns
+    faction_keywords = [
+        'pact', 'guild', 'order', 'watch', 'cult', 'consortium',
+        'guardians', 'makers', 'council', 'alliance', 'league'
+    ]
+    
+    place_keywords = [
+        'citadel', 'city', 'fortress', 'bral', 'sphere', 'staircase',
+        'tower', 'palace', 'keep', 'sanctum', 'archives', 'spires'
+    ]
+    
+    artifact_keywords = [
+        'lens', 'ring', 'device', 'crown', 'scepter', 'amulet',
+        'orb', 'staff', 'sword', 'crystal'
+    ]
+    
+    concept_keywords = [
+        'incarnate', 'seed', 'essence', 'aspect', 'principle'
+    ]
+    
+    # Classify each entity
+    factions = []
+    places = []
+    artifacts = []
+    concepts = []
+    
+    for entity in frequent.keys():
+        entity_lower = entity.lower()
+        
+        # Check each category
+        if any(kw in entity_lower for kw in faction_keywords):
+            factions.append(entity)
+        elif any(kw in entity_lower for kw in place_keywords):
+            places.append(entity)
+        elif any(kw in entity_lower for kw in artifact_keywords):
+            artifacts.append(entity)
+        elif any(kw in entity_lower for kw in concept_keywords):
+            concepts.append(entity)
+        # If no match, default to faction if it looks organizational
+        elif entity.endswith('s') or ' of ' in entity_lower:
+            # Plurals or "X of Y" patterns suggest groups
+            factions.append(entity)
+    
+    return {
+        "factions": sorted(set(factions)),
+        "places": sorted(set(places)),
+        "artifacts": sorted(set(artifacts)),
+        "concepts": sorted(set(concepts)),
+    }
+
+
+def parse_future_sessions(future_section: str) -> List[Dict[str, str]]:
+    """Parse future sessions from Future Sessions section.
+    
+    Returns list of future session dicts with:
+    - title: Session title
+    - notes: Description/expectations
+    """
+    if not future_section:
+        return []
+    
+    future_sessions = []
+    
+    # Split by ### subsections (handle both \n### and start of string)
+    subsections = re.split(r'(?:^|\n)###\s+(.+?)(?:\n|$)', future_section, flags=re.MULTILINE)
+    
+    for i in range(1, len(subsections), 2):
+        if i + 1 < len(subsections):
+            title = subsections[i].strip()
+            content = subsections[i + 1].strip()
+            
+            # Only add if has substantive content
+            if title and len(content) > 10:
+                future_sessions.append({
+                    "title": title,
+                    "notes": content,
+                })
+    
+    return future_sessions
+
+
+def extract_open_threads(threads_section: str) -> List[str]:
+    """Extract open threads from Open Threads section.
+    
+    Returns list of thread descriptions.
+    """
+    if not threads_section:
+        return []
+    
+    threads = []
+    
+    # Split on bullet points or newlines
+    lines = threads_section.split('\n')
+    for line in lines:
+        line = line.strip()
+        if not line:
+            continue
+        
+        # Remove leading bullets
+        cleaned = re.sub(r'^[\-\*•]\s*', '', line)
+        
+        # Take substantive threads (>20 chars)
+        if len(cleaned) > 20:
+            threads.append(cleaned)
+    
+    return threads
 
 
 def parse_campaign_history(text: str) -> Dict[str, Any]:
-    """Parse full campaign history into structured data.
+    """Parse structured campaign history into components.
+    
+    This parser is section-aware and respects document structure:
+    1. Splits by top-level headings (##)
+    2. Extracts content from appropriate sections only
+    3. Classifies entities (factions vs places vs artifacts)
     
     Returns:
         Dictionary with:
-        - sessions: List of session dicts
-        - canon_summary: List of bullets
-        - factions: List of faction names
+        - sessions: List of session dicts (from Campaign Ledger)
+        - canon_summary: List of bullets (from Canon Summary)
+        - factions: List of faction names (classified)
+        - entities: Dict of non-faction entities (places, artifacts, concepts)
+        - future_sessions: List of planned sessions (from Future Sessions)
+        - open_threads: List of thread descriptions (from Open Threads)
         - notes: Parsing notes/warnings
     """
-    sessions = split_into_sessions(text)
-    canon_summary = extract_canon_summary(text)
-    factions = extract_factions(text)
+    # Split into sections
+    sections = split_by_sections(text)
     
+    # Parse Canon Summary (only from Canon Summary section)
+    canon_section_key = None
+    for key in sections.keys():
+        if 'canon summary' in key:
+            canon_section_key = key
+            break
+    
+    canon_summary = []
+    if canon_section_key:
+        canon_summary = extract_canon_from_section(sections[canon_section_key])
+    
+    # Parse Sessions (only from Campaign Ledger section)
+    ledger_section_key = None
+    for key in sections.keys():
+        if 'campaign ledger' in key or 'sessionized history' in key:
+            ledger_section_key = key
+            break
+    
+    sessions = []
+    if ledger_section_key:
+        sessions = parse_ledger_sessions(sections[ledger_section_key])
+    
+    # Parse Future Sessions
+    future_section_key = None
+    for key in sections.keys():
+        if 'future sessions' in key or 'future session' in key:
+            future_section_key = key
+            break
+    
+    future_sessions = []
+    if future_section_key:
+        future_sessions = parse_future_sessions(sections[future_section_key])
+    
+    # Parse Open Threads
+    threads_section_key = None
+    for key in sections.keys():
+        if 'open threads' in key or 'next imports' in key:
+            threads_section_key = key
+            break
+    
+    open_threads = []
+    if threads_section_key:
+        open_threads = extract_open_threads(sections[threads_section_key])
+    
+    # Classify entities (use full text for detection, then classify)
+    entities = classify_entities(text)
+    
+    # Build notes
     notes = []
+    
     if not sessions:
-        notes.append("⚠️ No sessions detected - added as single entry")
+        notes.append("⚠️ No sessions detected in Campaign Ledger section")
     else:
-        notes.append(f"✓ Detected {len(sessions)} sessions")
+        notes.append(f"✓ Detected {len(sessions)} sessions from ledger")
     
-    unknown_dates = sum(1 for s in sessions if s["date"] == "Unknown")
-    if unknown_dates > 0:
-        notes.append(f"⚠️ {unknown_dates} sessions have unknown dates (edit before commit)")
-    
-    if canon_summary:
+    if not canon_summary:
+        notes.append("⚠️ No canon summary extracted from Canon Summary section")
+    else:
         notes.append(f"✓ Extracted {len(canon_summary)} canon bullets")
-    else:
-        notes.append("⚠️ No canon summary extracted (text may be too short)")
     
-    if factions:
-        notes.append(f"✓ Detected {len(factions)} potential factions")
-    else:
-        notes.append("ℹ️ No factions detected")
+    if entities["factions"]:
+        notes.append(f"✓ Classified {len(entities['factions'])} factions")
+    
+    if entities["places"] or entities["artifacts"] or entities["concepts"]:
+        entity_count = len(entities["places"]) + len(entities["artifacts"]) + len(entities["concepts"])
+        notes.append(f"ℹ️ Detected {entity_count} non-faction entities")
+    
+    if future_sessions:
+        notes.append(f"ℹ️ Found {len(future_sessions)} future sessions (not added to ledger)")
+    
+    if open_threads:
+        notes.append(f"ℹ️ Found {len(open_threads)} open threads (not added to canon)")
     
     return {
         "sessions": sessions,
         "canon_summary": canon_summary,
-        "factions": factions,
+        "factions": entities["factions"],
+        "entities": {
+            "places": entities["places"],
+            "artifacts": entities["artifacts"],
+            "concepts": entities["concepts"],
+        },
+        "future_sessions": future_sessions,
+        "open_threads": open_threads,
         "notes": notes,
     }
