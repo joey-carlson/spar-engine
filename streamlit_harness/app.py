@@ -863,6 +863,10 @@ def main() -> None:
                 st.divider()
             
             if hs.events:
+                # Initialize selection state
+                if "selected_event_indices" not in st.session_state:
+                    st.session_state.selected_event_indices = set()
+                
                 # Add "Send to Campaign" section before events
                 if st.session_state.get("current_campaign_id"):
                     from streamlit_harness.campaign_ui import Campaign, PrepItem
@@ -870,37 +874,107 @@ def main() -> None:
                     if campaign:
                         st.info(f"📤 Sending to: **{campaign.name}** | Events will be added to Prep Queue (not canon)")
                         
-                        if st.button("📤 Send All to Prep Queue", use_container_width=True):
-                            from datetime import datetime as dt
-                            # Create prep items from all generated events
-                            for e in hs.events[:25]:
-                                prep_item = PrepItem(
-                                    item_id=f"prep_{dt.now().strftime('%Y%m%d_%H%M%S%f')}",
-                                    created_at=dt.now().isoformat(),
-                                    title=e.get("title", "Untitled Event"),
-                                    summary=e.get("content", "")[:200],
-                                    tags=e.get("tags", []),
-                                    source={
-                                        "scenario_name": "Event Generator",
-                                        "preset": preset,
-                                        "phase": scene_phase,
-                                        "rarity_mode": rarity_mode,
-                                        "seed": seed,
-                                    },
-                                    status="queued",
-                                )
-                                campaign.prep_queue.append(prep_item)
-                            
-                            campaign.save()
-                            st.success(f"✓ Sent {len(hs.events[:25])} events to Prep Queue!")
-                            st.rerun()
+                        # Selection controls
+                        col1, col2, col3, col4 = st.columns([3, 2, 2, 5])
+                        
+                        with col1:
+                            if st.button("☑️ Select All"):
+                                st.session_state.selected_event_indices = set(range(min(25, len(hs.events))))
+                                st.rerun()
+                        
+                        with col2:
+                            if st.button("☐ Select None"):
+                                st.session_state.selected_event_indices = set()
+                                st.rerun()
+                        
+                        with col3:
+                            selected_count = len(st.session_state.selected_event_indices)
+                            st.caption(f"Selected: {selected_count}")
+                        
+                        # Send buttons
+                        send_col1, send_col2 = st.columns(2)
+                        
+                        with send_col1:
+                            if st.button(
+                                f"📤 Send Selected ({selected_count})",
+                                disabled=(selected_count == 0),
+                                use_container_width=True,
+                                type="primary" if selected_count > 0 else "secondary"
+                            ):
+                                from datetime import datetime as dt
+                                # Create prep items from selected events only
+                                for idx in sorted(st.session_state.selected_event_indices):
+                                    if idx < len(hs.events):
+                                        e = hs.events[idx]
+                                        prep_item = PrepItem(
+                                            item_id=f"prep_{dt.now().strftime('%Y%m%d_%H%M%S%f')}_{idx}",
+                                            created_at=dt.now().isoformat(),
+                                            title=e.get("title", "Untitled Event"),
+                                            summary=e.get("content", "")[:200],
+                                            tags=e.get("tags", []),
+                                            source={
+                                                "scenario_name": "Event Generator",
+                                                "preset": preset,
+                                                "phase": scene_phase,
+                                                "rarity_mode": rarity_mode,
+                                                "seed": seed,
+                                            },
+                                            status="queued",
+                                        )
+                                        campaign.prep_queue.append(prep_item)
+                                
+                                campaign.save()
+                                st.session_state.selected_event_indices = set()  # Clear selection
+                                st.success(f"✓ Sent {selected_count} events to Prep Queue!")
+                                st.rerun()
+                        
+                        with send_col2:
+                            if st.button("📤 Send All", use_container_width=True):
+                                from datetime import datetime as dt
+                                # Create prep items from all events
+                                for idx, e in enumerate(hs.events[:25]):
+                                    prep_item = PrepItem(
+                                        item_id=f"prep_{dt.now().strftime('%Y%m%d_%H%M%S%f')}_{idx}",
+                                        created_at=dt.now().isoformat(),
+                                        title=e.get("title", "Untitled Event"),
+                                        summary=e.get("content", "")[:200],
+                                        tags=e.get("tags", []),
+                                        source={
+                                            "scenario_name": "Event Generator",
+                                            "preset": preset,
+                                            "phase": scene_phase,
+                                            "rarity_mode": rarity_mode,
+                                            "seed": seed,
+                                        },
+                                        status="queued",
+                                    )
+                                    campaign.prep_queue.append(prep_item)
+                                
+                                campaign.save()
+                                st.session_state.selected_event_indices = set()  # Clear selection
+                                st.success(f"✓ Sent {len(hs.events[:25])} events to Prep Queue!")
+                                st.rerun()
                         
                         st.divider()
                 
-                # Display events
-                for e in hs.events[:25]:
+                # Display events with checkboxes
+                for idx, e in enumerate(hs.events[:25]):
                     with st.container(border=True):
-                        event_card(e)
+                        if st.session_state.get("current_campaign_id"):
+                            # Add checkbox for selection
+                            col_check, col_event = st.columns([1, 19])
+                            with col_check:
+                                is_selected = idx in st.session_state.selected_event_indices
+                                if st.checkbox("", value=is_selected, key=f"select_event_{idx}", label_visibility="collapsed"):
+                                    st.session_state.selected_event_indices.add(idx)
+                                    st.rerun()
+                                elif is_selected:
+                                    st.session_state.selected_event_indices.discard(idx)
+                                    st.rerun()
+                            with col_event:
+                                event_card(e)
+                        else:
+                            event_card(e)
             else:
                 st.info("No events generated yet.")
 
