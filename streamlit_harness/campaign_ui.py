@@ -1540,8 +1540,13 @@ def render_finalize_session() -> None:
     st.title("✅ Finalize Session")
     st.caption(f"Campaign: {campaign.name}")
     
-    # Check for session packet (Flow B: Generator → Campaign)
+    # Check for session packet (Flow B: Generator → Campaign or Prep → Canon)
     session_packet = st.session_state.get("pending_session_packet")
+    
+    # Show prep item badge if using prep items
+    if "prep_items_to_archive" in st.session_state:
+        prep_count = len(st.session_state.prep_items_to_archive)
+        st.info(f"🎴 Using {prep_count} prep item{'s' if prep_count != 1 else ''} from Prep Queue")
     
     if session_packet:
         st.info(f"📊 Session data loaded from: {session_packet.scenario_name}")
