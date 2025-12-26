@@ -100,6 +100,102 @@ Inline promote/demote controls in Parse Preview (no subdialogs):
 
 ---
 
+## Loot Generator & Generators Framework (Future Architecture)
+
+**Status**: Deferred - foundational work for multi-generator system
+
+### A) Loot Generator Feature
+
+A future Loot Generator should parallel the Event Generator architecture with campaign integration:
+
+**Core requirements**:
+- **Campaign context integration**: Pull faction/scar/pressure context like Event Generator
+- **Prep queue push**: Send generated loot to campaign prep queue (non-canon staging)
+- **Sources support**: Built-in loot tables + external sources (CSV, spreadsheet)
+- **Deterministic generation**: Seed-based RNG for reproducible results
+- **Campaign mechanics advisory**: Faction attention and scars influence suggestions only (no direct modification)
+
+**Design principles**:
+- Same workflow as Event Generator: Generate → Curate → Stage (Prep) → Commit (Canon)
+- Preserve separation: generator outputs suggestions, campaign commits changes
+- Use ContextBundle for campaign state access (read-only)
+
+### B) General Generators Framework
+
+**Foundation**: All generators (Events, Loot, Rumors, NPC hooks, etc.) must share a common architecture based on the "Self-organized-criticality-in-fragmenting" (SOC) paper foundation (see `docs/Self-organized-criticality-in-fragmenting.pdf`).
+
+**Shared architecture components**:
+
+1. **Distribution mechanics** (SOC foundation):
+   - Heavy-tail distributions with finite-size cutoffs
+   - Morphology/constraints as tuning knobs (confinement, connectivity, visibility)
+   - Clear safety rails and truncation logic
+   - Severity bands and adaptive weighting
+
+2. **State management**:
+   - Shared EngineState model (cooldowns, clocks, recent_ids)
+   - Deterministic state evolution
+   - Explicit tick mechanics
+
+3. **Content filtering**:
+   - Tag-based inclusion/exclusion
+   - Rarity mode support (calm/normal/spiky)
+   - Source pack enable/disable
+   - Faction/scar context filtering
+
+4. **RNG and reproducibility**:
+   - TraceRNG for deterministic generation
+   - Seed-based batch generation
+   - Clear separation: seed → distribution → selection → output
+
+5. **Campaign context integration**:
+   - ContextBundle for read-only campaign state access
+   - Advisory influence only (no direct state modification)
+   - Prep queue push for non-canon staging
+
+6. **Export formats**:
+   - JSON for machine processing
+   - Markdown for human reading
+   - Deterministic output ordering
+
+**Design goals**:
+- Avoid code duplication across generators
+- Simplify testing and maintenance
+- Preserve SOC mathematical foundation
+- Enable extensibility for new generator types
+
+### C) Testing and Maintainability
+
+**Shared test infrastructure**:
+- One suite for distribution sanity tests across all generators
+- Verify heavy-tail properties, cutoff behavior, severity bands
+- Reusable scenario validation framework
+
+**Content pack schema evolution**:
+- Type tags to distinguish content: `event`, `loot`, `rumor`, `npc_hook`
+- Shared tag vocabulary and normalization rules
+- Support mixed-type packs or specialized packs
+
+**UI pattern consistency**:
+- All generators follow: Generate → Curate → Stage (Prep) → Commit (Canon)
+- Shared widgets: batch size, seed, tick controls, campaign context selector
+- Consistent Prep Queue integration
+- Reusable export utilities
+
+**Implementation strategy** (when unparked):
+1. Extract common base classes from Event Generator
+2. Refactor existing code to use shared framework
+3. Implement Loot Generator as second reference implementation
+4. Validate framework supports third generator type
+5. Document framework patterns and extension points
+
+**References**:
+- SOC paper: `docs/Self-organized-criticality-in-fragmenting.pdf`
+- Existing Event Generator: `spar_engine/engine.py`, `streamlit_harness/app.py`
+- Campaign context: `streamlit_harness/campaign_context.py`
+
+---
+
 ## SPAR ↔ D&D Adapter Formalization (Explicitly Deferred)
 
 **Status**: Parked pending content richness and campaign mechanics validation
