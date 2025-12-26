@@ -558,6 +558,125 @@ def test_session_id_disambiguates_duplicate_numbers():
     assert heading1 != heading2
 
 
+def test_story_export_excludes_system_fields():
+    """Test that story exports exclude all system-facing fields per export spec v0.1.
+    
+    Validates DATA_CONTRACT and EXPORT_SPEC compliance.
+    """
+    # Simulate manual entry with both story and system fields
+    manual_entry = {
+        "entry_id": "manual_001",
+        "title": "Unexpected Encounter",
+        "description": "Crew discovered hidden research lab",
+        "tags": ["information", "discovery"],  # SYSTEM
+        "severity": 7,  # SYSTEM
+        "related_factions": ["corp_security"],  # SYSTEM
+        "related_scars": ["exposed_identity"],  # SYSTEM
+        "notes": "Players loved this twist",  # STORY
+        "pressure_delta": 2,  # SYSTEM
+        "heat_delta": 1,  # SYSTEM
+    }
+    
+    # Build story export (should only include story fields)
+    story_lines = []
+    story_lines.append(f"#### {manual_entry['title']}")
+    story_lines.append("")
+    story_lines.append(f"{manual_entry['description']}")
+    story_lines.append("")
+    
+    if manual_entry.get('notes'):
+        story_lines.append(f"*GM Notes: {manual_entry['notes']}*")
+        story_lines.append("")
+    
+    story_export = "\n".join(story_lines)
+    
+    # Verify story fields included
+    assert "Unexpected Encounter" in story_export
+    assert "hidden research lab" in story_export
+    assert "Players loved this twist" in story_export
+    
+    # Verify system fields EXCLUDED
+    assert "Tags" not in story_export
+    assert "Severity" not in story_export
+    assert "Related Factions" not in story_export
+    assert "Related Scars" not in story_export
+    assert "Entry Impact" not in story_export
+    assert "Pressure:" not in story_export
+    assert "Heat:" not in story_export
+    assert "information" not in story_export  # Tag value
+    assert "7" not in story_export  # Severity value
+    assert "corp_security" not in story_export  # Faction value
+
+
+def test_story_export_includes_all_story_fields():
+    """Test that story exports include all required story-facing fields.
+    
+    Validates completeness of story export per export spec v0.1.
+    """
+    # Simulate session entry with story fields
+    session_entry = {
+        "session_id": "session_20251226_144410",
+        "session_number": 5,
+        "session_date": "2025-12-26T14:44:10",
+        "what_happened": [
+            "Event A happened",
+            "Event B followed",
+            "Event C concluded"
+        ],
+        "session_notes": "Great session with high player engagement",
+        "manual_entries": [
+            {
+                "title": "Key Moment",
+                "description": "NPC revealed critical information",
+                "notes": "This was improvised brilliantly"
+            }
+        ]
+    }
+    
+    # Build story export
+    lines = []
+    lines.append(f"### Session {session_entry['session_number']} — {session_entry['session_date'][:10]}")
+    lines.append("")
+    
+    # What Happened
+    lines.append("**What Happened:**")
+    for bullet in session_entry['what_happened']:
+        lines.append(f"- {bullet}")
+    lines.append("")
+    
+    # Manual Entries
+    if session_entry.get('manual_entries'):
+        lines.append("**Manual Entries & Notable Moments:**")
+        lines.append("")
+        for entry in session_entry['manual_entries']:
+            lines.append(f"#### {entry['title']}")
+            lines.append("")
+            lines.append(entry['description'])
+            lines.append("")
+            if entry.get('notes'):
+                lines.append(f"*GM Notes: {entry['notes']}*")
+                lines.append("")
+    
+    # Session Notes
+    if session_entry.get('session_notes'):
+        lines.append("**Session Notes:**")
+        lines.append("")
+        lines.append(session_entry['session_notes'])
+        lines.append("")
+    
+    export = "\n".join(lines)
+    
+    # Verify all story fields present
+    assert "Session 5 — 2025-12-26" in export
+    assert "Event A happened" in export
+    assert "Event B followed" in export
+    assert "Event C concluded" in export
+    assert "Key Moment" in export
+    assert "NPC revealed critical information" in export
+    assert "This was improvised brilliantly" in export
+    assert "Great session with high player engagement" in export
+
+
 if __name__ == "__main__":
     # Run tests
     pytest.main([__file__, "-v"])

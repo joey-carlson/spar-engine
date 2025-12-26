@@ -1330,47 +1330,23 @@ def render_campaign_dashboard() -> None:
                                     lines.append(f"- {bullet}")
                                 lines.append("")
                             
-                            # Manual entries with rich data (GM-useful detail)
-                            # FIX 3: Use same detailed format as session export
+                            # Manual entries - STORY-FACING ONLY (per export spec v0.1)
                             manual_entries = entry.get('manual_entries')
                             if manual_entries:
-                                lines.append("**Manual Entries & GM Notes:**")
+                                lines.append("**Manual Entries & Notable Moments:**")
                                 lines.append("")
                                 for manual_entry in manual_entries:
                                     lines.append(f"#### {manual_entry['title']}")
                                     lines.append("")
-                                    lines.append(f"**Description**: {manual_entry['description']}")
+                                    lines.append(f"{manual_entry['description']}")
                                     lines.append("")
                                     
-                                    if manual_entry.get('tags'):
-                                        lines.append(f"**Tags**: {', '.join(manual_entry['tags'])}")
-                                        lines.append("")
-                                    
-                                    if manual_entry.get('severity'):
-                                        lines.append(f"**Severity**: {manual_entry['severity']}/10")
-                                        lines.append("")
-                                    
-                                    if manual_entry.get('related_factions'):
-                                        lines.append(f"**Related Factions**: {', '.join(manual_entry['related_factions'])}")
-                                        lines.append("")
-                                    
-                                    if manual_entry.get('related_scars'):
-                                        lines.append(f"**Related Scars**: {', '.join(manual_entry['related_scars'])}")
-                                        lines.append("")
-                                    
+                                    # Only include GM notes (story-facing)
                                     if manual_entry.get('notes'):
-                                        lines.append(f"**GM Notes**: {manual_entry['notes']}")
+                                        lines.append(f"*GM Notes: {manual_entry['notes']}*")
                                         lines.append("")
                                     
-                                    # State impact from this entry
-                                    delta_parts = []
-                                    if manual_entry.get('pressure_delta'):
-                                        delta_parts.append(f"Pressure: {manual_entry['pressure_delta']:+d}")
-                                    if manual_entry.get('heat_delta'):
-                                        delta_parts.append(f"Heat: {manual_entry['heat_delta']:+d}")
-                                    if delta_parts:
-                                        lines.append(f"*Entry Impact: {' | '.join(delta_parts)}*")
-                                        lines.append("")
+                                    # EXCLUDED per export spec: tags, severity, related_factions/scars, pressure/heat deltas
                             
                             # Session notes if present
                             session_notes = entry.get('session_notes')
@@ -1380,47 +1356,10 @@ def render_campaign_dashboard() -> None:
                                 lines.append(session_notes)
                                 lines.append("")
                             
-                            # Only show State Changes if there are actual changes
-                            deltas = entry.get('deltas', {})
-                            has_changes = (
-                                deltas.get('pressure_change', 0) != 0 or
-                                deltas.get('heat_change', 0) != 0 or
-                                deltas.get('rumor_spread', False) or
-                                deltas.get('faction_attention_change', False)
-                            )
-                            
-                            if has_changes:
-                                lines.append("**State Changes:**")
-                                if deltas.get('pressure_change'):
-                                    lines.append(f"- Pressure: {deltas['pressure_change']:+d}")
-                                if deltas.get('heat_change'):
-                                    lines.append(f"- Heat: {deltas['heat_change']:+d}")
-                                if deltas.get('rumor_spread'):
-                                    lines.append("- Rumor spread")
-                                if deltas.get('faction_attention_change'):
-                                    lines.append("- Faction attention increased")
-                                lines.append("")
-                            
-                            # Metadata summary if present
-                            metadata = entry.get('metadata')
-                            if metadata:
-                                meta_parts = []
-                                if 'severity_avg' in metadata:
-                                    meta_parts.append(f"Sev: {metadata['severity_avg']:.1f}")
-                                if 'cutoff_rate' in metadata:
-                                    meta_parts.append(f"Cutoff: {metadata['cutoff_rate']*100:.0f}%")
-                                if 'top_tags' in metadata and metadata['top_tags']:
-                                    meta_parts.append(f"Tags: {', '.join(metadata['top_tags'])}")
-                                if 'scenario_name' in metadata:
-                                    meta_parts.append(f"Scenario: {metadata['scenario_name']}")
-                                if meta_parts:
-                                    lines.append(f"*Metadata: {' | '.join(meta_parts)}*")
-                                    lines.append("")
-                            
-                            sources = entry.get('active_sources', [])
-                            if sources:
-                                lines.append(f"*Content Sources: {', '.join(sources)}*")
-                                lines.append("")
+                            # EXCLUDED per export spec v0.1:
+                            # - State Changes (numeric deltas are system-facing)
+                            # - Metadata section (severity/cutoff/tags/scenario all system-facing)
+                            # - Content Sources (system-facing attribution)
                     
                     markdown_content = "\n".join(lines)
                     
@@ -1481,46 +1420,23 @@ def render_campaign_dashboard() -> None:
                                 lines.append(f"- {bullet}")
                             lines.append("")
                         
-                        # Manual entries with rich data (GM-useful detail)
+                        # Manual entries - STORY-FACING ONLY (per export spec v0.1)
                         manual_entries = entry.get('manual_entries')
                         if manual_entries:
-                            lines.append("## Manual Entries & GM Notes")
+                            lines.append("## Manual Entries & Notable Moments")
                             lines.append("")
                             for manual_entry in manual_entries:
                                 lines.append(f"### {manual_entry['title']}")
                                 lines.append("")
-                                lines.append(f"**Description**: {manual_entry['description']}")
+                                lines.append(f"{manual_entry['description']}")
                                 lines.append("")
                                 
-                                if manual_entry.get('tags'):
-                                    lines.append(f"**Tags**: {', '.join(manual_entry['tags'])}")
-                                    lines.append("")
-                                
-                                if manual_entry.get('severity'):
-                                    lines.append(f"**Severity**: {manual_entry['severity']}/10")
-                                    lines.append("")
-                                
-                                if manual_entry.get('related_factions'):
-                                    lines.append(f"**Related Factions**: {', '.join(manual_entry['related_factions'])}")
-                                    lines.append("")
-                                
-                                if manual_entry.get('related_scars'):
-                                    lines.append(f"**Related Scars**: {', '.join(manual_entry['related_scars'])}")
-                                    lines.append("")
-                                
+                                # Only include GM notes (story-facing)
                                 if manual_entry.get('notes'):
-                                    lines.append(f"**GM Notes**: {manual_entry['notes']}")
+                                    lines.append(f"*GM Notes: {manual_entry['notes']}*")
                                     lines.append("")
                                 
-                                # State impact from this entry
-                                delta_parts = []
-                                if manual_entry.get('pressure_delta'):
-                                    delta_parts.append(f"Pressure: {manual_entry['pressure_delta']:+d}")
-                                if manual_entry.get('heat_delta'):
-                                    delta_parts.append(f"Heat: {manual_entry['heat_delta']:+d}")
-                                if delta_parts:
-                                    lines.append(f"*Entry Impact: {' | '.join(delta_parts)}*")
-                                    lines.append("")
+                                # EXCLUDED per export spec: tags, severity, related_factions/scars, pressure/heat deltas
                         
                         # Session notes if present
                         session_notes = entry.get('session_notes')
@@ -1530,41 +1446,10 @@ def render_campaign_dashboard() -> None:
                             lines.append(session_notes)
                             lines.append("")
                         
-                        deltas = entry.get('deltas', {})
-                        if deltas and campaign.campaign_state:
-                            lines.append("## State Changes & Mechanics")
-                            lines.append("")
-                            if deltas.get('pressure_change'):
-                                new_pressure = campaign.campaign_state.campaign_pressure
-                                lines.append(f"- Campaign Pressure: {deltas['pressure_change']:+d} → {new_pressure}")
-                            if deltas.get('heat_change'):
-                                new_heat = campaign.campaign_state.heat
-                                lines.append(f"- Heat: {deltas['heat_change']:+d} → {new_heat}")
-                            if deltas.get('rumor_spread'):
-                                lines.append("- Rumor spread")
-                            if deltas.get('faction_attention_change'):
-                                lines.append("- Faction attention increased")
-                            lines.append("")
-                        
-                        # Metadata if present
-                        metadata = entry.get('metadata')
-                        if metadata:
-                            lines.append("## Session Metadata")
-                            lines.append("")
-                            if 'scenario_name' in metadata:
-                                lines.append(f"**Scenario**: {metadata['scenario_name']}")
-                                lines.append("")
-                            if 'severity_avg' in metadata:
-                                lines.append(f"- Average Severity: {metadata['severity_avg']:.2f}")
-                            if 'cutoff_rate' in metadata:
-                                lines.append(f"- Cutoff Rate: {metadata['cutoff_rate']*100:.1f}%")
-                            if 'top_tags' in metadata and metadata['top_tags']:
-                                lines.append(f"- Top Tags: {', '.join(metadata['top_tags'])}")
-                            lines.append("")
-                        
-                        sources = entry.get('active_sources', [])
-                        if sources:
-                            lines.append(f"*Content Sources: {', '.join(sources)}*")
+                        # EXCLUDED per export spec v0.1:
+                        # - State Changes & Mechanics (numeric deltas are system-facing)
+                        # - Session Metadata (severity/cutoff/tags/scenario all system-facing)
+                        # - Content Sources (system-facing attribution)
                         
                         markdown_content = "\n".join(lines)
                         
