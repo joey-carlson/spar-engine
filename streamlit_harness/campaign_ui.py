@@ -317,22 +317,127 @@ def render_campaign_selector() -> None:
                 else:
                     st.caption("No factions detected")
             
-            # Show classified entities (non-factions)
+            # Show classified entities (non-factions) with controls
             entities = parsed.get("entities", {})
             if any(entities.values()):
                 with st.expander("Entities (Non-Factions)", expanded=False):
                     if entities.get("places"):
                         st.markdown("**Places:**")
-                        for place in entities["places"]:
-                            st.caption(f"• {place}")
+                        for idx, place in enumerate(entities["places"]):
+                            col1, col2, col3, col4, col5 = st.columns([8, 2, 2, 2, 1])
+                            with col1:
+                                st.caption(f"• {place}")
+                            with col2:
+                                if st.button("↑Faction", key=f"p_fac_{idx}", help="Promote to Faction"):
+                                    places = list(parsed["entities"]["places"])
+                                    places.remove(place)
+                                    factions = list(parsed["factions"])
+                                    factions.append(place)
+                                    st.session_state.parsed_history["entities"]["places"] = sorted(places)
+                                    st.session_state.parsed_history["factions"] = sorted(factions)
+                                    st.rerun()
+                            with col3:
+                                if st.button("→Artifact", key=f"p_art_{idx}", help="Change to Artifact"):
+                                    places = list(parsed["entities"]["places"])
+                                    places.remove(place)
+                                    artifacts = list(parsed["entities"]["artifacts"])
+                                    artifacts.append(place)
+                                    st.session_state.parsed_history["entities"]["places"] = sorted(places)
+                                    st.session_state.parsed_history["entities"]["artifacts"] = sorted(artifacts)
+                                    st.rerun()
+                            with col4:
+                                if st.button("→Concept", key=f"p_con_{idx}", help="Change to Concept"):
+                                    places = list(parsed["entities"]["places"])
+                                    places.remove(place)
+                                    concepts = list(parsed["entities"]["concepts"])
+                                    concepts.append(place)
+                                    st.session_state.parsed_history["entities"]["places"] = sorted(places)
+                                    st.session_state.parsed_history["entities"]["concepts"] = sorted(concepts)
+                                    st.rerun()
+                            with col5:
+                                if st.button("✕", key=f"p_rem_{idx}", help="Remove"):
+                                    places = list(parsed["entities"]["places"])
+                                    places.remove(place)
+                                    st.session_state.parsed_history["entities"]["places"] = sorted(places)
+                                    st.rerun()
                     if entities.get("artifacts"):
                         st.markdown("**Artifacts:**")
-                        for artifact in entities["artifacts"]:
-                            st.caption(f"• {artifact}")
+                        for idx, artifact in enumerate(entities["artifacts"]):
+                            col1, col2, col3, col4, col5 = st.columns([8, 2, 2, 2, 1])
+                            with col1:
+                                st.caption(f"• {artifact}")
+                            with col2:
+                                if st.button("↑Faction", key=f"a_fac_{idx}", help="Promote to Faction"):
+                                    artifacts = list(parsed["entities"]["artifacts"])
+                                    artifacts.remove(artifact)
+                                    factions = list(parsed["factions"])
+                                    factions.append(artifact)
+                                    st.session_state.parsed_history["entities"]["artifacts"] = sorted(artifacts)
+                                    st.session_state.parsed_history["factions"] = sorted(factions)
+                                    st.rerun()
+                            with col3:
+                                if st.button("→Place", key=f"a_pla_{idx}", help="Change to Place"):
+                                    artifacts = list(parsed["entities"]["artifacts"])
+                                    artifacts.remove(artifact)
+                                    places = list(parsed["entities"]["places"])
+                                    places.append(artifact)
+                                    st.session_state.parsed_history["entities"]["artifacts"] = sorted(artifacts)
+                                    st.session_state.parsed_history["entities"]["places"] = sorted(places)
+                                    st.rerun()
+                            with col4:
+                                if st.button("→Concept", key=f"a_con_{idx}", help="Change to Concept"):
+                                    artifacts = list(parsed["entities"]["artifacts"])
+                                    artifacts.remove(artifact)
+                                    concepts = list(parsed["entities"]["concepts"])
+                                    concepts.append(artifact)
+                                    st.session_state.parsed_history["entities"]["artifacts"] = sorted(artifacts)
+                                    st.session_state.parsed_history["entities"]["concepts"] = sorted(concepts)
+                                    st.rerun()
+                            with col5:
+                                if st.button("✕", key=f"a_rem_{idx}", help="Remove"):
+                                    artifacts = list(parsed["entities"]["artifacts"])
+                                    artifacts.remove(artifact)
+                                    st.session_state.parsed_history["entities"]["artifacts"] = sorted(artifacts)
+                                    st.rerun()
                     if entities.get("concepts"):
                         st.markdown("**Concepts/Powers:**")
-                        for concept in entities["concepts"]:
-                            st.caption(f"• {concept}")
+                        for idx, concept in enumerate(entities["concepts"]):
+                            col1, col2, col3, col4, col5 = st.columns([8, 2, 2, 2, 1])
+                            with col1:
+                                st.caption(f"• {concept}")
+                            with col2:
+                                if st.button("↑Faction", key=f"c_fac_{idx}", help="Promote to Faction"):
+                                    concepts = list(parsed["entities"]["concepts"])
+                                    concepts.remove(concept)
+                                    factions = list(parsed["factions"])
+                                    factions.append(concept)
+                                    st.session_state.parsed_history["entities"]["concepts"] = sorted(concepts)
+                                    st.session_state.parsed_history["factions"] = sorted(factions)
+                                    st.rerun()
+                            with col3:
+                                if st.button("→Place", key=f"c_pla_{idx}", help="Change to Place"):
+                                    concepts = list(parsed["entities"]["concepts"])
+                                    concepts.remove(concept)
+                                    places = list(parsed["entities"]["places"])
+                                    places.append(concept)
+                                    st.session_state.parsed_history["entities"]["concepts"] = sorted(concepts)
+                                    st.session_state.parsed_history["entities"]["places"] = sorted(places)
+                                    st.rerun()
+                            with col4:
+                                if st.button("→Artifact", key=f"c_art_{idx}", help="Change to Artifact"):
+                                    concepts = list(parsed["entities"]["concepts"])
+                                    concepts.remove(concept)
+                                    artifacts = list(parsed["entities"]["artifacts"])
+                                    artifacts.append(concept)
+                                    st.session_state.parsed_history["entities"]["concepts"] = sorted(concepts)
+                                    st.session_state.parsed_history["entities"]["artifacts"] = sorted(artifacts)
+                                    st.rerun()
+                            with col5:
+                                if st.button("✕", key=f"c_rem_{idx}", help="Remove"):
+                                    concepts = list(parsed["entities"]["concepts"])
+                                    concepts.remove(concept)
+                                    st.session_state.parsed_history["entities"]["concepts"] = sorted(concepts)
+                                    st.rerun()
             
             # Show future sessions (not imported)
             future = parsed.get("future_sessions", [])
