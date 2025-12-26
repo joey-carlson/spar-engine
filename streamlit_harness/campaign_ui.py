@@ -149,6 +149,65 @@ def init_campaign_session() -> None:
         st.session_state.campaign_page = "selector"  # selector, dashboard, session, finalize
 
 
+def _save_override_promote_to_faction(campaign_id: str, entity_name: str, from_category: str) -> None:
+    """Helper to save promotion to faction in overrides."""
+    overrides = ImportOverrides.load(campaign_id)
+    overrides.promoted_to_faction.add(entity_name)
+    # Remove from demoted sets
+    overrides.demoted_to_place.discard(entity_name)
+    overrides.demoted_to_artifact.discard(entity_name)
+    overrides.demoted_to_concept.discard(entity_name)
+    overrides.ignored.discard(entity_name)
+    overrides.save()
+
+
+def _save_override_demote_from_faction(campaign_id: str, entity_name: str, to_category: str) -> None:
+    """Helper to save demotion from faction in overrides."""
+    overrides = ImportOverrides.load(campaign_id)
+    overrides.promoted_to_faction.discard(entity_name)
+    
+    if to_category == "place":
+        overrides.demoted_to_place.add(entity_name)
+    elif to_category == "artifact":
+        overrides.demoted_to_artifact.add(entity_name)
+    elif to_category == "concept":
+        overrides.demoted_to_concept.add(entity_name)
+    
+    overrides.save()
+
+
+def _save_override_lateral_move(campaign_id: str, entity_name: str, to_category: str) -> None:
+    """Helper to save lateral move (non-faction to non-faction) in overrides."""
+    overrides = ImportOverrides.load(campaign_id)
+    
+    # Remove from all demoted sets first
+    overrides.demoted_to_place.discard(entity_name)
+    overrides.demoted_to_artifact.discard(entity_name)
+    overrides.demoted_to_concept.discard(entity_name)
+    
+    # Add to target category
+    if to_category == "place":
+        overrides.demoted_to_place.add(entity_name)
+    elif to_category == "artifact":
+        overrides.demoted_to_artifact.add(entity_name)
+    elif to_category == "concept":
+        overrides.demoted_to_concept.add(entity_name)
+    
+    overrides.save()
+
+
+def _save_override_remove(campaign_id: str, entity_name: str) -> None:
+    """Helper to save entity removal in overrides."""
+    overrides = ImportOverrides.load(campaign_id)
+    overrides.ignored.add(entity_name)
+    # Remove from all other sets
+    overrides.promoted_to_faction.discard(entity_name)
+    overrides.demoted_to_place.discard(entity_name)
+    overrides.demoted_to_artifact.discard(entity_name)
+    overrides.demoted_to_concept.discard(entity_name)
+    overrides.save()
+
+
 def render_campaign_selector() -> None:
     """Campaign selector page (1 click to open campaign)."""
     st.title("🎲 SPAR Campaigns")
@@ -511,6 +570,11 @@ def render_campaign_selector() -> None:
                     )
                     
                     campaign.save()
+                    
+                    # Initialize empty import overrides file for new campaign
+                    overrides = ImportOverrides(campaign_id=campaign_id)
+                    overrides.save()
+                    
                     st.session_state.current_campaign_id = campaign_id
                     st.session_state.show_history_import = False
                     st.session_state.parsed_history = None
@@ -847,8 +911,215 @@ def render_campaign_dashboard() -> None:
                         key="download_dashboard_parsed",
                     )
                     
-                    st.caption("**Preview:**")
-                    st.caption(f"{len(parsed['sessions'])} sessions, {len(parsed['canon_summary'])} canon bullets")
+                    # Parse preview with entity controls
+                    st.markdown("**Parse Preview**")
+                    for note in parsed["notes"]:
+                        st.caption(note)
+                    
+                    with st.expander("Sessions Detected", expanded=True):
+                        for session in parsed["sessions"]:
+                            st.markdown(f"**Session {session['session_number']}** - {session['date']}")
+                            st.caption(session['content'][:100] + "..." if len(session['content']) > 100 else session['content'])
+                    
+                    with st.expander("Canon Summary", expanded=True):
+                        for bullet in parsed["canon_summary"]:
+                            st.write(f"• {bullet}")
+                    
+                    # Factions with controls
+                    with st.expander("Factions Detected", expanded=True):
+                        if parsed["factions"]:
+                            for idx, faction in enumerate(parsed["factions"]):
+                                col1, col2, col3, col4, col5 = st.columns([8, 2, 2, 2, 1])
+                                with col1:
+                                    st.write(f"• {faction}")
+                                with col2:
+                                    if st.button("→Place", key=f"d_f_place_{idx}", help="Demote to Place"):
+                                        _save_override_demote_from_faction(campaign_id, faction, "place")
+                                        factions = list(parsed["factions"])
+                                        factions.remove(faction)
+                                        places = list(parsed["entities"]["places"])
+                                        places.append(faction)
+                                        st.session_state.dashboard_parsed["factions"] = sorted(factions)
+                                        st.session_state.dashboard_parsed["entities"]["places"] = sorted(places)
+                                        st.rerun()
+                                with col3:
+                                    if st.button("→Artifact", key=f"d_f_art_{idx}", help="Demote to Artifact"):
+                                        _save_override_demote_from_faction(campaign_id, faction, "artifact")
+                                        factions = list(parsed["factions"])
+                                        factions.remove(faction)
+                                        artifacts = list(parsed["entities"]["artifacts"])
+                                        artifacts.append(faction)
+                                        st.session_state.dashboard_parsed["factions"] = sorted(factions)
+                                        st.session_state.dashboard_parsed["entities"]["artifacts"] = sorted(artifacts)
+                                        st.rerun()
+                                with col4:
+                                    if st.button("→Concept", key=f"d_f_con_{idx}", help="Demote to Concept"):
+                                        _save_override_demote_from_faction(campaign_id, faction, "concept")
+                                        factions = list(parsed["factions"])
+                                        factions.remove(faction)
+                                        concepts = list(parsed["entities"]["concepts"])
+                                        concepts.append(faction)
+                                        st.session_state.dashboard_parsed["factions"] = sorted(factions)
+                                        st.session_state.dashboard_parsed["entities"]["concepts"] = sorted(concepts)
+                                        st.rerun()
+                                with col5:
+                                    if st.button("✕", key=f"d_f_rem_{idx}", help="Remove"):
+                                        _save_override_remove(campaign_id, faction)
+                                        factions = list(parsed["factions"])
+                                        factions.remove(faction)
+                                        st.session_state.dashboard_parsed["factions"] = sorted(factions)
+                                        st.rerun()
+                        else:
+                            st.caption("No factions detected")
+                    
+                    # Show classified entities (non-factions) with controls
+                    entities = parsed.get("entities", {})
+                    if any(entities.values()):
+                        with st.expander("Entities (Non-Factions)", expanded=False):
+                            if entities.get("places"):
+                                st.markdown("**Places:**")
+                                for idx, place in enumerate(entities["places"]):
+                                    col1, col2, col3, col4, col5 = st.columns([8, 2, 2, 2, 1])
+                                    with col1:
+                                        st.caption(f"• {place}")
+                                    with col2:
+                                        if st.button("↑Faction", key=f"d_p_fac_{idx}", help="Promote to Faction"):
+                                            _save_override_promote_to_faction(campaign_id, place, "place")
+                                            places = list(parsed["entities"]["places"])
+                                            places.remove(place)
+                                            factions = list(parsed["factions"])
+                                            factions.append(place)
+                                            st.session_state.dashboard_parsed["entities"]["places"] = sorted(places)
+                                            st.session_state.dashboard_parsed["factions"] = sorted(factions)
+                                            st.rerun()
+                                    with col3:
+                                        if st.button("→Artifact", key=f"d_p_art_{idx}", help="Change to Artifact"):
+                                            _save_override_lateral_move(campaign_id, place, "artifact")
+                                            places = list(parsed["entities"]["places"])
+                                            places.remove(place)
+                                            artifacts = list(parsed["entities"]["artifacts"])
+                                            artifacts.append(place)
+                                            st.session_state.dashboard_parsed["entities"]["places"] = sorted(places)
+                                            st.session_state.dashboard_parsed["entities"]["artifacts"] = sorted(artifacts)
+                                            st.rerun()
+                                    with col4:
+                                        if st.button("→Concept", key=f"d_p_con_{idx}", help="Change to Concept"):
+                                            _save_override_lateral_move(campaign_id, place, "concept")
+                                            places = list(parsed["entities"]["places"])
+                                            places.remove(place)
+                                            concepts = list(parsed["entities"]["concepts"])
+                                            concepts.append(place)
+                                            st.session_state.dashboard_parsed["entities"]["places"] = sorted(places)
+                                            st.session_state.dashboard_parsed["entities"]["concepts"] = sorted(concepts)
+                                            st.rerun()
+                                    with col5:
+                                        if st.button("✕", key=f"d_p_rem_{idx}", help="Remove"):
+                                            _save_override_remove(campaign_id, place)
+                                            places = list(parsed["entities"]["places"])
+                                            places.remove(place)
+                                            st.session_state.dashboard_parsed["entities"]["places"] = sorted(places)
+                                            st.rerun()
+                            if entities.get("artifacts"):
+                                st.markdown("**Artifacts:**")
+                                for idx, artifact in enumerate(entities["artifacts"]):
+                                    col1, col2, col3, col4, col5 = st.columns([8, 2, 2, 2, 1])
+                                    with col1:
+                                        st.caption(f"• {artifact}")
+                                    with col2:
+                                        if st.button("↑Faction", key=f"d_a_fac_{idx}", help="Promote to Faction"):
+                                            _save_override_promote_to_faction(campaign_id, artifact, "artifact")
+                                            artifacts = list(parsed["entities"]["artifacts"])
+                                            artifacts.remove(artifact)
+                                            factions = list(parsed["factions"])
+                                            factions.append(artifact)
+                                            st.session_state.dashboard_parsed["entities"]["artifacts"] = sorted(artifacts)
+                                            st.session_state.dashboard_parsed["factions"] = sorted(factions)
+                                            st.rerun()
+                                    with col3:
+                                        if st.button("→Place", key=f"d_a_pla_{idx}", help="Change to Place"):
+                                            _save_override_lateral_move(campaign_id, artifact, "place")
+                                            artifacts = list(parsed["entities"]["artifacts"])
+                                            artifacts.remove(artifact)
+                                            places = list(parsed["entities"]["places"])
+                                            places.append(artifact)
+                                            st.session_state.dashboard_parsed["entities"]["artifacts"] = sorted(artifacts)
+                                            st.session_state.dashboard_parsed["entities"]["places"] = sorted(places)
+                                            st.rerun()
+                                    with col4:
+                                        if st.button("→Concept", key=f"d_a_con_{idx}", help="Change to Concept"):
+                                            _save_override_lateral_move(campaign_id, artifact, "concept")
+                                            artifacts = list(parsed["entities"]["artifacts"])
+                                            artifacts.remove(artifact)
+                                            concepts = list(parsed["entities"]["concepts"])
+                                            concepts.append(artifact)
+                                            st.session_state.dashboard_parsed["entities"]["artifacts"] = sorted(artifacts)
+                                            st.session_state.dashboard_parsed["entities"]["concepts"] = sorted(concepts)
+                                            st.rerun()
+                                    with col5:
+                                        if st.button("✕", key=f"d_a_rem_{idx}", help="Remove"):
+                                            _save_override_remove(campaign_id, artifact)
+                                            artifacts = list(parsed["entities"]["artifacts"])
+                                            artifacts.remove(artifact)
+                                            st.session_state.dashboard_parsed["entities"]["artifacts"] = sorted(artifacts)
+                                            st.rerun()
+                            if entities.get("concepts"):
+                                st.markdown("**Concepts/Powers:**")
+                                for idx, concept in enumerate(entities["concepts"]):
+                                    col1, col2, col3, col4, col5 = st.columns([8, 2, 2, 2, 1])
+                                    with col1:
+                                        st.caption(f"• {concept}")
+                                    with col2:
+                                        if st.button("↑Faction", key=f"d_c_fac_{idx}", help="Promote to Faction"):
+                                            _save_override_promote_to_faction(campaign_id, concept, "concept")
+                                            concepts = list(parsed["entities"]["concepts"])
+                                            concepts.remove(concept)
+                                            factions = list(parsed["factions"])
+                                            factions.append(concept)
+                                            st.session_state.dashboard_parsed["entities"]["concepts"] = sorted(concepts)
+                                            st.session_state.dashboard_parsed["factions"] = sorted(factions)
+                                            st.rerun()
+                                    with col3:
+                                        if st.button("→Place", key=f"d_c_pla_{idx}", help="Change to Place"):
+                                            _save_override_lateral_move(campaign_id, concept, "place")
+                                            concepts = list(parsed["entities"]["concepts"])
+                                            concepts.remove(concept)
+                                            places = list(parsed["entities"]["places"])
+                                            places.append(concept)
+                                            st.session_state.dashboard_parsed["entities"]["concepts"] = sorted(concepts)
+                                            st.session_state.dashboard_parsed["entities"]["places"] = sorted(places)
+                                            st.rerun()
+                                    with col4:
+                                        if st.button("→Artifact", key=f"d_c_art_{idx}", help="Change to Artifact"):
+                                            _save_override_lateral_move(campaign_id, concept, "artifact")
+                                            concepts = list(parsed["entities"]["concepts"])
+                                            concepts.remove(concept)
+                                            artifacts = list(parsed["entities"]["artifacts"])
+                                            artifacts.append(concept)
+                                            st.session_state.dashboard_parsed["entities"]["concepts"] = sorted(concepts)
+                                            st.session_state.dashboard_parsed["entities"]["artifacts"] = sorted(artifacts)
+                                            st.rerun()
+                                    with col5:
+                                        if st.button("✕", key=f"d_c_rem_{idx}", help="Remove"):
+                                            _save_override_remove(campaign_id, concept)
+                                            concepts = list(parsed["entities"]["concepts"])
+                                            concepts.remove(concept)
+                                            st.session_state.dashboard_parsed["entities"]["concepts"] = sorted(concepts)
+                                            st.rerun()
+                    
+                    # Show future sessions (not imported)
+                    future = parsed.get("future_sessions", [])
+                    if future:
+                        with st.expander("Future Sessions (Not Imported)", expanded=False):
+                            for session in future:
+                                st.markdown(f"**{session['title']}**")
+                                st.caption(session['notes'][:100] + "..." if len(session['notes']) > 100 else session['notes'])
+                    
+                    # Show open threads (not imported)
+                    threads = parsed.get("open_threads", [])
+                    if threads:
+                        with st.expander("Open Threads (Not Imported)", expanded=False):
+                            for thread in threads:
+                                st.caption(f"• {thread[:150]}..." if len(thread) > 150 else f"• {thread}")
                     
                     with col3:
                         if st.button("Merge", type="primary"):
