@@ -278,25 +278,42 @@ def render_campaign_selector() -> None:
             with st.expander("Factions Detected", expanded=True):
                 if parsed["factions"]:
                     for idx, faction in enumerate(parsed["factions"]):
-                        col1, col2 = st.columns([10, 2])
+                        col1, col2, col3, col4, col5 = st.columns([8, 2, 2, 2, 1])
                         with col1:
                             st.write(f"• {faction}")
                         with col2:
-                            # Demote to Place button (inline, no subdialog)
-                            if st.button("→Place", key=f"demote_faction_{idx}", help="Demote to Place"):
-                                # Update parsed data in session state
-                                if "parsed_history" in st.session_state:
-                                    # Move from factions to places
-                                    factions = list(parsed["factions"])
-                                    factions.remove(faction)
-                                    
-                                    places = list(parsed["entities"]["places"])
-                                    places.append(faction)
-                                    
-                                    # Update parsed dict
-                                    st.session_state.parsed_history["factions"] = sorted(factions)
-                                    st.session_state.parsed_history["entities"]["places"] = sorted(places)
-                                    st.rerun()
+                            if st.button("→Place", key=f"f_place_{idx}", help="Demote to Place"):
+                                factions = list(parsed["factions"])
+                                factions.remove(faction)
+                                places = list(parsed["entities"]["places"])
+                                places.append(faction)
+                                st.session_state.parsed_history["factions"] = sorted(factions)
+                                st.session_state.parsed_history["entities"]["places"] = sorted(places)
+                                st.rerun()
+                        with col3:
+                            if st.button("→Artifact", key=f"f_art_{idx}", help="Demote to Artifact"):
+                                factions = list(parsed["factions"])
+                                factions.remove(faction)
+                                artifacts = list(parsed["entities"]["artifacts"])
+                                artifacts.append(faction)
+                                st.session_state.parsed_history["factions"] = sorted(factions)
+                                st.session_state.parsed_history["entities"]["artifacts"] = sorted(artifacts)
+                                st.rerun()
+                        with col4:
+                            if st.button("→Concept", key=f"f_con_{idx}", help="Demote to Concept"):
+                                factions = list(parsed["factions"])
+                                factions.remove(faction)
+                                concepts = list(parsed["entities"]["concepts"])
+                                concepts.append(faction)
+                                st.session_state.parsed_history["factions"] = sorted(factions)
+                                st.session_state.parsed_history["entities"]["concepts"] = sorted(concepts)
+                                st.rerun()
+                        with col5:
+                            if st.button("✕", key=f"f_rem_{idx}", help="Remove"):
+                                factions = list(parsed["factions"])
+                                factions.remove(faction)
+                                st.session_state.parsed_history["factions"] = sorted(factions)
+                                st.rerun()
                 else:
                     st.caption("No factions detected")
             
