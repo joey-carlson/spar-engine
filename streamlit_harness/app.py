@@ -662,7 +662,7 @@ def main() -> None:
     # Mode selector at top
     # Use index-based control for programmatic switching
     if "mode_index" not in st.session_state:
-        st.session_state.mode_index = 1  # Default to Event Generator
+        st.session_state.mode_index = 0  # Default to Campaign Manager
     
     mode_options = ["🎲 Campaign Manager", "⚡ Event Generator"]
     mode = st.radio(

@@ -418,9 +418,12 @@ def render_campaign_selector() -> None:
                         fid = f_name.lower().replace(" ", "_")
                         initial_factions[fid] = FactionState(
                             faction_id=fid,
+                            name=f_name,  # Display name
+                            description="",
                             attention=0,
                             disposition=0,
-                            notes=f_name,  # Store display name in notes
+                            notes=None,
+                            is_active=True,
                         )
                 
                 if initial_factions:
@@ -695,9 +698,12 @@ def render_campaign_selector() -> None:
                         fid = f_name.lower().replace(" ", "_")
                         initial_factions[fid] = FactionState(
                             faction_id=fid,
+                            name=f_name,  # Display name
+                            description="",
                             attention=0,
                             disposition=0,
-                            notes=f_name,
+                            notes=None,
+                            is_active=True,
                         )
                     
                     if initial_factions:
@@ -1050,26 +1056,402 @@ def render_campaign_dashboard() -> None:
                 st.caption(f"Created: Scene {scar.created_scene_index or 'Unknown'}")
                 st.divider()
     
-    # Factions
-    if campaign.campaign_state and campaign.campaign_state.factions:
-        with st.expander(f"👥 Factions ({len(campaign.campaign_state.factions)})", expanded=True):
-            for fid, faction in campaign.campaign_state.factions.items():
-                disp_str = {
-                    -2: "😡 Hostile",
-                    -1: "😠 Unfriendly",
-                    0: "😐 Neutral",
-                    1: "🙂 Friendly",
-                    2: "😊 Allied"
-                }.get(faction.disposition, "Unknown")
+    # Factions (Interactive CRUD)
+    if campaign.campaign_state:
+        active_factions = {fid: f for fid, f in campaign.campaign_state.factions.items() if f.is_active}
+        archived_factions = {fid: f for fid, f in campaign.campaign_state.factions.items() if not f.is_active}
+        
+        with st.expander(f"👥 Factions ({len(active_factions)})", expanded=True):
+            # Add faction button
+            if st.button("➕ Add Faction", key="add_faction_btn"):
+                st.session_state.show_add_faction_form = True
+            
+            # Add faction form (inline)
+            if st.session_state.get("show_add_faction_form", False):
+                with st.container(border=True):
+                    st.markdown("**Add New Faction**")
+                    
+                    new_faction_name = st.text_input("Name*", placeholder="e.g., City Watch", key="new_faction_name")
+                    new_faction_desc = st.text_area(
+                        "Description (what it is/wants)",
+                        placeholder="e.g., Local law enforcement, focused on maintaining order",
+                        height=60,
+                        key="new_faction_desc"
+                    )
+                    
+                    col1, col2 = st.columns(2)
+                    with col1:
+                        new_faction_attention = st.slider("Initial Attention", 0, 20, 0, key="new_faction_attention")
+                        st.caption(f"Band: {FactionState(faction_id='temp', name='temp', attention=new_faction_attention).get_attention_band()}")
+                    with col2:
+                        disposition_options = [
+                            (-2, "😡 Hostile"),
+                            (-1, "😠 Unfriendly"),
+                            (0, "😐 Neutral"),
+                            (1, "🙂 Friendly"),
+                            (2, "😊 Allied"),
+                        ]
+                        new_faction_disp = st.select_slider(
+                            "Initial Disposition",
+                            options=[d[0] for d in disposition_options],
+                            value=0,
+                            format_func=lambda x: next(label for val, label in disposition_options if val == x),
+                            key="new_faction_disp"
+                        )
+                    
+                    new_faction_notes = st.text_area(
+                        "GM Notes (private, not exported)",
+                        placeholder="Your private notes, plans, secrets...",
+                        height=60,
+                        key="new_faction_notes"
+                    )
+                    
+                    col_save, col_cancel = st.columns(2)
+                    with col_save:
+                        if st.button("💾 Add", key="save_new_faction", type="primary"):
+                            if new_faction_name:
+                                fid = new_faction_name.lower().replace(" ", "_").replace("-", "_")
+                                
+                                # Check for duplicate
+                                if fid in campaign.campaign_state.factions:
+                                    st.error(f"Faction ID '{fid}' already exists")
+                                else:
+                                    # Create new faction
+                                    new_faction = FactionState(
+                                        faction_id=fid,
+                                        name=new_faction_name,
+                                        description=new_faction_desc.strip(),
+                                        attention=new_faction_attention,
+                                        disposition=new_faction_disp,
+                                        notes=new_faction_notes.strip() if new_faction_notes.strip() else None,
+                                        is_active=True,
+                                    )
+                                    
+                                    # Add to campaign
+                                    new_factions_dict = dict(campaign.campaign_state.factions)
+                                    new_factions_dict[fid] = new_faction
+                                    
+                                    campaign.campaign_state = CampaignState(
+                                        version=campaign.campaign_state.version,
+                                        campaign_pressure=campaign.campaign_state.campaign_pressure,
+                                        heat=campaign.campaign_state.heat,
+                                        scars=campaign.campaign_state.scars,
+                                        factions=new_factions_dict,
+                                        total_scenes_run=campaign.campaign_state.total_scenes_run,
+                                        total_cutoffs_seen=campaign.campaign_state.total_cutoffs_seen,
+                                        highest_severity_seen=campaign.campaign_state.highest_severity_seen,
+                                        _legacy_scars=campaign.campaign_state._legacy_scars,
+                                    )
+                                    
+                                    # Add audit entry (system-facing)
+                                    audit_entry = {
+                                        "entry_type": "admin_action",
+                                        "timestamp": datetime.now().isoformat(),
+                                        "action": "faction_added",
+                                        "details": {
+                                            "faction_id": fid,
+                                            "name": new_faction_name,
+                                            "initial_attention": new_faction_attention,
+                                            "initial_disposition": new_faction_disp,
+                                        }
+                                    }
+                                    campaign.ledger.append(audit_entry)
+                                    
+                                    campaign.save()
+                                    st.session_state.show_add_faction_form = False
+                                    st.success(f"✓ Added faction: {new_faction_name}")
+                                    st.rerun()
+                            else:
+                                st.error("Name is required")
+                    
+                    with col_cancel:
+                        if st.button("Cancel", key="cancel_new_faction"):
+                            st.session_state.show_add_faction_form = False
+                            st.rerun()
                 
-                display_name = faction.notes or fid
-                st.markdown(f"**{display_name}**")
-                st.caption(f"{disp_str} | Attention: {faction.attention}/20")
-                
-                # Progress bar for attention
-                attention_pct = (faction.attention / 20) * 100
-                st.progress(attention_pct / 100)
                 st.divider()
+            
+            # Display active factions
+            if not active_factions:
+                st.info("No factions yet. Add your first faction above!")
+            else:
+                for fid, faction in active_factions.items():
+                    # Check if in edit mode
+                    edit_key = f"edit_faction_{fid}"
+                    is_editing = st.session_state.get(edit_key, False)
+                    
+                    if is_editing:
+                        # Edit mode
+                        with st.container(border=True):
+                            st.markdown(f"**Editing: {faction.name}**")
+                            
+                            edit_name = st.text_input("Name*", value=faction.name, key=f"edit_name_{fid}")
+                            edit_desc = st.text_area(
+                                "Description",
+                                value=faction.description,
+                                height=60,
+                                key=f"edit_desc_{fid}"
+                            )
+                            
+                            col1, col2 = st.columns(2)
+                            with col1:
+                                edit_attention = st.slider("Attention", 0, 20, faction.attention, key=f"edit_att_{fid}")
+                                st.caption(f"Band: {FactionState(faction_id='temp', name='temp', attention=edit_attention).get_attention_band()}")
+                            with col2:
+                                disposition_options = [
+                                    (-2, "😡 Hostile"),
+                                    (-1, "😠 Unfriendly"),
+                                    (0, "😐 Neutral"),
+                                    (1, "🙂 Friendly"),
+                                    (2, "😊 Allied"),
+                                ]
+                                edit_disp = st.select_slider(
+                                    "Disposition",
+                                    options=[d[0] for d in disposition_options],
+                                    value=faction.disposition,
+                                    format_func=lambda x: next(label for val, label in disposition_options if val == x),
+                                    key=f"edit_disp_{fid}"
+                                )
+                            
+                            edit_notes = st.text_area(
+                                "GM Notes (private)",
+                                value=faction.notes or "",
+                                height=60,
+                                key=f"edit_notes_{fid}"
+                            )
+                            
+                            col_save, col_cancel = st.columns(2)
+                            with col_save:
+                                if st.button("💾 Save", key=f"save_edit_{fid}", type="primary"):
+                                    if edit_name:
+                                        # Update faction
+                                        updated_faction = FactionState(
+                                            faction_id=fid,
+                                            name=edit_name,
+                                            description=edit_desc.strip(),
+                                            attention=edit_attention,
+                                            disposition=edit_disp,
+                                            notes=edit_notes.strip() if edit_notes.strip() else None,
+                                            is_active=True,
+                                        )
+                                        
+                                        new_factions_dict = dict(campaign.campaign_state.factions)
+                                        new_factions_dict[fid] = updated_faction
+                                        
+                                        campaign.campaign_state = CampaignState(
+                                            version=campaign.campaign_state.version,
+                                            campaign_pressure=campaign.campaign_state.campaign_pressure,
+                                            heat=campaign.campaign_state.heat,
+                                            scars=campaign.campaign_state.scars,
+                                            factions=new_factions_dict,
+                                            total_scenes_run=campaign.campaign_state.total_scenes_run,
+                                            total_cutoffs_seen=campaign.campaign_state.total_cutoffs_seen,
+                                            highest_severity_seen=campaign.campaign_state.highest_severity_seen,
+                                            _legacy_scars=campaign.campaign_state._legacy_scars,
+                                        )
+                                        
+                                        # Add audit entry
+                                        audit_entry = {
+                                            "entry_type": "admin_action",
+                                            "timestamp": datetime.now().isoformat(),
+                                            "action": "faction_edited",
+                                            "details": {
+                                                "faction_id": fid,
+                                                "changes": {
+                                                    "name": edit_name if edit_name != faction.name else None,
+                                                    "attention": edit_attention if edit_attention != faction.attention else None,
+                                                    "disposition": edit_disp if edit_disp != faction.disposition else None,
+                                                }
+                                            }
+                                        }
+                                        campaign.ledger.append(audit_entry)
+                                        
+                                        campaign.save()
+                                        st.session_state[edit_key] = False
+                                        st.success(f"✓ Updated faction: {edit_name}")
+                                        st.rerun()
+                                    else:
+                                        st.error("Name is required")
+                            
+                            with col_cancel:
+                                if st.button("Cancel", key=f"cancel_edit_{fid}"):
+                                    st.session_state[edit_key] = False
+                                    st.rerun()
+                    else:
+                        # View mode with quick controls
+                        with st.container(border=True):
+                            col1, col2, col3 = st.columns([8, 3, 1])
+                            
+                            with col1:
+                                st.markdown(f"**{faction.name}**")
+                                if faction.description:
+                                    st.caption(faction.description)
+                                
+                                # Show attention with band and disposition
+                                attention_band = faction.get_attention_band()
+                                disp_label = faction.get_disposition_label()
+                                st.caption(f"{attention_band} | {disp_label}")
+                                
+                                # Progress bar for attention
+                                attention_pct = (faction.attention / 20) * 100
+                                st.progress(attention_pct / 100)
+                            
+                            with col2:
+                                # Quick attention adjustment
+                                att_col1, att_col2 = st.columns(2)
+                                with att_col1:
+                                    if st.button("➖", key=f"dec_att_{fid}", help="Decrease attention", disabled=(faction.attention == 0)):
+                                        # Quick decrease
+                                        new_factions_dict = dict(campaign.campaign_state.factions)
+                                        new_factions_dict[fid] = FactionState(
+                                            faction_id=faction.faction_id,
+                                            name=faction.name,
+                                            description=faction.description,
+                                            attention=max(0, faction.attention - 1),
+                                            disposition=faction.disposition,
+                                            notes=faction.notes,
+                                            is_active=faction.is_active,
+                                        )
+                                        
+                                        campaign.campaign_state = CampaignState(
+                                            version=campaign.campaign_state.version,
+                                            campaign_pressure=campaign.campaign_state.campaign_pressure,
+                                            heat=campaign.campaign_state.heat,
+                                            scars=campaign.campaign_state.scars,
+                                            factions=new_factions_dict,
+                                            total_scenes_run=campaign.campaign_state.total_scenes_run,
+                                            total_cutoffs_seen=campaign.campaign_state.total_cutoffs_seen,
+                                            highest_severity_seen=campaign.campaign_state.highest_severity_seen,
+                                            _legacy_scars=campaign.campaign_state._legacy_scars,
+                                        )
+                                        campaign.save()
+                                        st.rerun()
+                                
+                                with att_col2:
+                                    if st.button("➕", key=f"inc_att_{fid}", help="Increase attention", disabled=(faction.attention == 20)):
+                                        # Quick increase
+                                        new_factions_dict = dict(campaign.campaign_state.factions)
+                                        new_factions_dict[fid] = FactionState(
+                                            faction_id=faction.faction_id,
+                                            name=faction.name,
+                                            description=faction.description,
+                                            attention=min(20, faction.attention + 1),
+                                            disposition=faction.disposition,
+                                            notes=faction.notes,
+                                            is_active=faction.is_active,
+                                        )
+                                        
+                                        campaign.campaign_state = CampaignState(
+                                            version=campaign.campaign_state.version,
+                                            campaign_pressure=campaign.campaign_state.campaign_pressure,
+                                            heat=campaign.campaign_state.heat,
+                                            scars=campaign.campaign_state.scars,
+                                            factions=new_factions_dict,
+                                            total_scenes_run=campaign.campaign_state.total_scenes_run,
+                                            total_cutoffs_seen=campaign.campaign_state.total_cutoffs_seen,
+                                            highest_severity_seen=campaign.campaign_state.highest_severity_seen,
+                                            _legacy_scars=campaign.campaign_state._legacy_scars,
+                                        )
+                                        campaign.save()
+                                        st.rerun()
+                                
+                                st.caption(f"{faction.attention}/20")
+                            
+                            with col3:
+                                # Edit and archive buttons
+                                if st.button("✏️", key=f"edit_btn_{fid}", help="Edit faction"):
+                                    st.session_state[edit_key] = True
+                                    st.rerun()
+                                
+                                if st.button("📦", key=f"archive_btn_{fid}", help="Archive faction"):
+                                    # Soft delete
+                                    new_factions_dict = dict(campaign.campaign_state.factions)
+                                    new_factions_dict[fid] = FactionState(
+                                        faction_id=faction.faction_id,
+                                        name=faction.name,
+                                        description=faction.description,
+                                        attention=faction.attention,
+                                        disposition=faction.disposition,
+                                        notes=faction.notes,
+                                        is_active=False,  # Soft delete
+                                    )
+                                    
+                                    campaign.campaign_state = CampaignState(
+                                        version=campaign.campaign_state.version,
+                                        campaign_pressure=campaign.campaign_state.campaign_pressure,
+                                        heat=campaign.campaign_state.heat,
+                                        scars=campaign.campaign_state.scars,
+                                        factions=new_factions_dict,
+                                        total_scenes_run=campaign.campaign_state.total_scenes_run,
+                                        total_cutoffs_seen=campaign.campaign_state.total_cutoffs_seen,
+                                        highest_severity_seen=campaign.campaign_state.highest_severity_seen,
+                                        _legacy_scars=campaign.campaign_state._legacy_scars,
+                                    )
+                                    
+                                    # Add audit entry
+                                    audit_entry = {
+                                        "entry_type": "admin_action",
+                                        "timestamp": datetime.now().isoformat(),
+                                        "action": "faction_archived",
+                                        "details": {
+                                            "faction_id": fid,
+                                            "name": faction.name,
+                                        }
+                                    }
+                                    campaign.ledger.append(audit_entry)
+                                    
+                                    campaign.save()
+                                    st.success(f"✓ Archived faction: {faction.name}")
+                                    st.rerun()
+            
+            # Show archived factions (collapsed)
+            if archived_factions:
+                with st.expander(f"📦 Archived Factions ({len(archived_factions)})", expanded=False):
+                    for fid, faction in archived_factions.items():
+                        col1, col2 = st.columns([10, 2])
+                        with col1:
+                            st.caption(f"**{faction.name}** ({faction.get_attention_band()}, {faction.get_disposition_label()})")
+                        with col2:
+                            if st.button("↩️", key=f"unarchive_{fid}", help="Restore faction"):
+                                # Restore from archive
+                                new_factions_dict = dict(campaign.campaign_state.factions)
+                                new_factions_dict[fid] = FactionState(
+                                    faction_id=faction.faction_id,
+                                    name=faction.name,
+                                    description=faction.description,
+                                    attention=faction.attention,
+                                    disposition=faction.disposition,
+                                    notes=faction.notes,
+                                    is_active=True,  # Restore
+                                )
+                                
+                                campaign.campaign_state = CampaignState(
+                                    version=campaign.campaign_state.version,
+                                    campaign_pressure=campaign.campaign_state.campaign_pressure,
+                                    heat=campaign.campaign_state.heat,
+                                    scars=campaign.campaign_state.scars,
+                                    factions=new_factions_dict,
+                                    total_scenes_run=campaign.campaign_state.total_scenes_run,
+                                    total_cutoffs_seen=campaign.campaign_state.total_cutoffs_seen,
+                                    highest_severity_seen=campaign.campaign_state.highest_severity_seen,
+                                    _legacy_scars=campaign.campaign_state._legacy_scars,
+                                )
+                                
+                                # Add audit entry
+                                audit_entry = {
+                                    "entry_type": "admin_action",
+                                    "timestamp": datetime.now().isoformat(),
+                                    "action": "faction_restored",
+                                    "details": {
+                                        "faction_id": fid,
+                                        "name": faction.name,
+                                    }
+                                }
+                                campaign.ledger.append(audit_entry)
+                                
+                                campaign.save()
+                                st.success(f"✓ Restored faction: {faction.name}")
+                                st.rerun()
     
     # Last session changes
     if campaign.ledger:
@@ -1305,6 +1687,25 @@ def render_campaign_dashboard() -> None:
                     for bullet in campaign.canon_summary:
                         lines.append(f"- {bullet}")
                     lines.append("")
+                    
+                    # Factions Roster (story-facing: name + description, with human-readable bands)
+                    if campaign.campaign_state and campaign.campaign_state.factions:
+                        active_factions = {fid: f for fid, f in campaign.campaign_state.factions.items() if f.is_active}
+                        if active_factions:
+                            lines.append("## Factions")
+                            lines.append("")
+                            for fid, faction in active_factions.items():
+                                # Human-readable bands (not raw numbers)
+                                attention_band = faction.get_attention_band()
+                                disp_label = faction.get_disposition_label().split()[1]  # Remove emoji
+                                
+                                lines.append(f"**{faction.name}** *({attention_band}, {disp_label})*")
+                                
+                                # Include description (story-facing) but NOT notes (GM-private)
+                                if faction.description:
+                                    lines.append(f"{faction.description}")
+                                
+                                lines.append("")
                     
                     # Campaign Ledger
                     if campaign.ledger:
@@ -1761,7 +2162,15 @@ def render_campaign_dashboard() -> None:
                                 for f_name in parsed["factions"]:
                                     fid = f_name.lower().replace(" ", "_")
                                     if fid not in new_factions:
-                                        new_factions[fid] = FactionState(fid, 0, 0, f_name)
+                                        new_factions[fid] = FactionState(
+                                            faction_id=fid,
+                                            name=f_name,
+                                            description="",
+                                            attention=0,
+                                            disposition=0,
+                                            notes=None,
+                                            is_active=True,
+                                        )
                                 
                                 campaign.campaign_state = CampaignState(
                                     version="0.2",
@@ -2301,9 +2710,12 @@ def render_finalize_session() -> None:
                         old_faction = new_factions[affected_faction]
                         new_factions[affected_faction] = FactionState(
                             faction_id=old_faction.faction_id,
+                            name=old_faction.name,
+                            description=old_faction.description,
                             attention=min(20, old_faction.attention + 2),
                             disposition=old_faction.disposition,
                             notes=old_faction.notes,
+                            is_active=old_faction.is_active,
                         )
                 
                 # Update peak severity from session metadata if available

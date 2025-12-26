@@ -68,31 +68,112 @@ class FactionState:
     Factions are external actors (authorities, rivals, organizations)
     whose awareness and attitude evolves based on campaign events.
     
-    v0.2: Factions observe and remember. They don't act yet.
+    Version History:
+    - v0.3 (2025-12-26): Added name, description, notes separation, soft delete
+    - v0.2: Factions observe and remember. They don't act yet.
+    
+    Field Semantics:
+    - name: Display name (story-facing, required)
+    - description: What it is/wants (story-facing, stable, short)
+    - attention: Neutral salience 0-20 (how much watching, not good/bad)
+    - disposition: Valence -2 to +2 (hostile ↔ allied)
+    - notes: GM-private scratchpad (NOT exported in story view)
+    - is_active: Soft delete flag (preserves historical references)
     """
     
     faction_id: str
-    attention: int = 0  # How aware they are (0-20 default cap)
-    disposition: int = 0  # How they feel (-2 hostile, 0 neutral, +2 favorable)
-    notes: Optional[str] = None
+    name: str  # Display name (story-facing)
+    description: str = ""  # What it is/wants (story-facing)
+    attention: int = 0  # Neutral salience (0-20)
+    disposition: int = 0  # Valence (-2 hostile, 0 neutral, +2 favorable)
+    notes: Optional[str] = None  # GM-private scratchpad (NOT in story exports)
+    is_active: bool = True  # Soft delete flag
+    
+    def get_attention_band(self) -> str:
+        """Get human-readable attention band."""
+        if self.attention == 0:
+            return "Unaware"
+        elif self.attention <= 5:
+            return "Noticed"
+        elif self.attention <= 10:
+            return "Interested"
+        elif self.attention <= 15:
+            return "Focused"
+        else:
+            return "Obsessed"
+    
+    def get_disposition_label(self) -> str:
+        """Get human-readable disposition with emoji."""
+        labels = {
+            -2: "😡 Hostile",
+            -1: "😠 Unfriendly",
+            0: "😐 Neutral",
+            1: "🙂 Friendly",
+            2: "😊 Allied"
+        }
+        return labels.get(self.disposition, "😐 Neutral")
     
     def to_dict(self) -> Dict:
         """Serialize to dictionary."""
         return {
             "faction_id": self.faction_id,
+            "name": self.name,
+            "description": self.description,
             "attention": self.attention,
             "disposition": self.disposition,
             "notes": self.notes,
+            "is_active": self.is_active,
         }
     
     @staticmethod
     def from_dict(data: Dict) -> "FactionState":
-        """Deserialize from dictionary."""
+        """Deserialize from dictionary with backward compatibility.
+        
+        Handles migration from v0.2 format where notes contained display name.
+        """
+        # Check if this needs migration (no 'name' field, has 'notes')
+        if "name" not in data:
+            current_notes = data.get("notes", "")
+            
+            if current_notes:
+                # Heuristic: short without punctuation = likely a name
+                is_likely_name = (
+                    len(current_notes) < 50 and
+                    not any(p in current_notes for p in ['.', '!', '?', ';', ':'])
+                )
+                
+                if is_likely_name:
+                    # Migrate notes → name
+                    name = current_notes
+                    notes = None
+                else:
+                    # Long/punctuated = actual notes, derive name from ID
+                    name = data["faction_id"].replace("_", " ").title()
+                    notes = current_notes
+            else:
+                # No notes, derive name from ID
+                name = data["faction_id"].replace("_", " ").title()
+                notes = None
+            
+            return FactionState(
+                faction_id=data["faction_id"],
+                name=name,
+                description="",  # Empty for migrated factions
+                attention=data.get("attention", 0),
+                disposition=data.get("disposition", 0),
+                notes=notes,
+                is_active=data.get("is_active", True),
+            )
+        
+        # New format with 'name' field
         return FactionState(
             faction_id=data["faction_id"],
+            name=data["name"],
+            description=data.get("description", ""),
             attention=data.get("attention", 0),
             disposition=data.get("disposition", 0),
             notes=data.get("notes"),
+            is_active=data.get("is_active", True),
         )
 
 
