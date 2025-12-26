@@ -655,6 +655,10 @@ def main() -> None:
     init_persistent_paths()
     hs = get_hs()
     
+    # Initialize campaign context
+    from streamlit_harness.campaign_context import init_campaign_context_state, get_campaign_context
+    init_campaign_context_state()
+    
     # Mode selector at top
     mode = st.radio(
         "Mode",
@@ -673,6 +677,28 @@ def main() -> None:
     # Otherwise render event generator (existing code)
     st.title("SPAR Event Generator v0.1")
     st.caption("Single-event testing and multi-run scenario validation. Not a product UI.")
+    
+    # Campaign Context Strip
+    context = get_campaign_context()
+    if context and st.session_state.get("context_enabled", True):
+        with st.container(border=True):
+            col1, col2 = st.columns([10, 2])
+            
+            with col1:
+                st.markdown(f"**🎯 Campaign Context:** {context.campaign_name}")
+                st.caption(context.get_summary_text())
+            
+            with col2:
+                if st.button("View", key="view_context"):
+                    st.session_state.show_context_details = not st.session_state.get("show_context_details", False)
+                if st.button("Disable", key="disable_context"):
+                    st.session_state.context_enabled = False
+                    st.rerun()
+            
+            if st.session_state.get("show_context_details", False):
+                st.markdown("**Why this context?**")
+                for note in context.notes:
+                    st.caption(f"• {note}")
 
     # ---------------- Sidebar ----------------
     with st.sidebar:
@@ -707,11 +733,25 @@ def main() -> None:
         tick_between = st.checkbox("Tick between events in batch", value=True)
         ticks_between_events = st.number_input("Ticks between events", min_value=0, max_value=10, value=1, step=1)
 
+        # Pre-fill tags from campaign context if available
+        default_include_tags = "hazard,reinforcements,time_pressure,social_friction,visibility,mystic,attrition,terrain,positioning,opportunity,information"
+        default_exclude_tags = ""
+        
+        if context and st.session_state.get("context_enabled", True):
+            # Merge context tags with defaults
+            context_include, context_exclude = context.to_tag_csv()
+            if context_include:
+                # Add context tags to defaults (dedupe)
+                all_include = set(split_csv(default_include_tags) + split_csv(context_include))
+                default_include_tags = ",".join(sorted(all_include))
+            if context_exclude:
+                default_exclude_tags = context_exclude
+        
         include_tags_text = st.text_input(
             "Include tags (CSV)",
-            value="hazard,reinforcements,time_pressure,social_friction,visibility,mystic,attrition,terrain,positioning,opportunity,information",
+            value=default_include_tags,
         )
-        exclude_tags_text = st.text_input("Exclude tags (CSV)", value="")
+        exclude_tags_text = st.text_input("Exclude tags (CSV)", value=default_exclude_tags)
 
         st.divider()
         st.subheader("State")

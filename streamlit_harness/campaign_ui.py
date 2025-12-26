@@ -537,6 +537,17 @@ def render_session_workspace() -> None:
         st.rerun()
         return
     
+    # Set campaign context for Event Generator
+    if campaign.campaign_state:
+        from streamlit_harness.campaign_context import ContextBundle, set_campaign_context
+        context = ContextBundle.from_campaign(
+            campaign_id=campaign.campaign_id,
+            campaign_name=campaign.name,
+            campaign_state=campaign.campaign_state,
+            sources=campaign.sources,
+        )
+        set_campaign_context(context)
+    
     # Header
     col1, col2 = st.columns([1, 11])
     with col1:
@@ -546,7 +557,7 @@ def render_session_workspace() -> None:
     with col2:
         st.title(f"🎮 Session Workspace: {campaign.name}")
     
-    st.info("🔧 This integrates with existing Scenario Runner functionality. For prototype v0.1, use the Scenarios tab and then click 'Finalize Session' when done.")
+    st.info("🔧 Campaign context applied! Switch to Event Generator mode to run scenarios with campaign tags/factions pre-filled.")
     
     # Quick access to finalize
     if st.button("✅ Finalize Session", type="primary", use_container_width=True):
