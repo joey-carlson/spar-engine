@@ -75,6 +75,14 @@ This prototype adds a Campaign Manager mode to the Streamlit harness, demonstrat
 - Ledger append-only (no overwrites)
 - Canon summary updates automatically
 
+### ✅ Content Sources Management
+- Sources list in dashboard (expandable)
+- Built-in source always shown (core_complications)
+- Add external sources (name + path, no parsing)
+- Enable/disable toggle per source
+- Active sources displayed in campaign header
+- Active sources recorded in ledger metadata
+
 ---
 
 ## What's Mocked/Simplified
@@ -98,6 +106,11 @@ This prototype adds a Campaign Manager mode to the Streamlit harness, demonstrat
 **Mock**: First bullet from "what happened" appends to canon  
 **Why**: Simple rule for v0.1  
 **Production**: LLM suggests canon updates based on session, GM approves
+
+### 🔧 Source Parsing/Import
+**Mock**: Sources are metadata only (name + path tracked)  
+**Why**: No parsing or content mapping in v0.1  
+**Production**: Parse external sources, map to SPAR content format, validate tags
 
 ### 🔧 Campaign Influence Application
 **Mock**: Session workspace shows campaign influence but doesn't auto-apply it  
@@ -176,6 +189,9 @@ This prototype adds a Campaign Manager mode to the Streamlit harness, demonstrat
 | View faction details | 1 | Expand factions |
 | View scar details | 1 | Expand scars |
 | View ledger | 1 | Expand ledger |
+| View sources | 1 | Expand sources |
+| Add source | 2 | Expand + Add button |
+| Toggle source | 1 | Click gear icon |
 
 **Assessment**: Core workflow stays under 4-click limit ✅
 

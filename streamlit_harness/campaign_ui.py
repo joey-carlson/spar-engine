@@ -26,6 +26,41 @@ CAMPAIGNS_DIR.mkdir(exist_ok=True)
 
 
 @dataclass
+class Source:
+    """Content source reference (built-in or external)."""
+    
+    source_id: str
+    name: str
+    path: str  # File path or identifier
+    enabled: bool = True
+    source_type: str = "external"  # "built-in" or "external"
+    notes: Optional[str] = None
+    
+    def to_dict(self) -> Dict[str, Any]:
+        """Serialize to dictionary."""
+        return {
+            "source_id": self.source_id,
+            "name": self.name,
+            "path": self.path,
+            "enabled": self.enabled,
+            "source_type": self.source_type,
+            "notes": self.notes,
+        }
+    
+    @staticmethod
+    def from_dict(data: Dict[str, Any]) -> "Source":
+        """Deserialize from dictionary."""
+        return Source(
+            source_id=data["source_id"],
+            name=data["name"],
+            path=data["path"],
+            enabled=data.get("enabled", True),
+            source_type=data.get("source_type", "external"),
+            notes=data.get("notes"),
+        )
+
+
+@dataclass
 class Campaign:
     """Campaign metadata and state."""
     
@@ -36,6 +71,7 @@ class Campaign:
     canon_summary: List[str] = field(default_factory=list)
     campaign_state: Optional[CampaignState] = None
     ledger: List[Dict[str, Any]] = field(default_factory=list)
+    sources: List[Source] = field(default_factory=list)
     
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to dictionary."""
@@ -47,6 +83,7 @@ class Campaign:
             "canon_summary": self.canon_summary,
             "campaign_state": self.campaign_state.to_dict() if self.campaign_state else None,
             "ledger": self.ledger,
+            "sources": [s.to_dict() for s in self.sources],
         }
     
     @staticmethod
@@ -56,6 +93,9 @@ class Campaign:
         if data.get("campaign_state"):
             campaign_state = CampaignState.from_dict(data["campaign_state"])
         
+        sources_data = data.get("sources", [])
+        sources = [Source.from_dict(s) for s in sources_data]
+        
         return Campaign(
             campaign_id=data["campaign_id"],
             name=data["name"],
@@ -64,6 +104,7 @@ class Campaign:
             canon_summary=data.get("canon_summary", []),
             campaign_state=campaign_state,
             ledger=data.get("ledger", []),
+            sources=sources,
         )
     
     def get_path(self) -> Path:
@@ -271,6 +312,14 @@ def render_campaign_dashboard() -> None:
     with col2:
         st.title(f"📖 {campaign.name}")
     
+    # Show active sources in header
+    active_sources = [s for s in campaign.sources if s.enabled]
+    if active_sources:
+        source_names = ", ".join([s.name for s in active_sources])
+        st.caption(f"Active Sources: {source_names}")
+    else:
+        st.caption("Active Sources: core_complications (built-in)")
+    
     st.caption(f"Campaign ID: {campaign.campaign_id} | Last played: {campaign.last_played[:16]}")
     
     # Primary action button
@@ -343,6 +392,82 @@ def render_campaign_dashboard() -> None:
         st.rerun()
     
     st.divider()
+    
+    # Sources Management
+    with st.expander(f"📚 Content Sources ({len([s for s in campaign.sources if s.enabled])} active)", expanded=False):
+        st.caption("Content sources for this campaign (no parsing yet, metadata only)")
+        
+        # Show built-in source
+        st.markdown("**core_complications** (built-in)")
+        st.caption("✅ Always active | data/core_complications.json")
+        st.divider()
+        
+        # Show campaign sources
+        if campaign.sources:
+            for idx, source in enumerate(campaign.sources):
+                col1, col2, col3 = st.columns([6, 3, 1])
+                
+                with col1:
+                    status = "✅" if source.enabled else "⏸️"
+                    st.markdown(f"{status} **{source.name}**")
+                    st.caption(f"{source.path}")
+                    if source.notes:
+                        st.caption(f"_{source.notes}_")
+                
+                with col2:
+                    st.caption(source.source_type)
+                
+                with col3:
+                    # Toggle enabled state
+                    if st.button("⚙️", key=f"toggle_source_{source.source_id}"):
+                        campaign.sources[idx] = Source(
+                            source_id=source.source_id,
+                            name=source.name,
+                            path=source.path,
+                            enabled=not source.enabled,
+                            source_type=source.source_type,
+                            notes=source.notes,
+                        )
+                        campaign.save()
+                        st.rerun()
+                
+                st.divider()
+        
+        # Add new source form
+        if st.button("➕ Add Source"):
+            st.session_state.show_add_source_form = True
+        
+        if st.session_state.get("show_add_source_form", False):
+            st.markdown("**Add New Source**")
+            
+            new_source_name = st.text_input("Source Name", placeholder="e.g., City Loot Table", key="new_source_name")
+            new_source_path = st.text_input("File Path", placeholder="e.g., data/city_loot.csv", key="new_source_path")
+            new_source_notes = st.text_input("Notes (optional)", placeholder="e.g., Urban encounters", key="new_source_notes")
+            
+            col1, col2 = st.columns(2)
+            with col1:
+                if st.button("Add", key="add_source_confirm"):
+                    if new_source_name and new_source_path:
+                        source_id = f"source_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+                        new_source = Source(
+                            source_id=source_id,
+                            name=new_source_name,
+                            path=new_source_path,
+                            enabled=True,
+                            source_type="external",
+                            notes=new_source_notes if new_source_notes else None,
+                        )
+                        campaign.sources.append(new_source)
+                        campaign.save()
+                        st.session_state.show_add_source_form = False
+                        st.rerun()
+                    else:
+                        st.error("Name and path required")
+            
+            with col2:
+                if st.button("Cancel", key="add_source_cancel"):
+                    st.session_state.show_add_source_form = False
+                    st.rerun()
     
     # Scars
     if campaign.campaign_state and campaign.campaign_state.scars:
@@ -511,6 +636,10 @@ def render_finalize_session() -> None:
                 st.error("Please enter at least one bullet point")
                 st.stop()
             
+            # Record active sources in session metadata
+            active_source_ids = [s.source_id for s in campaign.sources if s.enabled]
+            active_source_names = [s.name for s in campaign.sources if s.enabled]
+            
             session_entry = {
                 "session_number": len(campaign.ledger) + 1,
                 "session_date": datetime.now().isoformat(),
@@ -521,6 +650,8 @@ def render_finalize_session() -> None:
                     "rumor_spread": rumor_spread,
                     "faction_attention_change": faction_attention,
                 },
+                "active_sources": active_source_names,  # Human-readable
+                "active_source_ids": active_source_ids,  # Machine-readable
             }
             
             # Update campaign state
