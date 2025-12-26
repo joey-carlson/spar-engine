@@ -251,6 +251,16 @@ def render_campaign_selector() -> None:
         if st.session_state.get("parsed_history"):
             parsed = st.session_state.parsed_history
             
+            # Add JSON export button
+            parsed_json = json.dumps(parsed, indent=2, default=str)
+            st.download_button(
+                label="📥 Download Parsed JSON",
+                data=parsed_json,
+                file_name=f"parsed_history_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json",
+                mime="application/json",
+                use_container_width=True,
+            )
+            
             st.markdown("**Parse Preview**")
             for note in parsed["notes"]:
                 st.caption(note)
@@ -653,6 +663,16 @@ def render_campaign_dashboard() -> None:
                 # Show preview if parsed
                 if st.session_state.get("dashboard_parsed"):
                     parsed = st.session_state.dashboard_parsed
+                    
+                    # Add JSON export button
+                    parsed_json = json.dumps(parsed, indent=2, default=str)
+                    st.download_button(
+                        label="📥 Download Parsed JSON",
+                        data=parsed_json,
+                        file_name=f"parsed_history_merge_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json",
+                        mime="application/json",
+                        key="download_dashboard_parsed",
+                    )
                     
                     st.caption("**Preview:**")
                     st.caption(f"{len(parsed['sessions'])} sessions, {len(parsed['canon_summary'])} canon bullets")
