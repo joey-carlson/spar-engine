@@ -919,32 +919,35 @@ def main() -> None:
                 st.divider()
             
             if hs.events:
-                # Initialize selection state
-                if "selected_event_indices" not in st.session_state:
-                    st.session_state.selected_event_indices = set()
-                
-                # Add "Send to Campaign" section before events
+                # Add "Send to Campaign" section
                 if st.session_state.get("current_campaign_id"):
                     from streamlit_harness.campaign_ui import Campaign, PrepItem
                     campaign = Campaign.load(st.session_state.current_campaign_id)
                     if campaign:
                         st.info(f"📤 Sending to: **{campaign.name}** | Events will be added to Prep Queue (not canon)")
                         
-                        # Selection controls
+                        # Selection controls with computed count
                         col1, col2, col3, col4 = st.columns([3, 2, 2, 5])
+                        
+                        # Compute count by checking checkbox keys directly
+                        selected_count = sum(
+                            1 for idx in range(min(25, len(hs.events)))
+                            if st.session_state.get(f"select_event_{idx}", False)
+                        )
                         
                         with col1:
                             if st.button("☑️ Select All"):
-                                st.session_state.selected_event_indices = set(range(min(25, len(hs.events))))
+                                for idx in range(min(25, len(hs.events))):
+                                    st.session_state[f"select_event_{idx}"] = True
                                 st.rerun()
                         
                         with col2:
                             if st.button("☐ Select None"):
-                                st.session_state.selected_event_indices = set()
+                                for idx in range(min(25, len(hs.events))):
+                                    st.session_state[f"select_event_{idx}"] = False
                                 st.rerun()
                         
                         with col3:
-                            selected_count = len(st.session_state.selected_event_indices)
                             st.caption(f"Selected: {selected_count}")
                         
                         # Send buttons
@@ -958,8 +961,13 @@ def main() -> None:
                                 type="primary" if selected_count > 0 else "secondary"
                             ):
                                 from datetime import datetime as dt
-                                # Create prep items from selected events only
-                                for idx in sorted(st.session_state.selected_event_indices):
+                                # Get selected indices from checkbox keys
+                                selected_indices = [
+                                    idx for idx in range(min(25, len(hs.events)))
+                                    if st.session_state.get(f"select_event_{idx}", False)
+                                ]
+                                
+                                for idx in selected_indices:
                                     if idx < len(hs.events):
                                         e = hs.events[idx]
                                         prep_item = PrepItem(
@@ -980,8 +988,10 @@ def main() -> None:
                                         campaign.prep_queue.append(prep_item)
                                 
                                 campaign.save()
-                                st.session_state.selected_event_indices = set()  # Clear selection
-                                st.success(f"✓ Sent {selected_count} events to Prep Queue!")
+                                # Clear all checkbox states
+                                for idx in range(min(25, len(hs.events))):
+                                    st.session_state[f"select_event_{idx}"] = False
+                                st.success(f"✓ Sent {len(selected_indices)} events to Prep Queue!")
                                 st.rerun()
                         
                         with send_col2:
@@ -1007,7 +1017,9 @@ def main() -> None:
                                     campaign.prep_queue.append(prep_item)
                                 
                                 campaign.save()
-                                st.session_state.selected_event_indices = set()  # Clear selection
+                                # Clear all checkbox states
+                                for idx in range(min(25, len(hs.events))):
+                                    st.session_state[f"select_event_{idx}"] = False
                                 st.success(f"✓ Sent {len(hs.events[:25])} events to Prep Queue!")
                                 st.rerun()
                         
@@ -1017,16 +1029,14 @@ def main() -> None:
                 for idx, e in enumerate(hs.events[:25]):
                     with st.container(border=True):
                         if st.session_state.get("current_campaign_id"):
-                            # Add checkbox for selection
+                            # Checkbox with key - Streamlit manages state
                             col_check, col_event = st.columns([1, 19])
                             with col_check:
-                                is_selected = idx in st.session_state.selected_event_indices
-                                if st.checkbox("", value=is_selected, key=f"select_event_{idx}", label_visibility="collapsed"):
-                                    st.session_state.selected_event_indices.add(idx)
-                                    st.rerun()
-                                elif is_selected:
-                                    st.session_state.selected_event_indices.discard(idx)
-                                    st.rerun()
+                                # Initialize checkbox key if needed
+                                checkbox_key = f"select_event_{idx}"
+                                if checkbox_key not in st.session_state:
+                                    st.session_state[checkbox_key] = False
+                                st.checkbox("", key=checkbox_key, label_visibility="collapsed")
                             with col_event:
                                 event_card(e)
                         else:
