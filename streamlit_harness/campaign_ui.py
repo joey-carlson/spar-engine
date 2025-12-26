@@ -1348,22 +1348,24 @@ def render_campaign_dashboard() -> None:
                     
                     markdown_content = "\n".join(lines)
                     
-                    # Try local write, fallback to download
+                    # Always provide download button
+                    st.download_button(
+                        label="📥 Download Campaign History",
+                        data=markdown_content,
+                        file_name=Path(history_path).name,
+                        mime="text/markdown",
+                        use_container_width=True,
+                        key="download_campaign_history"
+                    )
+                    
+                    # Also try local write if possible
                     try:
                         path = Path(history_path)
                         path.parent.mkdir(parents=True, exist_ok=True)
                         path.write_text(markdown_content)
-                        st.success(f"✓ Exported to {history_path}")
+                        st.info(f"✓ Also saved to: {history_path}")
                     except Exception as e:
-                        # Fallback to download
-                        st.warning(f"Could not write to {history_path}: {e}")
-                        st.download_button(
-                            label="📥 Download Campaign History",
-                            data=markdown_content,
-                            file_name=Path(history_path).name,
-                            mime="text/markdown",
-                            use_container_width=True,
-                        )
+                        st.info(f"Note: Could not write to {history_path} - use download button above")
         
         with col2:
             st.markdown("**Session Export (Optional)**")
@@ -1446,23 +1448,24 @@ def render_campaign_dashboard() -> None:
                         
                         markdown_content = "\n".join(lines)
                         
-                        # Try local write, fallback to download
+                        # Always provide download button
+                        st.download_button(
+                            label="📥 Download Session",
+                            data=markdown_content,
+                            file_name=Path(session_path).name,
+                            mime="text/markdown",
+                            use_container_width=True,
+                            key="download_session"
+                        )
+                        
+                        # Also try local write if possible
                         try:
                             path = Path(session_path)
                             path.parent.mkdir(parents=True, exist_ok=True)
                             path.write_text(markdown_content)
-                            st.success(f"✓ Exported to {session_path}")
+                            st.info(f"✓ Also saved to: {session_path}")
                         except Exception as e:
-                            # Fallback to download
-                            st.warning(f"Could not write to {session_path}: {e}")
-                            st.download_button(
-                                label="📥 Download Session",
-                                data=markdown_content,
-                                file_name=Path(session_path).name,
-                                mime="text/markdown",
-                                use_container_width=True,
-                                key="download_session_fallback"
-                            )
+                            st.info(f"Note: Could not write to {session_path} - use download button above")
             else:
                 st.info("No sessions to export yet")
     
