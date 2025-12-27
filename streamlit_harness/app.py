@@ -16,7 +16,7 @@ import time
 
 import streamlit as st
 
-from spar_engine.content import load_pack
+from spar_engine.content import load_pack, load_packs
 from spar_engine.engine import generate_event
 from spar_engine.models import Constraints, SceneContext, SelectionContext
 from spar_engine.rng import TraceRNG
@@ -664,14 +664,14 @@ def main() -> None:
     if "mode_index" not in st.session_state:
         st.session_state.mode_index = 0  # Default to Campaign Manager
     
-    mode_options = ["🎲 Campaign Manager", "⚡ Event Generator"]
+    mode_options = ["🎲 Campaign Manager", "⚡ Generators"]
     mode = st.radio(
         "Mode",
         mode_options,
         index=st.session_state.mode_index,
         horizontal=True,
         label_visibility="collapsed",
-        help="Campaign Manager: Multi-campaign management with living state. Event Generator: Single-event testing and scenario validation."
+        help="Campaign Manager: Multi-campaign management with living state. Generators: Multi-domain generation (Events, Loot, etc.) with scenario validation."
     )
     
     # Update index when user changes mode
@@ -683,11 +683,27 @@ def main() -> None:
         render_campaign_ui()
         return
     
-    # Otherwise render event generator (existing code)
-    st.title("SPAR Event Generator v0.1")
-    st.caption("Single-event testing and multi-run scenario validation. Not a product UI.")
+    # Otherwise render generators workspace
+    st.title("SPAR Generators")
+    st.caption("Multi-domain generation (Events, Loot, etc.) and scenario validation. Not a product UI.")
     
-    # Campaign Context Strip (v0.3: Faction Influence)
+    # Campaign Context Strip (v0.3: Faction Influence + v0.4: Multi-pack display)
+    # Ensure context is loaded when campaign is selected
+    current_campaign_id = st.session_state.get("current_campaign_id")
+    if current_campaign_id and not get_campaign_context():
+        # Campaign selected but context not loaded - initialize it
+        from streamlit_harness.campaign_ui import Campaign
+        campaign = Campaign.load(current_campaign_id)
+        if campaign and campaign.campaign_state:
+            from streamlit_harness.campaign_context import ContextBundle, set_campaign_context
+            context_bundle = ContextBundle.from_campaign(
+                campaign_id=campaign.campaign_id,
+                campaign_name=campaign.name,
+                campaign_state=campaign.campaign_state,
+                sources=campaign.sources,
+            )
+            set_campaign_context(context_bundle)
+    
     context = get_campaign_context()
     if context and st.session_state.get("context_enabled", True):
         with st.container(border=True):
@@ -695,6 +711,29 @@ def main() -> None:
             
             with col1:
                 st.markdown(f"**🎯 Campaign Context:** {context.campaign_name}")
+                
+                # Show active content packs with entry counts
+                current_campaign_id = st.session_state.get("current_campaign_id")
+                if current_campaign_id:
+                    from streamlit_harness.campaign_ui import Campaign
+                    campaign = Campaign.load(current_campaign_id)
+                    if campaign and campaign.enabled_content_packs:
+                        # Calculate total entries
+                        total_entries = 0
+                        pack_names = []
+                        for pack_path in campaign.enabled_content_packs:
+                            try:
+                                pack_entries = load_pack(pack_path)
+                                total_entries += len(pack_entries)
+                                pack_names.append(Path(pack_path).stem.replace('_', ' ').title())
+                            except Exception:
+                                pack_names.append(Path(pack_path).stem.replace('_', ' ').title())
+                        
+                        if len(pack_names) == 1:
+                            st.caption(f"📦 Pack: {pack_names[0]} ({total_entries} entries)")
+                        else:
+                            packs_display = " + ".join(pack_names)
+                            st.caption(f"📦 Packs: {packs_display} ({total_entries} entries)")
                 
                 # Faction spotlight (with full names, not just IDs)
                 if context.suggested_factions and context.faction_influence_notes:
@@ -768,7 +807,7 @@ def main() -> None:
     # We detect this by checking if we're in the first iteration of tab rendering
     # This is a workaround since Streamlit doesn't expose tab state directly
     with st.sidebar:
-        st.header("Event Generator")
+        st.header("Generator Controls")
         st.caption("Configure single-event generation")
         
         # ============================================================
@@ -831,19 +870,37 @@ def main() -> None:
         
         st.divider()
         
-        # Scene Setup
-        st.subheader("Scene Setup")
-        st.caption("Environmental constraints, not genre")
-        
-        preset = st.selectbox(
-            "Scene preset", 
-            ["confined", "populated", "open", "derelict"], 
+        # Generator type selector (dropdown for scalability)
+        gen_type = st.selectbox(
+            "Generator",
+            ["⚔️ Event", "💰 Loot"],
             index=0,
-            help="Confined: tight space, limited exits • Populated: crowds, witnesses, institutions • Open: exposure, distance, limited support • Derelict: unstable structures, decay"
+            key="generator_type_sidebar",
+            help="Event: Complications and pressure. Loot: Resource shocks with consequences."
         )
-        pv = scene_preset_values(preset)
-        scene_phase = st.selectbox("Scene phase", ["approach", "engage", "aftermath"], index=1)
-        rarity_mode = st.selectbox("Rarity mode", ["calm", "normal", "spiky"], index=1)
+        
+        # Conditionally show Scene Setup only for Events
+        if gen_type == "⚔️ Event":
+            st.subheader("Scene Setup")
+            st.caption("Environmental constraints, not genre")
+            
+            preset = st.selectbox(
+                "Scene preset", 
+                ["confined", "populated", "open", "derelict"], 
+                index=0,
+                help="Confined: tight space, limited exits • Populated: crowds, witnesses, institutions • Open: exposure, distance, limited support • Derelict: unstable structures, decay"
+            )
+            pv = scene_preset_values(preset)
+            scene_phase = st.selectbox("Scene phase", ["approach", "engage", "aftermath"], index=1)
+        else:
+            # Loot mode: use stable defaults internally (not user-configurable)
+            preset = "derelict"  # Neutral environment for loot
+            pv = scene_preset_values(preset)
+            scene_phase = "aftermath"  # Most loot appears in aftermath
+        
+        # Rarity mode applies to both Event and Loot
+        rarity_mode = st.selectbox("Rarity mode", ["calm", "normal", "spiky"], index=1,
+                                   help="Calm: Low variance. Normal: Balanced. Spiky: High variance (heavy tail).")
         
         # Filters (collapsed by default per designer constraint)
         with st.expander("🏷️ Filters", expanded=False):
@@ -916,16 +973,60 @@ def main() -> None:
             
             # Content pack
             st.caption("**Content Pack**")
-            pack_path = st.text_input("Content pack path", value=DEFAULT_PACK)
             
-            if st.button("Load pack") or not hs.pack_entries:
-                try:
-                    entries = load_entries(pack_path)
-                    hs.pack_entries = entries
-                    hs.tag_vocab = derive_tag_vocab(entries)
-                    st.toast(f"Loaded {len(entries)} entries", icon="✅")
-                except Exception as ex:
-                    st.error(str(ex))
+            # Check if campaign is selected with packs
+            current_campaign_id = st.session_state.get("current_campaign_id")
+            if current_campaign_id:
+                from streamlit_harness.campaign_ui import Campaign
+                campaign = Campaign.load(current_campaign_id)
+                if campaign and campaign.enabled_content_packs:
+                    # Show detailed pack listing
+                    st.markdown("**Active Packs:**")
+                    
+                    total_pack_entries = 0
+                    for pack_path in campaign.enabled_content_packs:
+                        try:
+                            pack_entries = load_pack(pack_path)
+                            pack_name = Path(pack_path).stem.replace('_', ' ').title()
+                            st.caption(f"• {pack_name} ({len(pack_entries)} entries)")
+                            total_pack_entries += len(pack_entries)
+                        except Exception:
+                            pack_name = Path(pack_path).stem.replace('_', ' ').title()
+                            st.caption(f"• {pack_name} (load failed)")
+                    
+                    st.caption(f"**Total: {total_pack_entries} entries from {len(campaign.enabled_content_packs)} pack(s)**")
+                    
+                    if st.button("Load campaign packs") or not hs.pack_entries:
+                        try:
+                            entries = load_packs(campaign.enabled_content_packs)
+                            hs.pack_entries = entries
+                            hs.tag_vocab = derive_tag_vocab(entries)
+                            st.toast(f"Loaded {len(entries)} entries from {len(campaign.enabled_content_packs)} pack(s)", icon="✅")
+                        except Exception as ex:
+                            st.error(f"Failed to load campaign packs: {ex}")
+                else:
+                    # Fallback to single pack if campaign has no packs
+                    pack_path = st.text_input("Content pack path", value=DEFAULT_PACK)
+                    if st.button("Load pack") or not hs.pack_entries:
+                        try:
+                            entries = load_entries(pack_path)
+                            hs.pack_entries = entries
+                            hs.tag_vocab = derive_tag_vocab(entries)
+                            st.toast(f"Loaded {len(entries)} entries", icon="✅")
+                        except Exception as ex:
+                            st.error(str(ex))
+            else:
+                # No campaign - use single pack path
+                pack_path = st.text_input("Content pack path", value=DEFAULT_PACK)
+                
+                if st.button("Load pack") or not hs.pack_entries:
+                    try:
+                        entries = load_entries(pack_path)
+                        hs.pack_entries = entries
+                        hs.tag_vocab = derive_tag_vocab(entries)
+                        st.toast(f"Loaded {len(entries)} entries", icon="✅")
+                    except Exception as ex:
+                        st.error(str(ex))
 
             if hs.tag_vocab:
                 st.caption("Pack tags:")
@@ -949,7 +1050,7 @@ def main() -> None:
     if "active_tab" not in st.session_state:
         st.session_state.active_tab = "Events"
     
-    tabs = st.tabs(["Events", "Scenarios"])
+    tabs = st.tabs(["Generate", "Diagnostics"])
     
     # Tab click detection (workaround for streamlit tab state)
     # We'll render the sidebar conditionally based on which tab's content is being viewed
@@ -976,10 +1077,57 @@ def main() -> None:
     )
 
     with tabs[0]:
+        # Retrieve generator type from sidebar
+        gen_type = st.session_state.get("generator_type_sidebar", "⚔️ Event")
+        
+        # Loot Context Strip (only when Loot mode active)
+        if gen_type == "💰 Loot":
+            with st.container(border=True):
+                st.markdown("**💰 Loot Context**")
+                
+                # Derive messaging from campaign state (no new persisted state)
+                current_campaign_id = st.session_state.get("current_campaign_id")
+                
+                if current_campaign_id:
+                    from streamlit_harness.campaign_ui import Campaign
+                    campaign = Campaign.load(current_campaign_id)
+                    
+                    if campaign and campaign.campaign_state:
+                        cs = campaign.campaign_state
+                        
+                        # Base message
+                        st.caption("Resource shock influenced by campaign state. Gains may attract attention, create obligations, or shift faction interest.")
+                        
+                        # Faction influence (if present)
+                        if context and context.suggested_factions:
+                            faction_names = []
+                            for note in context.faction_influence_notes[:2]:
+                                # Extract just the name and band
+                                name_part = note.split(" (score:")[0] if " (score:" in note else note
+                                faction_names.append(name_part)
+                            
+                            if faction_names:
+                                st.caption(f"Current interests: {', '.join(faction_names)}")
+                        else:
+                            # No faction influence - check pressure/heat bands
+                            pressure_band = cs.get_pressure_band()
+                            heat_band = cs.get_heat_band()
+                            
+                            if pressure_band in ["volatile", "critical"] or heat_band in ["hunted", "exposed"]:
+                                st.caption("Acquisition is likely to be noticed or contested.")
+                            else:
+                                st.caption("Short-term relief is possible without immediate fallout.")
+                    else:
+                        st.caption("Resource shock influenced by campaign state. Gains may attract attention, create obligations, or shift faction interest.")
+                else:
+                    # No campaign selected
+                    st.caption("Standalone loot generation. Results reflect generic resource gains with narrative consequences.")
+        
         colA, colB = st.columns([2, 1])
 
         with colA:
-            st.header("Events")
+            st.header("Events & Loot")
+            
             btn1, btnN = st.columns(2)
             run_one = btn1.button("Generate 1", use_container_width=True)
             run_many = btnN.button(f"Generate {hs.batch_n}", use_container_width=True)
@@ -994,13 +1142,38 @@ def main() -> None:
 
                 batch_events: List[Dict[str, Any]] = []
                 
+                # Determine which generator to use
+                use_loot_gen = (gen_type == "💰 Loot")
+                
+                # Load appropriate content
+                gen_entries = entries
+                if use_loot_gen:
+                    # Try to load loot pack
+                    try:
+                        loot_pack_path = "data/core_loot_situations.json"
+                        gen_entries = load_entries(loot_pack_path)
+                        if not gen_entries:
+                            st.error("Loot pack is empty. Using event pack as fallback.")
+                            gen_entries = entries
+                    except Exception as ex:
+                        st.warning(f"Could not load loot pack: {ex}. Using event pack as fallback.")
+                        use_loot_gen = False
+                        gen_entries = entries
+                
                 try:
                     for idx in range(n):
                         if idx > 0 and tick_between and int(ticks_between_events) > 0:
                             hs.engine_state = tick_state(hs.engine_state, ticks=int(ticks_between_events))
 
                         rng.trace.clear()
-                        ev = generate_event(scene, hs.engine_state, selection, entries, rng)
+                        
+                        # Route to appropriate generator
+                        if use_loot_gen:
+                            from spar_engine.loot import generate_loot
+                            ev = generate_loot(scene, hs.engine_state, selection, gen_entries, rng)
+                        else:
+                            ev = generate_event(scene, hs.engine_state, selection, gen_entries, rng)
+                        
                         hs.engine_state = apply_state_delta(hs.engine_state, ev.state_delta)
 
                         d = event_to_dict(ev)
@@ -1231,8 +1404,8 @@ def main() -> None:
             diagnostics(hs.last_batch)
 
     with tabs[1]:
-        st.header("Scenario Runner (Multi-run)")
-        st.caption("Run predefined multi-run suites and download a debug report for tuning.")
+        st.header("Test Profiles")
+        st.caption("Run predefined test profiles for SOC validation and content regression testing. Internal tool.")
         
         # JSON Scenario Import/Export Section
         st.subheader("JSON Scenario Import/Export")
