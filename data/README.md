@@ -29,7 +29,7 @@
 
 #### v0.1 (Initial - 2025-12-22)
 - Total entries: 36 events
-- Coverage: All presets (dungeon, populated, open, derelict) for approach/engage phases
+- Coverage: All presets (confined, populated, open, derelict) for approach/engage phases
 - Aftermath: Limited coverage (8 events, uneven distribution)
 - Tags: hazard, visibility, time_pressure, reinforcements, attrition, terrain, social_friction, information, opportunity, positioning, mystic
 

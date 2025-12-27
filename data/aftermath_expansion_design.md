@@ -75,7 +75,7 @@ Severity bands: 1-4 primary, occasional 5-6
 - **Tone**: "What the place remembers"
 
 ### 6. aftermath_leverage_exposed_01
-- **Environment**: city, ruins, industrial
+- **Environment**: populated, derelict, industrial
 - **Tags**: opportunity, information, social_friction
 - **Severity**: 2-5
 - **Theme**: Someone's vulnerability or resource becomes obvious
