@@ -81,7 +81,7 @@ Set scene inputs explicitly:
 python3 engine.py \
   --scene myscene \
   --scene-phase engage \
-  --env dungeon \
+  --env confined \
   --tone gritty \
   --spotlight combat \
   --party-band mid \
@@ -128,7 +128,7 @@ python3 engine.py --state-in state.json --state-out state.json --tick-mode turn 
 Use a scene preset (sets sensible morphology defaults):
 
 ```zsh
-python3 engine.py --scene-preset dungeon --scene-phase engage --count 1
+python3 engine.py --scene-preset confined --scene-phase engage --count 1
 ```
 
 See all options:
@@ -154,7 +154,7 @@ python3 engine.py --confinement 0.9 --connectivity 0.1 --visibility 0.8 --scene-
 
 **Spiky rarity mode (unpredictable events):**
 ```zsh
-python3 engine.py --rarity-mode spiky --scene-phase approach --env wilderness --seed 789
+python3 engine.py --rarity-mode spiky --scene-phase approach --env open --seed 789
 ```
 *Expected: Greater severity variation, more extreme outcomes*
 
@@ -164,9 +164,9 @@ python3 engine.py --env city --party-band low --include-tags social_friction,vis
 ```
 *Expected: Social complications, bystander effects, heat buildup*
 
-**Industrial dungeon with high visibility:**
+**Industrial confined with high visibility:**
 ```zsh
-python3 engine.py --env industrial,dungeon --visibility 0.9 --rarity-mode normal --spotlight combat --seed 202
+python3 engine.py --env industrial,confined --visibility 0.9 --rarity-mode normal --spotlight combat --seed 202
 ```
 *Expected: Hazard-heavy events, reinforcement possibilities*
 
