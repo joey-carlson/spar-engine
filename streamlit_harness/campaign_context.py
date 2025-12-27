@@ -33,6 +33,8 @@ class ContextBundle:
     pressure_band: str
     heat_band: str
     notes: List[str]
+    faction_influence_notes: List[str]  # v0.3: Faction spotlight explanations
+    faction_tag_bias: List[str]  # v0.3: Tag nudges from faction state
     
     @staticmethod
     def from_campaign(campaign_id: str, campaign_name: str, campaign_state: CampaignState, sources: List[Any]) -> "ContextBundle":
@@ -67,6 +69,10 @@ class ContextBundle:
         # Get notes (explanations for why tags/factions suggested)
         notes = influence.get("notes", [])
         
+        # v0.3: Get faction influence details
+        faction_influence_notes = influence.get("faction_influence_notes", [])
+        faction_tag_bias = influence.get("faction_tag_bias", [])
+        
         return ContextBundle(
             campaign_id=campaign_id,
             campaign_name=campaign_name,
@@ -77,6 +83,8 @@ class ContextBundle:
             pressure_band=pressure_band,
             heat_band=heat_band,
             notes=notes,
+            faction_influence_notes=faction_influence_notes,
+            faction_tag_bias=faction_tag_bias,
         )
     
     def to_tag_csv(self) -> tuple[str, str]:

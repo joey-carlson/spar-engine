@@ -12,7 +12,7 @@ dependencies = []
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["spar_engine*"]
+include = ["spar_engine*", "spar_campaign*"]
 exclude = ["data*", "streamlit_harness*", "tests*", "docs*"]
 
 [tool.pytest.ini_options]

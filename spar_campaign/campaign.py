@@ -68,17 +68,24 @@ def apply_campaign_delta(
             ))
             new_factions[faction_id] = FactionState(
                 faction_id=faction_id,
+                name=old_faction.name,
+                description=old_faction.description,
                 attention=new_attention,
                 disposition=new_disposition,
                 notes=old_faction.notes,
+                is_active=old_faction.is_active,
             )
         else:
-            # Create new faction
+            # Create new faction with default name from ID
+            display_name = faction_id.replace('_', ' ').title()
             new_factions[faction_id] = FactionState(
                 faction_id=faction_id,
+                name=display_name,
+                description="",
                 attention=updates.get("attention_add", 0),
                 disposition=updates.get("disposition_add", 0),
                 notes=None,
+                is_active=True,
             )
     
     # Track highest severity seen
@@ -200,22 +207,6 @@ def get_campaign_influence(state: CampaignState) -> Dict[str, Any]:
         include_tags.append("social_friction")
         notes.append("Known to authorities: heightened scrutiny")
     
-    # Faction influence (v0.2)
-    high_attention_factions = [
-        fid for fid, f in state.factions.items() if f.attention >= 10
-    ]
-    hostile_factions = [
-        fid for fid, f in state.factions.items() if f.disposition <= -1
-    ]
-    
-    if high_attention_factions:
-        include_tags.append("reinforcements")
-        notes.append(f"High faction attention: {', '.join(high_attention_factions)}")
-    
-    if hostile_factions:
-        include_tags.append("social_friction")
-        notes.append(f"Hostile factions: {', '.join(hostile_factions)}")
-    
     # Add pressure and heat band descriptors
     pressure_band = state.get_pressure_band()
     heat_band = state.get_heat_band()
@@ -223,11 +214,87 @@ def get_campaign_influence(state: CampaignState) -> Dict[str, Any]:
     if pressure_band != "stable" or heat_band != "quiet":
         notes.append(f"Campaign state: {pressure_band} pressure, {heat_band} heat")
     
-    # Suggest factions that might be involved based on state
-    suggested_factions = []
+    # v0.3: Improved faction scoring for suggested spotlight factions
+    faction_scores: List[tuple[str, float, List[str]]] = []  # (faction_id, score, reasons)
+    
     for fid, faction in state.factions.items():
-        if faction.attention >= 5:
-            suggested_factions.append(fid)
+        if not faction.is_active:
+            continue  # Skip archived factions
+        
+        reasons = []
+        score = float(faction.attention)  # Base score
+        reasons.append(f"Attention: {faction.attention}")
+        
+        # +1 if disposition != Neutral
+        if faction.disposition != 0:
+            score += 1
+            disp_label = faction.get_disposition_label().split()[1]  # Remove emoji
+            reasons.append(f"Non-neutral ({disp_label})")
+        
+        # +1 if high heat (hunted or exposed bands)
+        if heat_band in ["hunted", "exposed"]:
+            score += 1
+            reasons.append(f"High heat ({heat_band})")
+        
+        # +2 if any active scar mentions this faction (v0.3: references not yet in Scar model)
+        # TODO: When Scar model gets related_factions field, check here
+        
+        # Store if score > 0 or all factions are at 0
+        if score > 0:
+            faction_scores.append((fid, score, reasons))
+    
+    # Fallback: if all factions have 0 attention, include them anyway for visibility
+    if not faction_scores and state.factions:
+        faction_scores = [
+            (fid, 0.0, ["No attention yet"])
+            for fid, f in state.factions.items()
+            if f.is_active
+        ]
+    
+    # Sort by score descending and select top 1-3
+    faction_scores.sort(key=lambda x: x[1], reverse=True)
+    
+    # Apply minimum threshold (score >= 3) unless all scores are below threshold
+    threshold = 3
+    above_threshold = [(fid, score, r) for fid, score, r in faction_scores if score >= threshold]
+    
+    if above_threshold:
+        top_factions = above_threshold[:3]
+    elif faction_scores:
+        # All below threshold, take top 3 anyway (including zero-attention fallback factions)
+        top_factions = faction_scores[:3]
+    else:
+        top_factions = []
+    
+    suggested_factions = [fid for fid, _, _ in top_factions]
+    
+    # Generate faction influence notes
+    faction_influence_notes: List[str] = []
+    faction_tag_bias: List[str] = []
+    
+    for fid, score, reasons in top_factions:
+        if fid in state.factions:
+            faction = state.factions[fid]
+            faction_influence_notes.append(f"{faction.name} (score: {score:.0f}): {', '.join(reasons)}")
+            
+            # Add tag nudges based on faction state
+            if faction.attention >= 10:
+                faction_tag_bias.append("reinforcements")
+                faction_tag_bias.append("visibility")
+            
+            if faction.disposition <= -1:
+                faction_tag_bias.append("social_friction")
+                if faction.disposition == -2:
+                    faction_tag_bias.append("threat")
+            elif faction.disposition >= 1:
+                faction_tag_bias.append("opportunity")
+                if faction.disposition == 2:
+                    faction_tag_bias.append("information")
+    
+    # Merge faction tag bias into include_tags (deduplicate)
+    for tag in faction_tag_bias:
+        if tag not in include_tags:
+            include_tags.append(tag)
     
     return {
         "include_tags": include_tags,
@@ -235,6 +302,8 @@ def get_campaign_influence(state: CampaignState) -> Dict[str, Any]:
         "rarity_bias": rarity_bias,
         "notes": notes,
         "suggested_factions_involved": suggested_factions,
+        "faction_influence_notes": faction_influence_notes,
+        "faction_tag_bias": list(set(faction_tag_bias)),  # Deduplicated
         "pressure_band": pressure_band,
         "heat_band": heat_band,
     }
