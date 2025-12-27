@@ -1430,7 +1430,7 @@ def main() -> None:
                 st.info("No events generated yet.")
 
         with colB:
-            st.header("Diagnostics")
+            st.header("Analysis")
             diagnostics(hs.last_batch)
 
     with tabs[1]:
