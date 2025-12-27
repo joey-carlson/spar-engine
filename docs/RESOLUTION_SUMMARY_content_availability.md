@@ -21,7 +21,7 @@ if idx > 0:
 
 **Impact**: This fix resolves the error for:
 - All approach/engage phases (16-18 events available)
-- Dungeon/city/ruins aftermath (5-8 events with diverse tags)
+- Confined/populated/derelict aftermath (5-8 events with diverse tags)
 - ~90% of suite test combinations
 
 ### 2. Secondary Cause: Wilderness Aftermath Content Gap (⚠️ REQUIRES CONTENT)
@@ -33,7 +33,7 @@ if idx > 0:
 
 **Effect**: Even with proper ticking, only 1-2 events can generate before all options are blocked.
 
-**Required Fix**: Add 3-5 wilderness aftermath events with diverse tags (hazard, terrain, visibility, positioning—anything but attrition).
+**Required Fix**: Add 3-5 open aftermath events with diverse tags (hazard, terrain, visibility, positioning—anything but attrition).
 
 ## Testing Status
 
@@ -44,7 +44,7 @@ if idx > 0:
 
 ### Failing Tests
 - ❌ Wilderness aftermath with batch_size >10
-- ❌ Suite runs including wilderness aftermath with batch_size=200
+- ❌ Suite runs including open aftermath with batch_size=200
 
 **Reason**: Content diversity issue, not code bug.
 
@@ -56,9 +56,9 @@ if idx > 0:
    - Most presets should now work with batch_size=200
    - Wilderness aftermath will still fail, but for a different reason (content gap)
 
-2. **Decision needed**: Choose approach for wilderness aftermath:
+2. **Decision needed**: Choose approach for open aftermath:
    - **Option A**: Add 3-5 new events to `data/core_complications.json`
-   - **Option B**: Document the limitation and reduce batch size expectations for wilderness aftermath
+   - **Option B**: Document the limitation and reduce batch size expectations for open aftermath
    - **Option C**: Temporarily disable wilderness in suites until content is expanded
 
 ## Files Modified
@@ -76,7 +76,7 @@ if idx > 0:
 4. Set batch size to 200
 5. Click "Run suite"
 
-**Expected**: Dungeon/city/ruins complete successfully. Wilderness aftermath fails on event 2-3 with descriptive error about attrition tag overlap.
+**Expected**: Confined/populated/derelict complete successfully. Wilderness aftermath fails on event 2-3 with descriptive error about attrition tag overlap.
 
 ## 3. Tertiary Cause: Normal Mode Tick Threshold Requirement (📊 BEHAVIOR ANALYSIS)
 
@@ -129,4 +129,4 @@ From `data/core_complications.json` analysis:
 
 ## Next Steps
 
-Waiting for user decision on how to handle wilderness aftermath content gap. The cooldown system is now functioning correctly, and the Normal mode tick requirement is now documented and understood.
+Waiting for user decision on how to handle open aftermath content gap. The cooldown system is now functioning correctly, and the Normal mode tick requirement is now documented and understood.

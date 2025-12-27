@@ -5,7 +5,7 @@
 
 ## Executive Summary
 
-Validated that the adaptive weighting system successfully reduces "sticky" outcomes in preset/phase combinations with adequate content diversity. Identified wilderness as having a **structural content gap** rather than a code issue.
+Validated that the adaptive weighting system successfully reduces "sticky" outcomes in preset/phase combinations with adequate content diversity. Identified open as having a **structural content gap** rather than a code issue.
 
 ## Validation Results
 
@@ -67,7 +67,7 @@ else:
 
 ### Root Cause: Severity Band Coverage Gap
 
-Severity distribution analysis reveals why wilderness shows higher repetition:
+Severity distribution analysis reveals why open shows higher repetition:
 
 ```
 Severity 1: Only 3 events available
@@ -97,11 +97,11 @@ The adaptive weighting system **is working correctly**:
 ### Resolution Path
 
 **Content expansion required**:
-- Add 2-3 wilderness events with severity_band starting at 1
+- Add 2-3 open events with severity_band starting at 1
 - Suggested: weather events, animal encounters, terrain hazards
 - Target: Dilute structural bottleneck to <20% per event
 
-**Alternative**: Accept wilderness as a "focused encounter set" with higher repetition as part of its design identity.
+**Alternative**: Accept open as a "focused encounter set" with higher repetition as part of its design identity.
 
 ## Verification Procedure
 
@@ -132,7 +132,7 @@ python -m pytest tests/test_gist.py tests/test_cutoff_tuning.py tests/test_coold
 
 ### Design Decisions
 
-1. **Event-ID only penalties**: Tag-based penalties were explored but caused content availability failures in small pools (e.g., wilderness aftermath with 3 events sharing "attrition")
+1. **Event-ID only penalties**: Tag-based penalties were explored but caused content availability failures in small pools (e.g., open aftermath with 3 events sharing "attrition")
 
 2. **Tiered penalty curve**: Stronger penalties for very recent (i=0: /10) transitioning to gentler for older (i>6: /1.5) balances variety with authored intent
 
@@ -142,7 +142,7 @@ python -m pytest tests/test_gist.py tests/test_cutoff_tuning.py tests/test_coold
 
 ### Limitations Encountered
 
-- **Small pool vulnerability**: Pools with <5 events and high tag overlap (e.g., wilderness aftermath: 3 events, all "attrition") cannot sustain long batches
+- **Small pool vulnerability**: Pools with <5 events and high tag overlap (e.g., open aftermath: 3 events, all "attrition") cannot sustain long batches
 - **Severity band gaps**: Structural biases from uneven severity band coverage cannot be fully mitigated by weighting alone
 - **Recent window size**: With 12-entry window and fast turnover (ticks=2), events cycle in/out quickly in small pools
 
@@ -151,17 +151,17 @@ python -m pytest tests/test_gist.py tests/test_cutoff_tuning.py tests/test_coold
 - `spar_engine/engine.py` - Enhanced adaptive weighting with tiered penalty curve (v0.1 -> v0.2)
 - `tests/test_adaptive_weighting.py` - Comprehensive validation tests for event variety
 - `tests/test_wilderness_severity_analysis.py` - Diagnostic tool for severity band analysis
-- `tests/test_cooldown_fix.py` - Updated to skip wilderness aftermath (known content gap)
+- `tests/test_cooldown_fix.py` - Updated to skip open aftermath (known content gap)
 - `CHANGELOG.md` - Documented adaptive weighting validation
 
 ## Conclusion
 
-**Adaptive weighting system is functioning correctly and meets acceptance criteria** for presets with adequate content diversity. The wilderness repetition issue is a **content design constraint**, not an implementation bug.
+**Adaptive weighting system is functioning correctly and meets acceptance criteria** for presets with adequate content diversity. The open repetition issue is a **content design constraint**, not an implementation bug.
 
-**Recommendation**: Accept current implementation as complete. Address wilderness variety through content expansion (future task) rather than further code changes.
+**Recommendation**: Accept current implementation as complete. Address open variety through content expansion (future task) rather than further code changes.
 
 ## Next Steps
 
 User to decide:
-1. Accept wilderness at 27.5% max as within structural limits, OR
+1. Accept open at 27.5% max as within structural limits, OR
 2. Queue content expansion task to add 2-3 wilderness severity=1 events

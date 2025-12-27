@@ -112,7 +112,7 @@ for tag, cd in (state.tag_cooldowns or {}).items():
    - Without periodic `tick_state()` calls, tag cooldowns accumulate indefinitely
    - This causes rapid content exhaustion in ALL phases
 
-2. **Secondary: Insufficient content diversity in wilderness aftermath** (REQUIRES CONTENT)
+2. **Secondary: Insufficient content diversity in open aftermath** (REQUIRES CONTENT)
    - Wilderness aftermath has only 3 events
    - **ALL 3 events share the "attrition" tag with cooldown=2**
    - Even with ticking, the pool can only generate 1-2 events before all options are blocked
@@ -196,10 +196,10 @@ Add 10-15 more aftermath events with diverse tag combinations.
 **Status**: ✅ Completed in `streamlit_harness/app.py`
 
 This fixes the cooldown accumulation issue for most phase/environment combinations. The change ensures batches can complete for:
-- Dungeon/city/ruins aftermath (5-8 events each)
+- Confined/populated/derelict aftermath (5-8 events each)
 - All approach/engage phases (16-18 events)
 
-However, **wilderness aftermath still fails** due to complete tag overlap.
+However, **open aftermath still fails** due to complete tag overlap.
 
 ### Required: Option 4 (Expand Wilderness Aftermath Content)
 **Status**: ⚠️ Required for full functionality

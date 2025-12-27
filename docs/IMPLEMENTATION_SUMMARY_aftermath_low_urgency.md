@@ -39,27 +39,27 @@ All entries:
 
 2. **aftermath_misattribution_01** - Credit/blame misplaced  
    - Tags: information, social_friction, opportunity
-   - Urban (city, industrial, ruins)
+   - Urban (populated, industrial, derelict)
    - Severity: 1-3
 
 3. **aftermath_future_debt_01** - Obligations incurred
    - Tags: opportunity, social_friction, consequence
-   - Urban (city, industrial, ruins)
+   - Urban (populated, industrial, derelict)
    - Severity: 2-4
 
 4. **aftermath_route_changed_01** - Terrain permanently altered
    - Tags: terrain, information, consequence
-   - Underground/wild (dungeon, ruins, wilderness)
+   - Underground/wild (confined, derelict, open)
    - Severity: 1-3
 
 5. **aftermath_word_travels_01** - News spreading
    - Tags: information, social_friction, visibility
-   - Mixed (city, industrial, wilderness)
+   - Mixed (populated, industrial, open)
    - Severity: 1-4
 
 6. **aftermath_unexpected_witness_01** - Unintended observer
    - Tags: information, visibility, social_friction
-   - Mixed (city, ruins, dungeon)
+   - Mixed (populated, derelict, confined)
    - Severity: 2-5
 
 7. **aftermath_resource_spent_01** - Finite resource exhausted

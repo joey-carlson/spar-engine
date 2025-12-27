@@ -79,12 +79,12 @@ source .venv/bin/activate
 python -m pytest tests/test_cooldown_fix.py::test_all_phases_complete_with_batch_200 -v
 ```
 
-Expected: Passes for all presets/phases including wilderness aftermath
+Expected: Passes for all presets/phases including open aftermath
 
 ## Files Modified
 
 - `data/core_complications.json` - Added 10 aftermath entries (46 total entries now)
-- `tests/test_cooldown_fix.py` - Re-enabled wilderness aftermath testing (previously skipped)
+- `tests/test_cooldown_fix.py` - Re-enabled open aftermath testing (previously skipped)
 - `CHANGELOG.md` - Documented content expansion
 
 ## Conclusion

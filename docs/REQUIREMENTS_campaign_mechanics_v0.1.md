@@ -235,7 +235,7 @@ for scene in campaign_scenes:
 - Prevents perpetual maximum attention
 - Represents practical limits of response capacity
 - Suggested ranges:
-  - Rural/wilderness: 10-15
+  - Rural/open: 10-15
   - Urban/political: 15-25
 
 ### Decay Rates

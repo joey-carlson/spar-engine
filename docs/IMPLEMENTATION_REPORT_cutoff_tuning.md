@@ -74,7 +74,7 @@ if rarity_mode == "spiky":
 ### Design Rationale
 
 The two-threshold approach allows:
-1. **Dungeon/ruins**: Hit strong morphology threshold, compress cap significantly
+1. **Confined/derelict**: Hit strong morphology threshold, compress cap significantly
 2. **Wilderness**: Natural resistance due to high connectivity (open space)
 3. **No preset hardcoding**: Behavior emerges from constraint values
 4. **Calm/Normal isolation**: Logic strictly gated to `rarity_mode == "spiky"`
@@ -91,13 +91,13 @@ python -m pytest tests/test_cutoff_tuning.py -v -s
 
 Expected output:
 ```
-Spiky dungeon cutoff rate: 9.0%
-Spiky ruins cutoff rate: 8.0%
-Spiky wilderness cutoff rate: 5.0%
-Normal dungeon cutoff rate: 2.0%
-Normal wilderness cutoff rate: 2.0%
-Calm dungeon cutoff rate: 0.0%
-Calm wilderness cutoff rate: 0.0%
+Spiky confined cutoff rate: 9.0%
+Spiky derelict cutoff rate: 8.0%
+Spiky open cutoff rate: 5.0%
+Normal confined cutoff rate: 2.0%
+Normal open cutoff rate: 2.0%
+Calm confined cutoff rate: 0.0%
+Calm open cutoff rate: 0.0%
 ```
 
 ### Streamlit Harness Verification
