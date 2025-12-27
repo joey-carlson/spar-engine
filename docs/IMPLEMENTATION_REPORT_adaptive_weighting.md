@@ -164,4 +164,4 @@ python -m pytest tests/test_gist.py tests/test_cutoff_tuning.py tests/test_coold
 
 User to decide:
 1. Accept open at 27.5% max as within structural limits, OR
-2. Queue content expansion task to add 2-3 wilderness severity=1 events
+2. Queue content expansion task to add 2-3 open severity=1 events

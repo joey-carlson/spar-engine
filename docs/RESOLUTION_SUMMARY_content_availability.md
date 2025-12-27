@@ -39,7 +39,7 @@ if idx > 0:
 
 ### Passing Tests
 - ✅ All cutoff tuning tests (8/8 pass)
-- ✅ Integration tests for dungeon/city phases with batch_size=200
+- ✅ Integration tests for confined/populated phases with batch_size=200
 - ✅ Cooldown decay rate verification
 
 ### Failing Tests
@@ -59,7 +59,7 @@ if idx > 0:
 2. **Decision needed**: Choose approach for open aftermath:
    - **Option A**: Add 3-5 new events to `data/core_complications.json`
    - **Option B**: Document the limitation and reduce batch size expectations for open aftermath
-   - **Option C**: Temporarily disable wilderness in suites until content is expanded
+   - **Option C**: Temporarily disable open in suites until content is expanded
 
 ## Files Modified
 

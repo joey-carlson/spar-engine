@@ -47,7 +47,7 @@ This harness should accelerate engine iteration while keeping the engine **UI-ag
 
 ### R1 – Inputs panel (left sidebar)
 Controls (minimum set):
-- Scene preset: `dungeon | city | wilderness | ruins`
+- Scene preset: `confined | populated | open | derelict`
 - Scene phase: `approach | engage | aftermath`
 - Party band: `low | mid | high | unknown`
 - Rarity mode: `calm | normal | spiky`

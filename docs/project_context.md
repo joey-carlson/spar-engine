@@ -27,7 +27,7 @@ This was motivated by a research paper on **self-organized criticality in fragme
 
 That insight mapped cleanly onto TTRPG design problems:
 - Many small complications, few large ones
-- Situation structure (dungeon vs city vs wilderness) should affect outcome volatility
+- Situation structure (confined vs populated vs open) should affect outcome volatility
 - Campaigns need safety rails to prevent random tables from derailing play
 
 ---

@@ -53,7 +53,7 @@ When running 200-event batches:
 - attrition_fatigue_01
 
 **Dungeon aftermath** (5 events):
-- Same as wilderness + hazard_smoke_01 + hazard_water_rise_01
+- Same as open + hazard_smoke_01 + hazard_water_rise_01
 
 ---
 
