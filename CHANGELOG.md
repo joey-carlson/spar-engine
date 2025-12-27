@@ -16,6 +16,18 @@ SPAR Tool Engine v1.0 delivers a complete campaign memory system integrating eve
 - All functionality preserved, just reorganized for clarity
 - Resolves cognitive overload from mixing GM/developer/analyst controls
 
+**Setting-Neutral Preset Terminology (System-Wide):**
+- Replaced D&D-specific labels with genre-agnostic constraint terminology throughout entire codebase
+- confined (was dungeon): tight space, limited exits, escalating pressure
+- populated (was city): crowds, witnesses, authority, social consequences  
+- open (was wilderness): exposure, distance, travel, attrition
+- derelict (was ruins): unstable structures, hidden dangers, decay
+- Updated 58 files: Python code, JSON scenarios, campaign data, documentation
+- UI helper text: "Environmental constraints, not genre"
+- Works equally for fantasy, sci-fi, noir, horror, post-apocalyptic, space opera
+- All 156 tests passing after migration
+- Aligns SPAR positioning as truly genre-agnostic system
+
 **Campaign Management (Complete):**
 - Multi-campaign manager with living state tracking
 - Faction CRUD v0.1 with attention/disposition bands
