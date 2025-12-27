@@ -1707,11 +1707,20 @@ def render_campaign_dashboard() -> None:
                                 
                                 lines.append("")
                     
-                    # Campaign Ledger
+                    # Campaign Ledger (filter out invalid entries)
                     if campaign.ledger:
                         lines.append("## Campaign Ledger")
                         lines.append("")
-                        for entry in campaign.ledger:
+                        
+                        # Filter: only include valid session entries (not admin actions or empty sessions)
+                        valid_entries = [
+                            e for e in campaign.ledger
+                            if e.get('entry_type') != 'admin_action'  # Exclude system audit entries
+                            and e.get('what_happened')  # Must have content
+                            and any(item.strip() for item in e.get('what_happened', []))  # At least one non-empty item
+                        ]
+                        
+                        for entry in valid_entries:
                             session_num = entry.get('session_number', '?')
                             session_date = entry.get('session_date', '')[:10]
                             
@@ -2662,9 +2671,53 @@ def render_finalize_session() -> None:
         with col2:
             heat_change = st.number_input("Heat change", min_value=-10, max_value=10, value=default_heat, step=1)
         
-        # C: Canon Summary update option (FIX 2: Changed to opt-in, default OFF)
+        # C: Canon Summary update with user-editable synthesis
         st.subheader("Canon Summary")
-        add_to_canon = st.checkbox("Add to Canon Summary?", value=False, help="Append a bullet to Canon Summary from this session")
+        
+        # Generate suggested canon bullet (deterministic synthesis)
+        suggested_canon = ""
+        if campaign.campaign_state:
+            # Check for faction changes
+            faction_changed = False
+            faction_desc = ""
+            if faction_attention and 'affected_faction' in locals() and affected_faction:
+                if affected_faction in campaign.campaign_state.factions:
+                    faction = campaign.campaign_state.factions[affected_faction]
+                    # Synthesize state description
+                    new_att = min(20, faction.attention + 2)
+                    att_band = FactionState(faction_id='temp', name='temp', attention=new_att).get_attention_band().lower()
+                    disp_val = faction.disposition
+                    if disp_val <= -1:
+                        disp_desc = "openly hostile" if disp_val == -2 else "unfriendly"
+                    elif disp_val >= 1:
+                        disp_desc = "allied" if disp_val == 2 else "friendly"
+                    else:
+                        disp_desc = "neutral"
+                    faction_desc = f"The {faction.name} are now {att_band} and {disp_desc}."
+                    faction_changed = True
+            
+            # Check for scars or resource changes
+            scar_added = add_scar and scar_id
+            
+            if faction_changed:
+                suggested_canon = faction_desc
+            elif scar_added:
+                # Synthesize from scar
+                if scar_category == "resource":
+                    suggested_canon = f"Resources have become strained: {scar_id.replace('_', ' ')}."
+                elif scar_category == "reputation":
+                    suggested_canon = f"The patrol's reputation has shifted: {scar_id.replace('_', ' ')}."
+                else:
+                    suggested_canon = f"A lasting change: {scar_id.replace('_', ' ')}."
+            # Else leave blank (force GM to write or skip)
+        
+        # Show editable canon bullet field
+        canon_bullet = st.text_input(
+            "Canon bullet (optional - edit or leave blank)",
+            value=suggested_canon,
+            placeholder="e.g., The Road Dogs now openly hunt patrol vehicles...",
+            help="Curated world-state statement (not event recap). Leave blank to skip."
+        )
         
         col1, col2 = st.columns(2)
         with col1:
@@ -2790,19 +2843,9 @@ def render_finalize_session() -> None:
                     _legacy_scars=cs._legacy_scars,
                 )
             
-            # C: Canon Summary update with deterministic synthesis
-            if add_to_canon and what_happened:
-                # Deterministic synthesis rules
-                if len(what_happened) == 1:
-                    canon_bullet = what_happened[0]
-                elif len(what_happened) <= 4:
-                    # Join first two with semicolon
-                    canon_bullet = f"{what_happened[0]}; {what_happened[1]}"
-                else:
-                    # First bullet + indicator
-                    canon_bullet = f"{what_happened[0]} (and more)"
-                
-                campaign.canon_summary.append(canon_bullet)
+            # C: Canon Summary update - add user-edited bullet if provided
+            if canon_bullet and canon_bullet.strip():
+                campaign.canon_summary.append(canon_bullet.strip())
             
             # Add to ledger
             campaign.ledger.append(session_entry)
