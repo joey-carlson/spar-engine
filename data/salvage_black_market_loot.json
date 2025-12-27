@@ -1,0 +1,661 @@
+{
+  "name": "Salvage & Black Market",
+  "generator_type": "loot",
+  "description": "Contested resources with provenance problems - nothing is clean, everything has a previous owner",
+  "entries": [
+    {
+      "event_id": "loot_salvage_previously_claimed_01",
+      "title": "Previously Claimed",
+      "tags": [
+        "opportunity",
+        "visibility",
+        "obligation"
+      ],
+      "allowed_environments": [
+        "derelict",
+        "industrial",
+        "open"
+      ],
+      "allowed_scene_phases": [
+        "aftermath"
+      ],
+      "severity_band": [
+        3,
+        6
+      ],
+      "weight": 1.0,
+      "cooldown": {
+        "event": 3,
+        "tags": {
+          "visibility": 2,
+          "obligation": 2
+        }
+      },
+      "effect_vector_template": {
+        "opportunity": [
+          2,
+          4
+        ],
+        "heat": [
+          1,
+          3
+        ],
+        "cost": [
+          0,
+          2
+        ]
+      },
+      "fiction": {
+        "prompt": "What you recovered is listed somewhere, someone will notice it's missing.",
+        "sensory": [
+          "serial numbers intact",
+          "ownership marks visible",
+          "tracked inventory"
+        ],
+        "immediate_choice": [
+          "Keep it and accept the heat",
+          "Strip the identifiers now"
+        ]
+      }
+    },
+    {
+      "event_id": "loot_salvage_too_easy_to_move_01",
+      "title": "Too Easy to Move",
+      "tags": [
+        "opportunity",
+        "visibility",
+        "social_friction"
+      ],
+      "allowed_environments": [
+        "populated",
+        "industrial"
+      ],
+      "allowed_scene_phases": [
+        "aftermath"
+      ],
+      "severity_band": [
+        2,
+        5
+      ],
+      "weight": 0.9,
+      "cooldown": {
+        "event": 3,
+        "tags": {
+          "visibility": 2
+        }
+      },
+      "effect_vector_template": {
+        "opportunity": [
+          2,
+          3
+        ],
+        "cost": [
+          -1,
+          0
+        ],
+        "heat": [
+          1,
+          2
+        ]
+      },
+      "fiction": {
+        "prompt": "Transport is trivial, but explaining how you got it won't be.",
+        "sensory": [
+          "portable value",
+          "obvious utility",
+          "conspicuous possession"
+        ],
+        "immediate_choice": [
+          "Move it openly and risk questions",
+          "Find a middleman"
+        ]
+      }
+    },
+    {
+      "event_id": "loot_salvage_buyer_waiting_01",
+      "title": "Buyer Already Waiting",
+      "tags": [
+        "opportunity",
+        "obligation",
+        "visibility"
+      ],
+      "allowed_environments": [
+        "populated",
+        "industrial"
+      ],
+      "allowed_scene_phases": [
+        "aftermath"
+      ],
+      "severity_band": [
+        3,
+        6
+      ],
+      "weight": 0.8,
+      "cooldown": {
+        "event": 3,
+        "tags": {
+          "opportunity": 2,
+          "obligation": 2
+        }
+      },
+      "effect_vector_template": {
+        "opportunity": [
+          3,
+          5
+        ],
+        "cost": [
+          -2,
+          -1
+        ],
+        "heat": [
+          1,
+          2
+        ]
+      },
+      "fiction": {
+        "prompt": "Immediate market interest solves cash problems, but the buyer's eagerness is the warning.",
+        "sensory": [
+          "quick offer",
+          "no questions asked",
+          "suspiciously fair price"
+        ],
+        "immediate_choice": [
+          "Sell immediately",
+          "Ask why they want it so badly"
+        ]
+      }
+    },
+    {
+      "event_id": "loot_salvage_strip_or_keep_01",
+      "title": "Strip It or Keep It",
+      "tags": [
+        "opportunity",
+        "visibility",
+        "cost"
+      ],
+      "allowed_environments": [
+        "industrial",
+        "derelict"
+      ],
+      "allowed_scene_phases": [
+        "aftermath"
+      ],
+      "severity_band": [
+        2,
+        5
+      ],
+      "weight": 1.0,
+      "cooldown": {
+        "event": 2,
+        "tags": {
+          "opportunity": 2
+        }
+      },
+      "effect_vector_template": {
+        "opportunity": [
+          2,
+          4
+        ],
+        "cost": [
+          0,
+          2
+        ],
+        "heat": [
+          0,
+          2
+        ]
+      },
+      "fiction": {
+        "prompt": "Destroy the identity now and lose leverage, or preserve it and carry the risk.",
+        "sensory": [
+          "recognizable features",
+          "documented origins",
+          "traceable markers"
+        ],
+        "immediate_choice": [
+          "Strip it clean",
+          "Keep it intact for later leverage"
+        ]
+      }
+    },
+    {
+      "event_id": "loot_salvage_marked_goods_01",
+      "title": "Marked Goods",
+      "tags": [
+        "opportunity",
+        "visibility",
+        "information"
+      ],
+      "allowed_environments": [
+        "populated",
+        "industrial",
+        "derelict"
+      ],
+      "allowed_scene_phases": [
+        "aftermath"
+      ],
+      "severity_band": [
+        3,
+        7
+      ],
+      "weight": 0.8,
+      "cooldown": {
+        "event": 3,
+        "tags": {
+          "visibility": 3,
+          "information": 1
+        }
+      },
+      "effect_vector_template": {
+        "opportunity": [
+          2,
+          4
+        ],
+        "information": [
+          1,
+          3
+        ],
+        "heat": [
+          2,
+          4
+        ]
+      },
+      "fiction": {
+        "prompt": "Anyone experienced knows who had this before you, possession tells a story.",
+        "sensory": [
+          "distinctive marks",
+          "recognized provenance",
+          "insider knowledge"
+        ],
+        "immediate_choice": [
+          "Use it and own the association",
+          "Fence it quickly"
+        ]
+      }
+    },
+    {
+      "event_id": "loot_salvage_hot_merchandise_01",
+      "title": "Hot Merchandise",
+      "tags": [
+        "opportunity",
+        "visibility",
+        "time_pressure"
+      ],
+      "allowed_environments": [
+        "populated",
+        "industrial"
+      ],
+      "allowed_scene_phases": [
+        "aftermath"
+      ],
+      "severity_band": [
+        4,
+        7
+      ],
+      "weight": 0.7,
+      "cooldown": {
+        "event": 4,
+        "tags": {
+          "visibility": 3,
+          "opportunity": 2
+        }
+      },
+      "effect_vector_template": {
+        "opportunity": [
+          3,
+          5
+        ],
+        "cost": [
+          -2,
+          0
+        ],
+        "heat": [
+          2,
+          4
+        ],
+        "time_pressure": [
+          1,
+          2
+        ]
+      },
+      "fiction": {
+        "prompt": "Recently stolen goods that multiple parties are hunting for, valuable but burning.",
+        "sensory": [
+          "fresh acquisition",
+          "active search",
+          "ticking clock"
+        ],
+        "immediate_choice": [
+          "Flip it immediately at a loss",
+          "Hold until heat dies down"
+        ]
+      }
+    },
+    {
+      "event_id": "loot_salvage_reputation_by_association_01",
+      "title": "Reputation by Association",
+      "tags": [
+        "opportunity",
+        "social_friction",
+        "visibility"
+      ],
+      "allowed_environments": [
+        "populated",
+        "industrial"
+      ],
+      "allowed_scene_phases": [
+        "aftermath"
+      ],
+      "severity_band": [
+        3,
+        6
+      ],
+      "weight": 0.8,
+      "cooldown": {
+        "event": 3,
+        "tags": {
+          "social_friction": 2,
+          "visibility": 2
+        }
+      },
+      "effect_vector_template": {
+        "opportunity": [
+          2,
+          4
+        ],
+        "information": [
+          1,
+          2
+        ],
+        "heat": [
+          1,
+          3
+        ]
+      },
+      "fiction": {
+        "prompt": "Carrying this associates you with its previous owners, for better or worse.",
+        "sensory": [
+          "recognized gear",
+          "known affiliations",
+          "implied connections"
+        ],
+        "immediate_choice": [
+          "Embrace the association",
+          "Distance yourself publicly"
+        ]
+      }
+    },
+    {
+      "event_id": "loot_salvage_middleman_cut_01",
+      "title": "Middleman's Percentage",
+      "tags": [
+        "opportunity",
+        "obligation",
+        "cost"
+      ],
+      "allowed_environments": [
+        "populated",
+        "industrial"
+      ],
+      "allowed_scene_phases": [
+        "aftermath"
+      ],
+      "severity_band": [
+        2,
+        5
+      ],
+      "weight": 0.9,
+      "cooldown": {
+        "event": 3,
+        "tags": {
+          "opportunity": 2,
+          "obligation": 2
+        }
+      },
+      "effect_vector_template": {
+        "opportunity": [
+          2,
+          4
+        ],
+        "cost": [
+          1,
+          2
+        ],
+        "information": [
+          0,
+          1
+        ]
+      },
+      "fiction": {
+        "prompt": "Someone who can move questionable goods safely, but they'll remember you owe them.",
+        "sensory": [
+          "discrete contact",
+          "professional distance",
+          "understood terms"
+        ],
+        "immediate_choice": [
+          "Pay the cut and stay clean",
+          "Move it yourself and save the cost"
+        ]
+      }
+    },
+    {
+      "event_id": "loot_salvage_insurance_interest_01",
+      "title": "Insured Loss",
+      "tags": [
+        "opportunity",
+        "visibility",
+        "social_friction"
+      ],
+      "allowed_environments": [
+        "populated",
+        "industrial"
+      ],
+      "allowed_scene_phases": [
+        "aftermath"
+      ],
+      "severity_band": [
+        3,
+        7
+      ],
+      "weight": 0.7,
+      "cooldown": {
+        "event": 4,
+        "tags": {
+          "visibility": 3,
+          "social_friction": 2
+        }
+      },
+      "effect_vector_template": {
+        "opportunity": [
+          3,
+          5
+        ],
+        "cost": [
+          -1,
+          0
+        ],
+        "heat": [
+          2,
+          3
+        ]
+      },
+      "fiction": {
+        "prompt": "Corporate or institutional loss with professional recovery agents pursuing it.",
+        "sensory": [
+          "official documentation",
+          "bounty postings",
+          "systematic search"
+        ],
+        "immediate_choice": [
+          "Use it and accept pursuit",
+          "Return it for goodwill"
+        ]
+      }
+    },
+    {
+      "event_id": "loot_salvage_provenance_unclear_01",
+      "title": "Questionable Origins",
+      "tags": [
+        "opportunity",
+        "information",
+        "visibility"
+      ],
+      "allowed_environments": [
+        "populated",
+        "derelict",
+        "industrial"
+      ],
+      "allowed_scene_phases": [
+        "aftermath"
+      ],
+      "severity_band": [
+        2,
+        6
+      ],
+      "weight": 0.9,
+      "cooldown": {
+        "event": 3,
+        "tags": {
+          "information": 2,
+          "visibility": 1
+        }
+      },
+      "effect_vector_template": {
+        "opportunity": [
+          2,
+          4
+        ],
+        "information": [
+          1,
+          3
+        ],
+        "heat": [
+          1,
+          2
+        ]
+      },
+      "fiction": {
+        "prompt": "Resources with unclear history, using them may reveal uncomfortable truths about source.",
+        "sensory": [
+          "missing documentation",
+          "suspicious condition",
+          "avoided questions"
+        ],
+        "immediate_choice": [
+          "Use it and investigate later",
+          "Trace the source before committing"
+        ]
+      }
+    },
+    {
+      "event_id": "loot_salvage_fence_connection_01",
+      "title": "Black Market Contact",
+      "tags": [
+        "opportunity",
+        "obligation",
+        "social_friction"
+      ],
+      "allowed_environments": [
+        "populated",
+        "industrial"
+      ],
+      "allowed_scene_phases": [
+        "aftermath"
+      ],
+      "severity_band": [
+        2,
+        6
+      ],
+      "weight": 0.8,
+      "cooldown": {
+        "event": 3,
+        "tags": {
+          "opportunity": 2,
+          "obligation": 2
+        }
+      },
+      "effect_vector_template": {
+        "opportunity": [
+          2,
+          4
+        ],
+        "information": [
+          1,
+          2
+        ],
+        "cost": [
+          -1,
+          0
+        ]
+      },
+      "fiction": {
+        "prompt": "Access to someone who moves problematic goods, but now they know your business.",
+        "sensory": [
+          "discrete introduction",
+          "professional criminals",
+          "mutual understanding"
+        ],
+        "immediate_choice": [
+          "Establish the relationship",
+          "Handle it yourself"
+        ]
+      }
+    },
+    {
+      "event_id": "loot_salvage_evidence_trail_01",
+      "title": "Evidence of Possession",
+      "tags": [
+        "opportunity",
+        "visibility",
+        "consequence"
+      ],
+      "allowed_environments": [
+        "populated",
+        "industrial",
+        "confined"
+      ],
+      "allowed_scene_phases": [
+        "aftermath"
+      ],
+      "severity_band": [
+        3,
+        7
+      ],
+      "weight": 0.7,
+      "cooldown": {
+        "event": 4,
+        "tags": {
+          "visibility": 3,
+          "consequence": 2
+        }
+      },
+      "effect_vector_template": {
+        "opportunity": [
+          2,
+          4
+        ],
+        "information": [
+          0,
+          2
+        ],
+        "heat": [
+          2,
+          4
+        ]
+      },
+      "fiction": {
+        "prompt": "Your acquisition left traces: witnesses, cameras, or records linking you to the resource.",
+        "sensory": [
+          "documented transaction",
+          "remembered faces",
+          "timestamped evidence"
+        ],
+        "immediate_choice": [
+          "Live with the record",
+          "Invest in covering tracks"
+        ]
+      }
+    }
+  ]
+}
