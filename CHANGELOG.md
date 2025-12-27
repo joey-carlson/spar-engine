@@ -1,5 +1,37 @@
 # Changelog
 
+## [1.0.0] - 2025-12-26
+
+### Major Release: Campaign Memory System
+
+SPAR Tool Engine v1.0 delivers a complete campaign memory system integrating event generation with persistent campaign state. The generator now "remembers" your campaign through faction attention tracking, deterministic influence scoring, and curated narrative exports.
+
+**Campaign Management (Complete):**
+- Multi-campaign manager with living state tracking
+- Faction CRUD v0.1 with attention/disposition bands
+- Canon Summary with user-editable synthesis
+- Session finalization wizard with transformative canon updates
+- Prep Queue workflow (non-canon → canon promotion)
+- Campaign history import with entity classification
+- Story exports (campaign + session) with faction context
+
+**Faction Influence System (New):**
+- Deterministic faction scoring (attention + disposition + heat modifiers)
+- Advisory tag bias from faction state (hostile→threat, allied→opportunity)
+- Visible influence strip in generator showing faction spotlight
+- One-click disable control preserves agency
+- 9/9 comprehensive tests validating scoring algorithm
+
+**Data Quality Improvements:**
+- Invalid session filtering (no more "Session None" pollution)
+- Canon Summary curation enforced through UX
+- Story/system separation maintained throughout
+- Conservative faction detection with whole-word matching
+- Temporal labeling ("current status") prevents confusion
+
+**Locked & Stable:**
+All major systems considered feature-complete for v1.0. Further work will be v2.0 enhancements, not v1.x patches.
+
 ### Added
 - **Faction CRUD v0.1** - Full Create/Read/Update/Delete functionality for campaign factions with clear attention/disposition semantics and story/system field separation. FactionState v0.3 structure splits previous `notes` field into three distinct fields: `name` (display name, story-facing), `description` (what it is/wants, story-facing, exported), and `notes` (GM-private scratchpad, NOT exported). Added `is_active` flag for soft delete/archive that preserves historical references without cascade checks. Implemented interactive CRUD UI in dashboard with inline forms (no modals): Add faction form with live band preview, view mode with quick +/- attention buttons for session play, full edit mode for all fields, and archive/restore functionality. Attention uses band labels (Unaware/Noticed/Interested/Focused/Obsessed) clarifying neutral salience semantics. Disposition uses friendly labels (😡 Hostile → 😊 Allied) for valence. Campaign history export now includes Factions roster section with human-readable bands (not raw numbers). Admin actions logged as system-facing audit entries (faction_added/edited/archived/restored) that do NOT appear in story exports. Automatic v0.2 → v0.3 migration handles old format where notes contained display name (short → name field, long/punctuated → preserved as notes with derived name). Comprehensive test suite: 23 tests covering data model, migration, CRUD operations, export integration, audit trail, and story/system separation. All tests passing. Addresses critical gap where factions were read-only artifacts without management capabilities. Next (parking lot): Faction influence on generator context bundle. See `docs/IMPLEMENTATION_SUMMARY_faction_crud_v0.1.md` for complete details.
 

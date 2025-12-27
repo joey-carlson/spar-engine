@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "spar-tool-engine"
-version = "0.1.0"
-description = "SPAR procedural engine (v0.1) - encounter complications core"
+version = "1.0.0"
+description = "SPAR Tool Engine v1.0 - Campaign memory system with faction influence"
 readme = "README.md"
 requires-python = ">=3.9"
 dependencies = []
