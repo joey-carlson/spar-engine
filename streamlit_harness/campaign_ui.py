@@ -1815,6 +1815,51 @@ def render_campaign_dashboard() -> None:
                         lines.append(f"*Session date: {session_date}*")
                         lines.append("")
                         
+                        # Collect referenced factions from this session
+                        referenced_faction_ids = set()
+                        
+                        # From manual entries
+                        manual_entries = entry.get('manual_entries', [])
+                        if manual_entries:
+                            for manual_entry in manual_entries:
+                                if manual_entry.get('related_factions'):
+                                    referenced_faction_ids.update(manual_entry['related_factions'])
+                        
+                        # From session deltas (faction attention changes)
+                        if entry.get('deltas', {}).get('faction_attention_change'):
+                            # Check if faction was updated via checkbox
+                            # Scan manual entries for faction mentions in text as fallback
+                            for manual_entry in manual_entries or []:
+                                title_lower = manual_entry.get('title', '').lower()
+                                desc_lower = manual_entry.get('description', '').lower()
+                                if campaign.campaign_state:
+                                    for fid, faction in campaign.campaign_state.factions.items():
+                                        if faction.name.lower() in title_lower or faction.name.lower() in desc_lower:
+                                            referenced_faction_ids.add(fid)
+                        
+                        # Show faction context for referenced factions
+                        if referenced_faction_ids and campaign.campaign_state:
+                            lines.append("## Factions")
+                            lines.append("")
+                            
+                            for fid in sorted(referenced_faction_ids):
+                                if fid in campaign.campaign_state.factions:
+                                    faction = campaign.campaign_state.factions[fid]
+                                    if faction.is_active:
+                                        # Human-readable bands
+                                        attention_band = faction.get_attention_band()
+                                        disp_label = faction.get_disposition_label().split()[1]  # Remove emoji
+                                        
+                                        lines.append(f"**{faction.name}** *({attention_band}, {disp_label})*")
+                                        
+                                        # Include description (story-facing)
+                                        if faction.description:
+                                            lines.append(f"{faction.description}")
+                                        
+                                        lines.append("")
+                            
+                            lines.append("")
+                        
                         what_happened = entry.get('what_happened', [])
                         if what_happened:
                             lines.append("## What Happened")
